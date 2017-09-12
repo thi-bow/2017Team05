@@ -36,7 +36,7 @@ public class PlayerMove : MonoBehaviour
             //    _move *= _moveSpeed_Run;
             //}
             this.transform.localPosition += _move;
-        }
+        //}
 
     }
 }
