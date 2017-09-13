@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
         IDLE,
         MOVE,
         RUN,
-        ATTACK,
         SQUAT,
         DIE
     }
@@ -20,9 +19,10 @@ public class Player : MonoBehaviour
         SKILL,
     }
 
-    public playerState _status = playerState.IDLE;
+    [SerializeField] private playerState _status = playerState.IDLE;
     public playerSkill _skillStatus = playerSkill.NONE;
     private PlayerMove _playerMove = null;
+    private bool _attackPlay = false;
     
 
     // Use this for initialization
@@ -42,6 +42,12 @@ public class Player : MonoBehaviour
     {
         get { return _status; }
         set { _status = value; }
+    }
+
+    public bool AttackCheck
+    {
+        get { return _attackPlay; }
+        set { _attackPlay = value; }
     }
 
 }
