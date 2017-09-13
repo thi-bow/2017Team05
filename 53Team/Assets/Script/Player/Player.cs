@@ -11,11 +11,17 @@ public class Player : MonoBehaviour
         RUN,
         ATTACK,
         SQUAT,
-        Ability,
-        SKILL,
         DIE
     }
-    private playerState _status = playerState.IDLE;
+    public enum playerSkill
+    {
+        NONE,
+        Ability,
+        SKILL,
+    }
+
+    public playerState _status = playerState.IDLE;
+    public playerSkill _skillStatus = playerSkill.NONE;
     private PlayerMove _playerMove = null;
     
 
