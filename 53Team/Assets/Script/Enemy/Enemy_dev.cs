@@ -12,18 +12,39 @@ namespace Enemy {
 
     public class Enemy_dev : EnemyBase<Enemy_dev, dev_State>
     {
+        [Header("ターゲット")]
         public Transform m_target;
 
+        [Header("現在のステート")]
         public dev_State state;
+
+        [Space(10)]
+        public Sector m_sector;
+        public float m_seachDis;
+        public float m_seachAng;
+        public bool m_seachAreaDraw;
+
+        private AimTurret m_turret;
 
         private void Start()
         {
             Initialize();
+
+            if (m_seachAreaDraw)
+            {
+                var startdeg = 90 - m_seachAng;
+                var enddeg = 90 + m_seachAng;
+                m_sector.Show(m_seachDis, startdeg, enddeg);
+            }
         }
 
         public void Initialize()
         {
+            m_turret = GetComponent<AimTurret>();
+
             m_enemyStatus.hp = m_enemyStatus.max_hp;
+
+
 
             m_stateList.Add(new StateSearch(this));
             m_stateList.Add(new StateAttack(this));
@@ -51,7 +72,7 @@ namespace Enemy {
 
             public override void OnExecute()
             {
-                if (_base.Search(_base.transform, _base.m_target, 5, 60))
+                if (_base.Search(_base.m_turret.GetCannon(), _base.m_target, _base.m_seachDis, _base.m_seachAng))
                 {
                     Debug.Log("発見");
                     _base.ChangeState(dev_State.attack);
@@ -69,17 +90,18 @@ namespace Enemy {
 
             public override void OnEnter()
             {
+
             }
 
             public override void OnExecute()
             {
-                if (!_base.Search(_base.transform, _base.m_target, 5, 60))
+                if (!_base.Search(_base.m_turret.GetCannon(), _base.m_target, _base.m_seachDis, _base.m_seachAng))
                 {
                     Debug.Log("ロスト");
                     _base.ChangeState(dev_State.search);
                 }
 
-
+                _base.m_turret.Aim(_base.m_target.localPosition);
             }
 
             public override void OnExit()

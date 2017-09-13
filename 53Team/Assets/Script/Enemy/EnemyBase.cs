@@ -74,9 +74,8 @@ namespace Enemy
             bool run = false;
 
             // 対象までのベクトル
-            var vec = target.localPosition - my.localPosition;
-            Debug.DrawLine(my.localPosition, target.localPosition, Color.blue);
-            Debug.DrawLine(my.localPosition, my.localPosition + my.forward * distance, Color.red);
+            var vec = target.position - my.position;
+            Debug.DrawLine(my.position, target.position, Color.blue);
 
             // 対象までの距離(2乗)
             var dis = Vector3.SqrMagnitude(vec);
