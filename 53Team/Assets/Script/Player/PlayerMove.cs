@@ -164,7 +164,6 @@ public class PlayerMove : MonoBehaviour
             _player.PlayerState = Player.playerState.SQUAT;
             this.gameObject.GetComponent<CapsuleCollider>().height = _smallColliderHeight;
             this.gameObject.GetComponent<CapsuleCollider>().center = new Vector3(0, _smallColliderPositionY, 0);
-            _squatflg = true;
         }
         //立ち上がる
         else
@@ -172,27 +171,13 @@ public class PlayerMove : MonoBehaviour
             _player.PlayerState = state;
             this.gameObject.GetComponent<CapsuleCollider>().height = 2.0f;
             this.gameObject.GetComponent<CapsuleCollider>().center = new Vector3(0, 0, 0);
-            _squatflg = false;
         }
     }
     //しゃがむの状態を入れ替える
     void Squat()
     {
-        //しゃがむ
-        if (!_squatflg)
-        {
-            _player.PlayerState = Player.playerState.SQUAT;
-            this.gameObject.GetComponent<CapsuleCollider>().height = _smallColliderHeight;
-            this.gameObject.GetComponent<CapsuleCollider>().center = new Vector3(0, _smallColliderPositionY, 0);
-            _squatflg = true;
-        }
-        //立ち上がる
-        else
-        {
-            _player.PlayerState = Player.playerState.IDLE;
-            this.gameObject.GetComponent<CapsuleCollider>().height = 2.0f;
-            this.gameObject.GetComponent<CapsuleCollider>().center = new Vector3(0, 0, 0);
-            _squatflg = false;
-        }
+        Squat(!_squatflg);
     }
+
+
 }
