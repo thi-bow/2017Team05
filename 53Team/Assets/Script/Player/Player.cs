@@ -9,24 +9,28 @@ public class Player : MonoBehaviour
         IDLE,
         MOVE,
         RUN,
+        ATTACK,
         SQUAT,
         Ability,
         SKILL,
         DIE
     }
     private playerState _status = playerState.IDLE;
+    private PlayerMove _playerMove = null;
     
 
     // Use this for initialization
     void Start ()
     {
+        _playerMove = this.gameObject.GetComponent<PlayerMove>();
         _status = playerState.IDLE;
     }
 	
 	// Update is called once per frame
-	void Update () {
-		
-	}
+	void Update ()
+    {
+        _playerMove.Move();
+    }
 
     public playerState PlayerState
     {

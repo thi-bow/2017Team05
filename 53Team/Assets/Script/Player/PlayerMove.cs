@@ -22,21 +22,32 @@ public class PlayerMove : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-        //移動状態ならば
-        //if (_player.PlayerState == Player.playerState.MOVE || _player.PlayerState == Player.playerState.RUN)
-        //{
-            var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-            _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
-            //if (_player.PlayerState == Player.playerState.MOVE)
-            //{
-                _move *= _moveSpeed;
-            //}
-            //else
-            //{
-            //    _move *= _moveSpeed_Run;
-            //}
-            this.transform.localPosition += _move;
-        //}
+
+    }
+
+    public void Move()
+    {
+        var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+        _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
+
+        if(Input.GetButton("Attack") && _player.PlayerState != Player.playerState.ATTACK)
+        {
+            _player.PlayerState = Player.playerState.RUN;
+        }
+        else
+        {
+            _player.PlayerState = Player.playerState.MOVE;
+        }
+
+        if (_player.PlayerState != Player.playerState.RUN)
+        {
+            _move *= _moveSpeed;
+        }
+        else
+        {
+            _move *= _moveSpeed_Run;
+        }
+        this.transform.localPosition += _move;
 
     }
 }
