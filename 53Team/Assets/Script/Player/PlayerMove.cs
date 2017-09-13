@@ -4,37 +4,52 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    private Player _player = null; 
-    [SerializeField] private GameObject _mainCamera = null;
+    private Player _player = null;
+    [SerializeField]
+    private GameObject _mainCamera = null;
+
+    // インスペクターで主観カメラを紐づける
+    [SerializeField]private GameObject firstPersonCamera;
+    // インスペクターで第三者視点カメラを紐づける
+    [SerializeField]private GameObject thirdPersonCamera;
 
     [Header("----------------移動速度---------------------")]
     #region 移動に関する変数
-    [SerializeField] private float _moveSpeed = 1.0f;
-    [SerializeField] private float _moveSpeed_Run = 2.0f;
-    [SerializeField] private float _moveSpeed_Squat = 0.5f;
+    [SerializeField]
+    private float _moveSpeed = 1.0f;
+    [SerializeField]
+    private float _moveSpeed_Run = 2.0f;
+    [SerializeField]
+    private float _moveSpeed_Squat = 0.5f;
     private bool _squatflg = false;
     private Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
     #endregion
 
     [Header("--------------特殊行動の詳細------------------")]
     #region 特殊移動に関する変数
-    [SerializeField] private float _slidingtime = 1.0f;
-    [SerializeField] private float _rollingtime = 1.0f;
-    [SerializeField] private float _smallColliderHeight = 1.0f;
-    [SerializeField] private float _smallColliderPositionY = -0.5f;
+    [SerializeField]
+    private float _slidingtime = 1.0f;
+    [SerializeField]
+    private float _rollingtime = 1.0f;
+    [SerializeField]
+    private float _smallColliderHeight = 1.0f;
+    [SerializeField]
+    private float _smallColliderPositionY = -0.5f;
     private bool _actionFlg = false;
     #endregion
 
 
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         _player = this.gameObject.GetComponent<Player>();
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
     }
 
@@ -65,6 +80,20 @@ public class PlayerMove : MonoBehaviour
             var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
             _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
 
+            // キャラクターの向きを進行方向に
+            if (_move != Vector3.zero && thirdPersonCamera.activeInHierarchy)
+            {
+                transform.rotation = Quaternion.LookRotation(_move);
+            }
+
+            // スペースキーでカメラを切り替える
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                // ↓現在のactive状態から反転 
+                firstPersonCamera.SetActive(!firstPersonCamera.activeInHierarchy);
+                thirdPersonCamera.SetActive(!thirdPersonCamera.activeInHierarchy);
+            }
+
 
             //回避ボタンを押したときの処理
             if (Input.GetKeyDown(KeyCode.T))
@@ -86,7 +115,7 @@ public class PlayerMove : MonoBehaviour
                     Rolling();
                 }
             }
-            
+
             //走っていないときにしゃがむボタンを押すとしゃがむ
             if (Input.GetKeyDown(KeyCode.J) && _player.PlayerState != Player.playerState.RUN)
             {
@@ -100,7 +129,7 @@ public class PlayerMove : MonoBehaviour
         {
             _move *= _moveSpeed_Run;
         }
-        else if(_player.PlayerState == Player.playerState.SQUAT)
+        else if (_player.PlayerState == Player.playerState.SQUAT)
         {
             _move *= _moveSpeed_Squat;
         }
@@ -159,7 +188,7 @@ public class PlayerMove : MonoBehaviour
     {
         _squatflg = flg;
         //しゃがむ
-        if(_squatflg)
+        if (_squatflg)
         {
             _player.PlayerState = Player.playerState.SQUAT;
             this.gameObject.GetComponent<CapsuleCollider>().height = _smallColliderHeight;
