@@ -11,14 +11,14 @@ public class Sector : MonoBehaviour
     private float endDegree = 170.0f;
     private int triangleNum = 5;
 
-    public void Show(float radius, float startDegree, float endDegree, int triangleNum = 10)
+    public void Show(float radius, float startDegree, float endDegree)
     {
         Debug.LogFormat("距離{0}角度{1}から{2}で生成", radius, startDegree, endDegree);
 
         this.radius = radius;
         this.startDegree = startDegree;
         this.endDegree = endDegree;
-        this.triangleNum = triangleNum;
+        triangleNum = (int)(Mathf.Abs(startDegree) + Mathf.Abs(endDegree) / 18);
 
         MeshFilter m = this.GetComponent<MeshFilter>();
         m.mesh = createMesh();

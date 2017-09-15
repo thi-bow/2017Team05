@@ -4,38 +4,26 @@ using UnityEngine;
 
 namespace Enemy {
 
-    public enum dev_State
+    public enum turret_State
     {
         search,
         attack
     }
 
-    public class Enemy_dev : EnemyBase<Enemy_dev, dev_State>
+    public class Enemy_Turret : EnemyBase<Enemy_Turret, turret_State>
     {
         [Header("ターゲット")]
         public Transform m_target;
 
         [Header("現在のステート")]
-        public dev_State state;
-
-        [Space(10)]
-        public Sector m_sector;
-        public float m_seachDis;
-        public float m_seachAng;
-        public bool m_seachAreaDraw;
+        public turret_State state;
 
         private AimTurret m_turret;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             Initialize();
-
-            if (m_seachAreaDraw)
-            {
-                var startdeg = 90 - m_seachAng;
-                var enddeg = 90 + m_seachAng;
-                m_sector.Show(m_seachDis, startdeg, enddeg);
-            }
         }
 
         public void Initialize()
@@ -49,12 +37,12 @@ namespace Enemy {
             m_stateList.Add(new StateSearch(this));
             m_stateList.Add(new StateAttack(this));
 
-            m_stateMachine = new StateMachine<Enemy_dev>();
+            m_stateMachine = new StateMachine<Enemy_Turret>();
 
-            ChangeState(dev_State.search);
+            ChangeState(turret_State.search);
         }
 
-        public void ChengeState(dev_State state)
+        public void ChengeState(turret_State state)
         {
             base.ChangeState(state);
             this.state = state;
@@ -62,9 +50,9 @@ namespace Enemy {
 
         #region ---------------  State処理  ---------------
 
-        public class StateSearch : State<Enemy_dev>
+        public class StateSearch : State<Enemy_Turret>
         {
-            public StateSearch(Enemy_dev dev) : base(dev) { }
+            public StateSearch(Enemy_Turret dev) : base(dev) { }
 
             public override void OnEnter()
             {
@@ -72,10 +60,11 @@ namespace Enemy {
 
             public override void OnExecute()
             {
-                if (_base.Search(_base.m_turret.GetCannon(), _base.m_target, _base.m_seachDis, _base.m_seachAng))
+                if (_base.Search(_base.m_turret.GetCannon(), _base.m_target, _base.m_enemyStatus.seachMainDis, _base.m_enemyStatus.seachMainAng, true)
+                    || _base.Search(_base.m_turret.GetCannon(), _base.m_target, _base.m_enemyStatus.seachSubDis, _base.m_enemyStatus.seachSubAng, true))
                 {
                     Debug.Log("発見");
-                    _base.ChangeState(dev_State.attack);
+                    _base.ChangeState(turret_State.attack);
                 }
             }
 
@@ -84,9 +73,9 @@ namespace Enemy {
             }
         }
 
-        public class StateAttack : State<Enemy_dev>
+        public class StateAttack : State<Enemy_Turret>
         {
-            public StateAttack(Enemy_dev dev) : base(dev) { }
+            public StateAttack(Enemy_Turret dev) : base(dev) { }
 
             public override void OnEnter()
             {
@@ -95,13 +84,14 @@ namespace Enemy {
 
             public override void OnExecute()
             {
-                if (!_base.Search(_base.m_turret.GetCannon(), _base.m_target, _base.m_seachDis, _base.m_seachAng))
+                if (!_base.Search(_base.m_turret.GetCannon(), _base.m_target, _base.m_enemyStatus.seachMainDis, _base.m_enemyStatus.seachMainAng, true)
+                    && !_base.Search(_base.m_turret.GetCannon(), _base.m_target, _base.m_enemyStatus.seachSubDis, _base.m_enemyStatus.seachSubAng, true))
                 {
                     Debug.Log("ロスト");
-                    _base.ChangeState(dev_State.search);
+                    _base.ChangeState(turret_State.search);
                 }
 
-                _base.m_turret.Aim(_base.m_target.localPosition);
+                _base.m_turret.Aim(_base.m_target.localPosition, _base.m_enemyStatus.rotateSpd);
             }
 
             public override void OnExit()
