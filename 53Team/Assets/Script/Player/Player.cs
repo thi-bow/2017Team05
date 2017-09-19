@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
         MOVE,
         RUN,
         SQUAT,
+        SKYMOVE,
         DIE
     }
     public enum playerSkill
@@ -26,11 +27,7 @@ public class Player : MonoBehaviour
     public playerSkill _skillStatus = playerSkill.NONE;
     private bool _attackPlay = false;
     #endregion
-
-    #region 攻撃
-    [SerializeField] private Image _skillGageImage = null;
-    private float _skillGage = 0.0f;
-    #endregion
+    
 
     // Use this for initialization
     void Start ()
@@ -43,46 +40,7 @@ public class Player : MonoBehaviour
 	void Update ()
     {
         _playerMove.Move();
-        if(Input.GetKeyDown(KeyCode.O))
-        {
-            SkillGageAdd(10);
-        }
-        else if (Input.GetKeyDown(KeyCode.P))
-        {
-            SkillGageSub(10);
-        }
-        else if(Input.GetKeyDown(KeyCode.L))
-        {
-            SkillGageReset();
-        }
     }
-
-    public void SkillGageAdd(float addNumber = 1.0f)
-    {
-        _skillGage += addNumber;
-        if(_skillGage >= 100.0f)
-        {
-            _skillGage = 100.0f;
-        }
-        _skillGageImage.fillAmount = _skillGage / 100.0f;
-    }
-
-    public void SkillGageSub(float subNumber = 25.0f)
-    {
-        _skillGage -= subNumber;
-        if (_skillGage <= 0.0f)
-        {
-            _skillGage = 0.0f;
-        }
-        _skillGageImage.fillAmount = _skillGage / 100.0f;
-    }
-
-    public void SkillGageReset()
-    {
-        _skillGage = 0.0f;
-        _skillGageImage.fillAmount = 0.0f;
-    }
-
 
     public playerState PlayerState
     {
