@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Enemy {
@@ -10,11 +11,8 @@ namespace Enemy {
         attack
     }
 
-    public class Enemy_Turret : EnemyBase<Enemy_Turret, turret_State>
+    public class Enemy_Turret : EnemyBase<Enemy_Turret, turret_State>, IEnemy
     {
-        [Header("ターゲット")]
-        public Transform m_target;
-
         [Header("現在のステート")]
         public turret_State state;
 
@@ -22,23 +20,18 @@ namespace Enemy {
 
         protected override void Start()
         {
-            base.Start();
-            Initialize();
-        }
-
-        public void Initialize()
-        {
             m_turret = GetComponent<AimTurret>();
-
-            m_enemyStatus.hp = m_enemyStatus.max_hp;
-
-
 
             m_stateList.Add(new StateSearch(this));
             m_stateList.Add(new StateAttack(this));
 
             m_stateMachine = new StateMachine<Enemy_Turret>();
 
+            base.Start();
+        }
+
+        public override void Initialize()
+        {
             ChangeState(turret_State.search);
         }
 
@@ -46,6 +39,24 @@ namespace Enemy {
         {
             base.ChangeState(state);
             this.state = state;
+        }
+
+        public void Damage(int damage)
+        {
+            Debug.LogFormat("{0}に{1}ダメージ!!", m_enemyStatus.name, damage);
+
+            m_enemyStatus.hp = Mathf.Max(m_enemyStatus.hp - damage, 0);
+
+            if(m_enemyStatus.hp == 0)
+            {
+                // ここに死亡時処理
+
+
+                if(OnDead != null)
+                {
+                    OnDead.OnNext(1);
+                }
+            }
         }
 
         #region ---------------  State処理  ---------------
@@ -65,6 +76,7 @@ namespace Enemy {
                 {
                     Debug.Log("発見");
                     _base.ChangeState(turret_State.attack);
+                    return;
                 }
             }
 
@@ -89,6 +101,7 @@ namespace Enemy {
                 {
                     Debug.Log("ロスト");
                     _base.ChangeState(turret_State.search);
+                    return;
                 }
 
                 _base.m_turret.Aim(_base.m_target.localPosition, _base.m_enemyStatus.rotateSpd);
