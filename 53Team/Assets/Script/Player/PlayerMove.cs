@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     private Player _player = null;
-    [SerializeField]
     private GameObject _mainCamera = null;
 
     // インスペクターで主観カメラを紐づける
@@ -21,9 +20,11 @@ public class PlayerMove : MonoBehaviour
     private float _moveSpeed_Run = 2.0f;
     [SerializeField]
     private float _moveSpeed_Squat = 0.5f;
+    [SerializeField]
+    private float _moveSpeed_Jump = 0.5f;
     private bool _runFlg = false;
     private bool _squatflg = false;
-    public Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
+    Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
     #endregion
 
     #region 特殊移動に関する変数
@@ -39,6 +40,7 @@ public class PlayerMove : MonoBehaviour
     private bool _rollingFlag = false;
 
     //--------------ジャンプ
+    [SerializeField] private float _jumpPower = 5.0f;
     private bool _jumpFlg = false;
 
     //--------------当たり判定の大きさ
@@ -56,25 +58,13 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         _player = this.gameObject.GetComponent<Player>();
-
+        _mainCamera = _player._mainCamera;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    
     public void Move()
     {
-        /*if(_rollingFlag && Input.GetButtonDown("Jump"))
-        {
-            Jump();
-            return;
-        }*/
-
         //走るかどうか
-        if (Input.GetButtonDown("Run") && !_player.AttackCheck)
+        if (Input.GetButtonDown("Run") && !_player.AttackCheck && !_jumpFlg)
         {
             _runFlg = true;
             //スラディングをしていたら、キャンセル
@@ -132,7 +122,22 @@ public class PlayerMove : MonoBehaviour
             }
         }
 
-        if(_player.PlayerState == Player.playerState.RUN)
+        //ジャンプ
+        if (!_rollingFlag && Input.GetButtonDown("Jump"))
+        {
+            Jump();
+            print("ジャンプ");
+        }
+
+        //ジャンプ中はゆっくり移動以外の移動に関する動作はできない
+        if(_jumpFlg)
+        {
+            _move *= _moveSpeed_Jump;
+            this.transform.localPosition += _move;
+            return;
+        }
+
+        if (_player.PlayerState == Player.playerState.RUN)
         {
             RunMove();
         }
@@ -216,21 +221,33 @@ public class PlayerMove : MonoBehaviour
 
     }
 
-    //ジャンプ
+    #region ジャンプ
     public void Jump()
     {
         if(_jumpFlg == true)
         {
             _player.PlayerState = Player.playerState.SKYMOVE;
             _jumpFlg = false;
+            this.GetComponent<Rigidbody>().useGravity = false;
+            this.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            return;
         }
         if(_slidingFlg)
         {
             SlidingCancel(true);
         }
+        this.GetComponent<Rigidbody>().velocity = new Vector3(0, _jumpPower, 0);
+        this.GetComponent<Rigidbody>().useGravity = true;
 
         _jumpFlg = true;
     }
+
+    public bool JumpFlg
+    {
+        get { return _jumpFlg; }
+        set { _jumpFlg = value; }
+    }
+    #endregion
 
     #region スライディング
     //スライディング

@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
     }
 
     private PlayerMove _playerMove = null;
+    private PlayerSkyMove _playerSkyMove = null;
+    public GameObject _mainCamera = null;
     #region プレイヤーの状態に関する変数
     [SerializeField] private playerState _status = playerState.IDLE;
     public playerSkill _skillStatus = playerSkill.NONE;
@@ -33,13 +35,22 @@ public class Player : MonoBehaviour
     void Start ()
     {
         _playerMove = this.gameObject.GetComponent<PlayerMove>();
+        _playerSkyMove = this.gameObject.GetComponent<PlayerSkyMove>();
         _status = playerState.IDLE;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        _playerMove.Move();
+        if (_status == playerState.SKYMOVE)
+        {
+            print("空中移動");
+            _playerSkyMove.SkyMove();
+        }
+        else
+        {
+            _playerMove.Move();
+        }
     }
 
     public playerState PlayerState
@@ -53,5 +64,43 @@ public class Player : MonoBehaviour
         get { return _attackPlay; }
         set { _attackPlay = value; }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Ground")
+        {
+            if(_playerMove.JumpFlg == true)
+            {
+                _playerMove.JumpFlg = false;
+                this.GetComponent<Rigidbody>().useGravity = false;
+            }
+            if(_status == playerState.SKYMOVE)
+            {
+                _status = playerState.MOVE;
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        print("aaaaaaaaaaaaaa");
+        if (other.tag == "Ground")
+        {
+            if (_playerMove.JumpFlg == true)
+            {
+                _playerMove.JumpFlg = false;
+                this.GetComponent<Rigidbody>().useGravity = false;
+                this.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            }
+            if (_status == playerState.SKYMOVE)
+            {
+                _status = playerState.MOVE;
+            }
+        }
+    }
+
+
+
+
 
 }
