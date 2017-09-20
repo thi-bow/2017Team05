@@ -1,20 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Enemy
 {
     public enum standard_State
     {
-        wait,
+        move,
+        warning,
+        chase,
         attack
     }
 
-    public class Enemy_Standard : EnemyBase<Enemy_Standard, standard_State>
+    [RequireComponent(typeof(NavMeshAgent))]
+    public class Enemy_Standard : EnemyBase<Enemy_Standard, standard_State>, IEnemy
     {
+        [Header("現在のステート")]
+        public standard_State state;
 
-<<<<<<< Updated upstream
-=======
         protected override void Start()
         {
             m_stateList.Add(new StateMove(this));
@@ -161,6 +165,5 @@ namespace Enemy
 
 
         #endregion
->>>>>>> Stashed changes
     }
 }
