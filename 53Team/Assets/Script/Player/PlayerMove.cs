@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     private Player _player = null;
+    private PlayerSkyMove _playerSkyMove = null;
     private GameObject _mainCamera = null;
 
     // インスペクターで主観カメラを紐づける
@@ -58,6 +59,7 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         _player = this.gameObject.GetComponent<Player>();
+        _playerSkyMove = this.gameObject.GetComponent<PlayerSkyMove>();
         _mainCamera = _player._mainCamera;
     }
     
@@ -228,6 +230,7 @@ public class PlayerMove : MonoBehaviour
         {
             _player.PlayerState = Player.playerState.SKYMOVE;
             _jumpFlg = false;
+            _playerSkyMove.UseBoost = true;
             this.GetComponent<Rigidbody>().useGravity = false;
             this.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             return;

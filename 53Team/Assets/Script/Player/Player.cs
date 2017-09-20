@@ -77,13 +77,13 @@ public class Player : MonoBehaviour
             if(_status == playerState.SKYMOVE)
             {
                 _status = playerState.MOVE;
+                _playerSkyMove.UseBoost = false;
             }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        print("aaaaaaaaaaaaaa");
         if (other.tag == "Ground")
         {
             if (_playerMove.JumpFlg == true)
@@ -95,6 +95,7 @@ public class Player : MonoBehaviour
             if (_status == playerState.SKYMOVE)
             {
                 _status = playerState.MOVE;
+                _playerSkyMove.UseBoost = false;
             }
         }
     }
