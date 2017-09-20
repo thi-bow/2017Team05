@@ -22,6 +22,8 @@ namespace Enemy
         public string name;
         public int hp;
         public int max_hp;
+        public float attackDis;
+        public float attackAng;
         public float seachMainDis;
         public float seachMainAng;
         public float seachSubDis;
@@ -29,11 +31,13 @@ namespace Enemy
         public float rotateSpd;
 
 
-        public EnemyStatus(string name, int hp, int max_hp, float seachMainDis, float seachMainAng, float seachSubDis, float seachSubAng, float rotateSpd)
+        public EnemyStatus(string name, int hp, int max_hp, float attackDis, float attackAng, float seachMainDis, float seachMainAng, float seachSubDis, float seachSubAng, float rotateSpd)
         {
             this.name = name;
             this.hp = hp;
             this.max_hp = max_hp;
+            this.attackDis = attackDis;
+            this.attackAng = attackAng;
             this.seachMainDis = seachMainDis;
             this.seachMainAng = seachMainAng;
             this.seachSubDis = seachSubDis;
@@ -58,6 +62,7 @@ namespace Enemy
         public EnemyStatus m_enemyStatus;
 
         [Space(10)]
+        public Sector m_sectorAtk;
         public Sector m_sectorMain;
         public Sector m_sectorSub;
         public bool m_seachAreaDraw;
@@ -79,12 +84,20 @@ namespace Enemy
             m_agent = GetComponent<NavMeshAgent>();
 
             m_enemyStatus.hp = m_enemyStatus.max_hp;
-            m_agent.angularSpeed = 50 * m_enemyStatus.rotateSpd;
+            m_agent.angularSpeed = 30 * m_enemyStatus.rotateSpd;
 
             if (m_seachAreaDraw)
             {
                 float startdeg = 0.0f;
                 float enddeg = 0.0f;
+
+                // 武器射程の描画
+                if(m_sectorAtk != null)
+                {
+                    startdeg = 90 - m_enemyStatus.attackAng;
+                    enddeg = 90 + m_enemyStatus.attackAng;
+                    m_sectorAtk.Show(m_enemyStatus.attackDis, startdeg, enddeg);
+                }
 
                 // メイン視界の描画
                 if (m_sectorMain != null)

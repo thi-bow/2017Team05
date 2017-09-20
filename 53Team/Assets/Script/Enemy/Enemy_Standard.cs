@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UniRx;
 
 namespace Enemy
 {
@@ -77,14 +78,14 @@ namespace Enemy
                 // メイン視界に敵を発見
                 if (_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachMainDis, _base.m_enemyStatus.seachMainAng, true))
                 {
-                    Debug.Log("発見");
+                    Debug.Log("<< 発見 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
                 // サブ視界に敵、又は何かを発見
                 if (_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachSubDis, _base.m_enemyStatus.seachSubAng, true))
                 {
-                    Debug.Log("警戒");
+                    Debug.Log("<< 警戒 >>");
                     _base.ChangeState(standard_State.warning);
                     return;
                 }
@@ -108,6 +109,20 @@ namespace Enemy
 
             public override void OnExecute()
             {
+                // メイン視界に敵を発見
+                if (_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachMainDis, _base.m_enemyStatus.seachMainAng, true))
+                {
+                    Debug.Log("<< 発見 >>");
+                    _base.ChangeState(standard_State.chase);
+                    return;
+                }
+                // サブ視界に敵、又は何かを発見
+                if (_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachSubDis, _base.m_enemyStatus.seachSubAng, true))
+                {
+                    Debug.Log("<< 警戒 >>");
+                    _base.ChangeState(standard_State.chase);
+                    return;
+                }
             }
 
             public override void OnExit()
@@ -130,8 +145,15 @@ namespace Enemy
                 if (!_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachMainDis, _base.m_enemyStatus.seachMainAng, true)
                     && !_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachSubDis, _base.m_enemyStatus.seachSubAng, true))
                 {
-                    Debug.Log("ロスト");
+                    Debug.Log("<< ロスト >>");                   
                     _base.ChangeState(standard_State.move);
+                    return;
+                }
+
+                if(_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.attackDis, _base.m_enemyStatus.attackAng, true))
+                {
+                    Debug.Log("<< 攻撃 >>");
+                    _base.ChangeState(standard_State.attack);
                     return;
                 }
 
@@ -156,6 +178,12 @@ namespace Enemy
 
             public override void OnExecute()
             {
+                if (!_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.attackDis, _base.m_enemyStatus.attackAng, true))
+                {
+                    Debug.Log("<< 射程外 >>");
+                    _base.ChangeState(standard_State.chase);
+                    return;
+                }
             }
 
             public override void OnExit()
