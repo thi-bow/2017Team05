@@ -7,6 +7,14 @@ using UniRx;
 
 namespace Enemy
 {
+    public interface IEnemy
+    {
+
+        // ダメージ関数
+        void Damage(int damage);
+    }
+
+
 
     [Serializable]
     public class EnemyStatus
@@ -35,11 +43,18 @@ namespace Enemy
     }
 
     // Enemyの基底クラス
-    // [RequireComponent(typeof(NavMeshAgent), typeof(Rigidbody))]
+    [RequireComponent(typeof(NavMeshAgent))]
     public class EnemyBase<T, TEnum> : MonoBehaviour
         where T : class where TEnum : IConvertible
     {
+        // 開始のタイミングを制御するかどうか
+        public bool m_PlayAwake = true;
+
+        [Header("ターゲット")]
+        public Transform m_target;
+
         // Enemyの初期ステータス
+        [Space(10)]
         public EnemyStatus m_enemyStatus;
 
         [Space(10)]
@@ -50,27 +65,52 @@ namespace Enemy
         // RaycastHit
         protected RaycastHit m_raycastHit;
 
+        // NavMeshAgent
+        protected NavMeshAgent m_agent;
+
         // 状態を格納する配列
         protected List<State<T>> m_stateList = new List<State<T>>();
 
         // ステートマシンクラス
         protected StateMachine<T> m_stateMachine;
-
+        
         protected virtual void Start()
         {
+            m_agent = GetComponent<NavMeshAgent>();
+
+            m_enemyStatus.hp = m_enemyStatus.max_hp;
+            m_agent.angularSpeed = 50 * m_enemyStatus.rotateSpd;
+
             if (m_seachAreaDraw)
             {
+                float startdeg = 0.0f;
+                float enddeg = 0.0f;
+
                 // メイン視界の描画
-                var startdeg = 90 - m_enemyStatus.seachMainAng;
-                var enddeg = 90 + m_enemyStatus.seachMainAng;
-                m_sectorMain.Show(m_enemyStatus.seachMainDis, startdeg, enddeg);
+                if (m_sectorMain != null)
+                {
+                    startdeg = 90 - m_enemyStatus.seachMainAng;
+                    enddeg = 90 + m_enemyStatus.seachMainAng;
+                    m_sectorMain.Show(m_enemyStatus.seachMainDis, startdeg, enddeg);
+                }
 
                 // サブ視界の描画
-                startdeg = 90 - m_enemyStatus.seachSubAng;
-                enddeg = 90 + m_enemyStatus.seachSubAng;
-                m_sectorSub.Show(m_enemyStatus.seachSubDis, startdeg, enddeg);
+                if (m_sectorSub != null)
+                {
+                    startdeg = 90 - m_enemyStatus.seachSubAng;
+                    enddeg = 90 + m_enemyStatus.seachSubAng;
+                    m_sectorSub.Show(m_enemyStatus.seachSubDis, startdeg, enddeg);
+                }
+
+            }
+
+            if (m_PlayAwake)
+            {
+                Initialize();
             }
         }
+
+        public virtual void Initialize() { }
 
         // ステートを変更
         public virtual void ChangeState(TEnum state)
@@ -109,12 +149,12 @@ namespace Enemy
         /// <returns></returns>
         public virtual bool Search(Transform my, Transform target, float distance = Mathf.Infinity, float angle = 180.0f, bool ray = false)
         {
+            if(my == null) { return false; }
+
             bool run = false;
 
             // 対象までのベクトル
             var vec = target.position - my.position;
-            Debug.DrawLine(my.position, target.position, Color.blue);
-
             // 対象までの距離(2乗)
             var dis = Vector3.SqrMagnitude(vec);
             // 対象との角度
@@ -123,8 +163,10 @@ namespace Enemy
             // 指定した距離以内
             if(dis <= distance * distance)
             {
+                Debug.DrawLine(my.position, target.position, Color.blue);
+
                 // 指定した角度以内
-                if(ang <= angle)
+                if (ang <= angle)
                 {
                     if(!ray)
                         run = true;
@@ -136,7 +178,7 @@ namespace Enemy
                         if(m_raycastHit.transform.gameObject == target.gameObject)
                         {
                             run = true;
-                            Debug.Log("HitObjct Name." + m_raycastHit.transform.name);
+                            //Debug.Log("HitObjct Name." + m_raycastHit.transform.name);
                         }
                     }
                 }
@@ -147,8 +189,7 @@ namespace Enemy
 
         public Subject<int> OnDead
         {
-            get;
-            set;
+            get; set;
         }
 
         // 角度を求める(xy面上)
