@@ -13,7 +13,7 @@ public class Sector : MonoBehaviour
 
     public void Show(float radius, float startDegree, float endDegree)
     {
-        Debug.LogFormat("距離{0}角度{1}から{2}で生成", radius, startDegree, endDegree);
+        // Debug.LogFormat("距離{0}角度{1}から{2}で生成", radius, startDegree, endDegree);
 
         this.radius = radius;
         this.startDegree = startDegree;
