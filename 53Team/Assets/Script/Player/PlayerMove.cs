@@ -145,9 +145,16 @@ public class PlayerMove : MonoBehaviour
         //ジャンプ中はゆっくり移動以外の移動に関する動作はできない
         if(_jumpFlg)
         {
-            _move *= _moveSpeed_Jump;
-            _parent.transform.localPosition += _move;
-            //_myRB.MovePosition(_move + _parent.transform.position);
+            var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var _jumpMove = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
+
+            _jumpMove *= _moveSpeed_Jump;
+            //_parent.transform.localPosition += _move;
+            _myRB.MovePosition(_move + _parent.transform.position);
+            //if (_jumpMove.x + _jumpMove.z > 0)
+            //{
+            //    _myRB.velocity = _jumpMove;
+            //}
             return;
         }
 
@@ -364,25 +371,36 @@ public class PlayerMove : MonoBehaviour
     #endregion
 
     //Ray確認
-    #region RayCheck
+    #region Ray
     void RayCheck()
+    {
+        if (_player.PlayerState == Player.playerState.RUN)
+        {
+            RayAction(rayLength * 4);
+        }
+        else
+        {
+            RayAction(rayLength);
+        }
+    }
+    void RayAction(float length)
     {
         RaycastHit _hit;
         Ray _ray;
         Vector3 _pos = Vector3.zero;
         _ray = new Ray(transform.position + new Vector3(0, 0, 0), -this.transform.up);
 
-        if(Physics.Raycast(_ray, out _hit, rayLength))
+        if (Physics.Raycast(_ray, out _hit, length))
         {
             Debug.DrawLine(_ray.origin, _hit.point, Color.red);
         }
-        
+
         if (_hit.collider != null && _hit.collider.tag != "Player")
         {
             print("Rayが当たってる");
             _myRB.useGravity = false;
             //print(_hit.point.y);
-            //_parent.transform.position += new Vector3(0, _hit.point.y, 0);
+            _parent.transform.position = new Vector3(_parent.transform.position.x, _hit.point.y, _parent.transform.position.z);
         }
         else
         {
@@ -392,6 +410,8 @@ public class PlayerMove : MonoBehaviour
             //_parent.transform.position += new Vector3(0, -0.1f, 0);
         }
     }
+
+
     #endregion
 
 }
