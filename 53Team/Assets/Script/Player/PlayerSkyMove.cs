@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerSkyMove : MonoBehaviour
 {
-    private Player _player;
+    private GameObject _parent = null;
+    [SerializeField] private Player _player;
     private GameObject _mainCamera = null;
     private Rigidbody _myRigidbody = null;
     Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
@@ -19,9 +20,9 @@ public class PlayerSkyMove : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        _player = this.gameObject.GetComponent<Player>();
+        _parent = this.transform.parent.gameObject;
         _mainCamera = _player._mainCamera;
-        _myRigidbody = this.GetComponent<Rigidbody>();
+        _myRigidbody = _parent.GetComponent<Rigidbody>();
     }
 	
 	// Update is called once per frame
@@ -42,7 +43,6 @@ public class PlayerSkyMove : MonoBehaviour
         //長押ししている間は上昇、それ以外は下降する
         if(_useBoostFlg)
         {
-            print(_myRigidbody.velocity);
             _move += new Vector3(0, _boostPower, 0) + (_myRigidbody.velocity * 0.9f);
             _boostGage -= 1.0f;
             if(_boostGage <= 0)
@@ -57,7 +57,7 @@ public class PlayerSkyMove : MonoBehaviour
         }
 
         _move *= _moveSpeed;
-        this.transform.localPosition += _move;
+        _myRigidbody.MovePosition(_parent.transform.localPosition + _move);
     }
 
     public bool UseBoost
