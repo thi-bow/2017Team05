@@ -3,34 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponStatus : MonoBehaviour {
-
-    public enum WeaponType
-    {
-        TestWeapon,
-        SampleWeapon
-    }
-
-    WeaponType type;
-
-    void Awake()
-    {
-        if (type == WeaponType.TestWeapon)
-        {
-            gameObject.AddComponent<TestWeapon>();
-        }
-        else if (type == WeaponType.SampleWeapon)
-        {
-            gameObject.AddComponent<SampleWeapon>();
-        }
-    }
+    private int atk;
+    [SerializeField]
+    private GameObject weapon;
+    private WeaponChange _WeaponChange;
 
     // Use this for initialization
     void Start () {
-		
+        _WeaponChange = GetComponent<WeaponChange>();
+        weapon = _WeaponChange.GetWeapon();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    public void SetWeapon(GameObject obj)
+    {
+        weapon = obj;
+    }
+
+    public GameObject GetEquip()
+    {
+        return weapon;
+    }
 }
