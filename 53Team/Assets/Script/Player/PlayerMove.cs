@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    private GameObject _parent = null;
     [SerializeField] private Player _player = null;
+    private GameObject _parent = null;
     private PlayerSkyMove _playerSkyMove = null;
     private GameObject _mainCamera = null;
     private Rigidbody _myRB = null;
-    [SerializeField] private GameObject _target;
 
     // インスペクターで主観カメラを紐づける
     [SerializeField]private GameObject firstPersonCamera;
@@ -58,13 +57,12 @@ public class PlayerMove : MonoBehaviour
 
     [Header("--------------Rayの長さ------------------")]
     [SerializeField] private float rayLength = 5.0f;
-    [SerializeField] private float rayRadius = 1.0f;
 
 
     // Use this for initialization
     void Start()
     {
-        _parent = this.transform.parent.gameObject;
+        _parent = _player.gameObject;
         _myRB = _parent.GetComponent<Rigidbody>();
         _playerSkyMove = this.gameObject.GetComponent<PlayerSkyMove>();
         _mainCamera = _player._mainCamera;
@@ -241,7 +239,7 @@ public class PlayerMove : MonoBehaviour
     #region ジャンプ
     public void Jump()
     {
-        if(_jumpFlg == true)
+        if (_jumpFlg == true && _playerSkyMove.BoostGage > 0)
         {
             _player.PlayerState = Player.playerState.SKYMOVE;
             _jumpFlg = false;
@@ -378,23 +376,20 @@ public class PlayerMove : MonoBehaviour
         {
             Debug.DrawLine(_ray.origin, _hit.point, Color.red);
         }
-
-        //if (Physics.SphereCast(_ray, rayRadius, out _hit, rayLength))
-        //{
-        //    Debug.DrawLine(_ray.origin, _hit.point, Color.red);
-        //}
+        
         if (_hit.collider != null && _hit.collider.tag != "Player")
         {
             print("Rayが当たってる");
-            _target = _hit.collider.gameObject;
+            _myRB.useGravity = false;
             //print(_hit.point.y);
             //_parent.transform.position += new Vector3(0, _hit.point.y, 0);
         }
         else
         {
             print("Rayが当たってない");
-            _parent.transform.position += new Vector3(0, -0.1f, 0);
-            //_myRB.MovePosition(this.transform.position + new Vector3(0, -0.1f, 0));
+            _myRB.useGravity = true;
+            _jumpFlg = true;
+            //_parent.transform.position += new Vector3(0, -0.1f, 0);
         }
     }
     #endregion

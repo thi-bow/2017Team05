@@ -40,6 +40,10 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+    }
+
+    private void LateUpdate()
+    {
         if (_status == playerState.SKYMOVE)
         {
             _playerSkyMove.SkyMove();
@@ -47,6 +51,10 @@ public class Player : MonoBehaviour
         else
         {
             _playerMove.Move();
+            if (_playerSkyMove.BoostGage < 100)
+            {
+                _playerSkyMove.BoostGage += 1.0f;
+            }
         }
     }
 
@@ -73,6 +81,7 @@ public class Player : MonoBehaviour
             {
                 _playerMove.JumpFlg = false;
                 this.GetComponent<Rigidbody>().useGravity = false;
+                this.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             }
             if(_status == playerState.SKYMOVE)
             {

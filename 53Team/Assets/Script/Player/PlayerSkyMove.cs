@@ -15,7 +15,7 @@ public class PlayerSkyMove : MonoBehaviour
     [SerializeField] private float _boostPower = 2.0f;
     [SerializeField] private float _downSpeed = 2.0f;
     public bool _useBoostFlg = false;
-    public float _boostGage = 100.0f;
+    [SerializeField] private  float _boostGage = 100.0f;
 
     // Use this for initialization
     void Start ()
@@ -64,6 +64,12 @@ public class PlayerSkyMove : MonoBehaviour
     {
         get { return _useBoostFlg; }
         set { _useBoostFlg = value; }
+    }
+
+    public float BoostGage
+    {
+        get { return _boostGage; }
+        set { _boostGage = value; }
     }
 
 }
