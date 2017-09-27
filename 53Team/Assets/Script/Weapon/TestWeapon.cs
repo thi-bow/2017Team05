@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class TestWeapon : MonoBehaviour {
 
+    // TPSカメラ
+    [SerializeField]
+    private GameObject tpsCamera;
     // FPSカメラ
     [SerializeField]
     private GameObject fpsCamera;
@@ -15,18 +18,21 @@ public class TestWeapon : MonoBehaviour {
     public int maxBullets;
     // 分間銃撃数
     public float m;
+    // 威力
+    public float atk;
+    // 距離
+    public float distance;
 
-    // リロード
+    // リロードするか
     [SerializeField]
     private bool isReload = false;
-    [SerializeField]
+    // リロード完了までの経過時間
     private float reloadTime = 0f;
+    // リロード完了までにかかる時間の設定
     [SerializeField]
     private float reloadFinishTime;
 
-    // 照準
-    private Vector3 aimPosition;
-
+    // スクリーン中央取得用
     private Vector3 center;
 
     // 照準のポジション
@@ -45,25 +51,11 @@ public class TestWeapon : MonoBehaviour {
         bullets = maxBullets;
         // スクリーンの中心
         center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-        fpsCamera = GameObject.Find("FPS_Camera");
     }
 	
 	// Update is called once per frame
 	void Update () {
-        // 銃撃
-        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && bullets > 0) {
-            Shot();
-        } else {
-            ShotTime = 0;
-        }
 
-        // リロード処理
-        if (Input.GetKeyDown(KeyCode.Z)) {
-            isReload = true;
-        }
-        if (isReload) {
-            Reload();
-        }
         // 武器照準
         Aim();
 
@@ -71,27 +63,46 @@ public class TestWeapon : MonoBehaviour {
         mText.GetComponent<Text>().text = maxBullets.ToString();
     }
 
+    // 射撃
     public void Shot() {
-        Ray ray;
-        ShotTime += Time.deltaTime;
-        if (ShotTime >= 60.0f / m) {
-            bullets--;
-            ShotTime = 0;
-        }
-
-        ray = fpsCamera.GetComponent<Camera>().ScreenPointToRay(center);
-
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100))
+        if(fpsCamera.activeInHierarchy)
         {
-            print(hit.transform.name);
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) || Input.GetKeyDown(KeyCode.E) && bullets > 0)
+            {
+                Ray ray;
+                ShotTime += Time.deltaTime;
+                if (ShotTime >= 60.0f / m)
+                {
+                    bullets--;
+                    ShotTime = 0;
+                }
+
+                ray = fpsCamera.GetComponent<Camera>().ScreenPointToRay(center);
+
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, distance))
+                {
+                    print("TestWeapon : " + hit.transform.name);
+                }
+            }
+            else
+            {
+                ShotTime = 0;
+            }
         }
     }
 
+    // リロード処理
     public void Reload() {
-        if (bullets < maxBullets && isReload == true) {
-            reloadTime += Time.deltaTime;
+        // リロードボタンを押したら
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            isReload = true;
+        }
 
+        if (bullets <= maxBullets && isReload == true) {
+            reloadTime += Time.deltaTime;
+            // リロード完了までの時間処理
             if (reloadTime > reloadFinishTime) {
                 Debug.Log("リロード");
                 bullets = maxBullets;
@@ -100,7 +111,7 @@ public class TestWeapon : MonoBehaviour {
             }
         }
     }
-
+    // エイム
     public void Aim() {
         if (Input.GetKey(KeyCode.Q)) {
             isAim = true;
@@ -109,9 +120,15 @@ public class TestWeapon : MonoBehaviour {
             
         }
         if (isAim) {
-            transform.position = Vector3.Lerp(transform.position, aimPos.transform.position, Time.deltaTime * 2.0f);
+            transform.position = Vector3.Lerp(transform.position, aimPos.transform.position, Time.deltaTime * 5.0f);
         } else {
-            transform.position = Vector3.Lerp(transform.position, setPos.transform.position, Time.deltaTime * 2.0f);
+            transform.position = Vector3.Lerp(transform.position, setPos.transform.position, Time.deltaTime * 5.0f);
         }
+    }
+
+    // 攻撃力の取得
+    public float GetAtk()
+    {
+        return atk;
     }
 }
