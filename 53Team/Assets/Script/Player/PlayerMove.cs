@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    private Player _player = null;
+    [SerializeField] private Player _player = null;
+    private GameObject _parent = null;
+    private PlayerSkyMove _playerSkyMove = null;
     private GameObject _mainCamera = null;
+    private Rigidbody _myRB = null;
 
     // インスペクターで主観カメラを紐づける
     [SerializeField]private GameObject firstPersonCamera;
@@ -50,19 +53,29 @@ public class PlayerMove : MonoBehaviour
     private float _smallColliderPositionY = -0.5f;
 
     private bool _actionFlg = false;
-
     #endregion
-    
+
+    [Header("--------------Rayの長さ------------------")]
+    [SerializeField] private float rayLength = 5.0f;
+
 
     // Use this for initialization
     void Start()
     {
-        _player = this.gameObject.GetComponent<Player>();
+        _parent = _player.gameObject;
+        _myRB = _parent.GetComponent<Rigidbody>();
+        _playerSkyMove = this.gameObject.GetComponent<PlayerSkyMove>();
         _mainCamera = _player._mainCamera;
     }
     
     public void Move()
     {
+        //中に浮いてたら下に移動させる(ジャンプ中はできない)
+        if (!_jumpFlg)
+        {
+            RayCheck();
+        }
+
         //走るかどうか
         if (Input.GetButtonDown("Run") && !_player.AttackCheck && !_jumpFlg)
         {
@@ -132,8 +145,16 @@ public class PlayerMove : MonoBehaviour
         //ジャンプ中はゆっくり移動以外の移動に関する動作はできない
         if(_jumpFlg)
         {
-            _move *= _moveSpeed_Jump;
-            this.transform.localPosition += _move;
+            var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var _jumpMove = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
+
+            _jumpMove *= _moveSpeed_Jump;
+            //_parent.transform.localPosition += _move;
+            _myRB.MovePosition(_move + _parent.transform.position);
+            //if (_jumpMove.x + _jumpMove.z > 0)
+            //{
+            //    _myRB.velocity = _jumpMove;
+            //}
             return;
         }
 
@@ -147,7 +168,6 @@ public class PlayerMove : MonoBehaviour
         {
             WalkMove();
         }
-        
 
     }
 
@@ -156,7 +176,7 @@ public class PlayerMove : MonoBehaviour
     {
         
         //走っていないときにしゃがむボタンを押すとしゃがむ
-        if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             print("しゃがみ反応");
             Squat();
@@ -191,7 +211,8 @@ public class PlayerMove : MonoBehaviour
                 _move *= _moveSpeed;
             }
         }
-        this.transform.localPosition += _move;
+        //this.transform.localPosition += _move;
+        _myRB.MovePosition(_move + _parent.transform.position);
 
     }
 
@@ -203,7 +224,8 @@ public class PlayerMove : MonoBehaviour
             //移動処理
             _move *= _moveSpeed_Run;
         }
-        this.transform.localPosition += _move;
+        //this.transform.localPosition += _move;
+        _myRB.MovePosition(_move + _parent.transform.position);
 
         //スライディングが入力されたとき
         if (Input.GetKeyDown(KeyCode.F))
@@ -224,20 +246,21 @@ public class PlayerMove : MonoBehaviour
     #region ジャンプ
     public void Jump()
     {
-        if(_jumpFlg == true)
+        if (_jumpFlg == true && _playerSkyMove.BoostGage > 0)
         {
             _player.PlayerState = Player.playerState.SKYMOVE;
             _jumpFlg = false;
-            this.GetComponent<Rigidbody>().useGravity = false;
-            this.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            _playerSkyMove.UseBoost = true;
+            _myRB.useGravity = false;
+            _myRB.velocity = new Vector3(0, 0, 0);
             return;
         }
         if(_slidingFlg)
         {
             SlidingCancel(true);
         }
-        this.GetComponent<Rigidbody>().velocity = new Vector3(0, _jumpPower, 0);
-        this.GetComponent<Rigidbody>().useGravity = true;
+        _myRB.velocity = new Vector3(0, _jumpPower, 0);
+        _myRB.useGravity = true;
 
         _jumpFlg = true;
     }
@@ -257,7 +280,7 @@ public class PlayerMove : MonoBehaviour
         _slidingFlg = true;
         _actionFlg = true;
         //当たり判定の回転は、CapsuleColliderに専用の変数がよういされておらず、今回は1,2か使用しないためマジックナンバーを使用
-        this.gameObject.GetComponent<CapsuleCollider>().direction = 2;
+        _parent.GetComponent<CapsuleCollider>().direction = 2;
         StartCoroutine(SlidingEnd());
     }
 
@@ -274,7 +297,7 @@ public class PlayerMove : MonoBehaviour
 
     void SlidingCancel(bool endrun = false, Player.playerState endState = Player.playerState.IDLE)
     {
-        this.gameObject.GetComponent<CapsuleCollider>().direction = 1;
+        _parent.GetComponent<CapsuleCollider>().direction = 1;
         _actionFlg = false;
         _slidingFlg = false;
         print("スライディング終了");
@@ -303,8 +326,8 @@ public class PlayerMove : MonoBehaviour
     {
         _actionFlg = true;
         _rollingFlag = true;
-        this.gameObject.GetComponent<CapsuleCollider>().height = _smallColliderHeight;
-        this.gameObject.GetComponent<CapsuleCollider>().center = new Vector3(0, _smallColliderPositionY, 0);
+        _parent.GetComponent<CapsuleCollider>().height = _smallColliderHeight;
+        _parent.GetComponent<CapsuleCollider>().center = new Vector3(0, _smallColliderPositionY, 0);
         StartCoroutine(AvoidEnd());
     }
     IEnumerator AvoidEnd()
@@ -312,8 +335,8 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(_rollingtime);
         if (_player.PlayerState != Player.playerState.SQUAT)
         {
-            this.gameObject.GetComponent<CapsuleCollider>().height = 2.0f;
-            this.gameObject.GetComponent<CapsuleCollider>().center = new Vector3(0, 0, 0);
+            _parent.GetComponent<CapsuleCollider>().height = 2.0f;
+            _parent.GetComponent<CapsuleCollider>().center = new Vector3(0, 0, 0);
         }
         _rollingFlag = false;
         _actionFlg = false;
@@ -329,15 +352,15 @@ public class PlayerMove : MonoBehaviour
         if (_squatflg)
         {
             _player.PlayerState = Player.playerState.SQUAT;
-            this.gameObject.GetComponent<CapsuleCollider>().height = _smallColliderHeight;
-            this.gameObject.GetComponent<CapsuleCollider>().center = new Vector3(0, _smallColliderPositionY, 0);
+            _parent.GetComponent<CapsuleCollider>().height = _smallColliderHeight;
+            _parent.GetComponent<CapsuleCollider>().center = new Vector3(0, _smallColliderPositionY, 0);
         }
         //立ち上がる
         else
         {
             _player.PlayerState = state;
-            this.gameObject.GetComponent<CapsuleCollider>().height = 2.0f;
-            this.gameObject.GetComponent<CapsuleCollider>().center = new Vector3(0, 0, 0);
+            _parent.GetComponent<CapsuleCollider>().height = 2.0f;
+            _parent.GetComponent<CapsuleCollider>().center = new Vector3(0, 1, 0);
         }
     }
     //しゃがむの状態を入れ替える
@@ -345,6 +368,50 @@ public class PlayerMove : MonoBehaviour
     {
         Squat(!_squatflg);
     }
+    #endregion
+
+    //Ray確認
+    #region Ray
+    void RayCheck()
+    {
+        if (_player.PlayerState == Player.playerState.RUN)
+        {
+            RayAction(rayLength * 4);
+        }
+        else
+        {
+            RayAction(rayLength);
+        }
+    }
+    void RayAction(float length)
+    {
+        RaycastHit _hit;
+        Ray _ray;
+        Vector3 _pos = Vector3.zero;
+        _ray = new Ray(transform.position + new Vector3(0, 0, 0), -this.transform.up);
+
+        if (Physics.Raycast(_ray, out _hit, length))
+        {
+            Debug.DrawLine(_ray.origin, _hit.point, Color.red);
+        }
+
+        if (_hit.collider != null && _hit.collider.tag != "Player")
+        {
+            print("Rayが当たってる");
+            _myRB.useGravity = false;
+            //print(_hit.point.y);
+            _parent.transform.position = new Vector3(_parent.transform.position.x, _hit.point.y, _parent.transform.position.z);
+        }
+        else
+        {
+            print("Rayが当たってない");
+            _myRB.useGravity = true;
+            _jumpFlg = true;
+            //_parent.transform.position += new Vector3(0, -0.1f, 0);
+        }
+    }
+
+
     #endregion
 
 }

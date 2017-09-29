@@ -4,40 +4,38 @@ using UnityEngine;
 
 public class WeaponChange : MonoBehaviour {
 
-    private WeaponList _WeaponList;
-
     public GameObject[] weapons;
+
+    private Weapon _Weapon;
+
     private int num;
     int add;
 
     // Use this for initialization
     void Start () {
-        _WeaponList = this.gameObject.GetComponent<WeaponList>();
-        for (int i = 0; i <_WeaponList.list.Count; i++)
-        {
-            if (_WeaponList.list[i].prefub != null)
-            {
-                _WeaponList.list[i].prefub.SetActive(false);
-            }
-        }
+        _Weapon = this.GetComponent<Weapon>();
 
-		/*for (int i =0; i < weapons.Length; i++) {
-            if (weapons[i] != null) {
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            if (weapons[num] != null)
+            {
                 weapons[i].SetActive(false);
             }
         }
-        num = 0;*/
-        //weapons[num].SetActive(true);
-	}
+        num = 0;
+        weapons[num].SetActive(true);
+        _Weapon.SetWeapon(weapons[num]);
+    }
 	
 	// Update is called once per frame
 	void Update () {
     }
 
     public void Change() {
+
         if (Input.GetKeyDown(KeyCode.C))
         {
-            weapons[num].SetActive(false);
+           weapons[num].SetActive(false);
             num++;
             if (num >= weapons.Length)
             {
@@ -45,6 +43,13 @@ public class WeaponChange : MonoBehaviour {
             }
 
             weapons[num].SetActive(true);
+            _Weapon.SetWeapon(weapons[num]);
         }
+    }
+
+    public GameObject GetWeapon()
+    {
+        return weapons[num];
+        //return _WeaponList.list[num].prefub;
     }
 }
