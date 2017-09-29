@@ -39,9 +39,10 @@ public class PlayerSkyMove : MonoBehaviour
 
         var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
         _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
+        _move *= _moveSpeed;
 
-        //長押ししている間は上昇、それ以外は下降する
-        if(_useBoostFlg)
+        //上昇Flagが立っている間は上昇、それ以外は下降する
+        if (_useBoostFlg)
         {
             _move += new Vector3(0, _boostPower, 0) + (_myRigidbody.velocity * 0.9f);
             _boostGage -= 1.0f;
@@ -56,7 +57,6 @@ public class PlayerSkyMove : MonoBehaviour
             _move += new Vector3(0, _downSpeed, 0);
         }
 
-        _move *= _moveSpeed;
         _myRigidbody.MovePosition(_parent.transform.localPosition + _move);
     }
 

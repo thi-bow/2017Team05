@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
+    public Vector3 check; 
+
     [SerializeField] private Player _player = null;
     private GameObject _parent = null;
     private PlayerSkyMove _playerSkyMove = null;
@@ -76,6 +78,21 @@ public class PlayerMove : MonoBehaviour
             RayCheck();
         }
 
+        //ジャンプ中はゆっくり移動以外の移動に関する動作はできない
+        if (_jumpFlg)
+        {
+            _myRB.velocity *= 0.98f;
+            var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var _jumpMove = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
+            _jumpMove *= _moveSpeed_Jump;
+
+            if (Mathf.Abs(_jumpMove.x) + Mathf.Abs(_jumpMove.z) > 0)
+            {
+                _myRB.velocity += new Vector3(_jumpMove.x, 0, _jumpMove.z);
+            }
+        }
+
+
         //走るかどうか
         if (Input.GetButtonDown("Run") && !_player.AttackCheck && !_jumpFlg)
         {
@@ -117,62 +134,43 @@ public class PlayerMove : MonoBehaviour
             _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
         }
 
-        if (thirdPersonCamera != null)
+        // キャラクターの向きを進行方向に
+        if (_move != Vector3.zero && thirdPersonCamera.activeInHierarchy)
         {
+            transform.rotation = Quaternion.LookRotation(_move);
+        }
 
-            // キャラクターの向きを進行方向に
-            if (_move != Vector3.zero && thirdPersonCamera.activeInHierarchy)
+        // スペースキーでカメラを切り替える
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // ↓現在のactive状態から反転 
+            firstPersonCamera.SetActive(!firstPersonCamera.activeInHierarchy);
+            thirdPersonCamera.SetActive(!thirdPersonCamera.activeInHierarchy);
+        }
+
+
+        if(!_jumpFlg)
+        {
+            if (_player.PlayerState == Player.playerState.RUN)
             {
-                transform.rotation = Quaternion.LookRotation(_move);
+                RunMove();
             }
 
-            // スペースキーでカメラを切り替える
-            if (Input.GetKeyDown(KeyCode.Space))
+            else if (_player.PlayerState == Player.playerState.SQUAT ||
+                    _player.PlayerState == Player.playerState.MOVE)
             {
-                // ↓現在のactive状態から反転 
-                firstPersonCamera.SetActive(!firstPersonCamera.activeInHierarchy);
-                thirdPersonCamera.SetActive(!thirdPersonCamera.activeInHierarchy);
+                WalkMove();
             }
         }
 
         //ジャンプ
         if (!_rollingFlag && Input.GetButtonDown("Jump"))
         {
-            Jump();
+            Jump(_move, _jumpPower);
             print("ジャンプ");
         }
 
-        //ジャンプ中はゆっくり移動以外の移動に関する動作はできない
-        if(_jumpFlg)
-        {
-            /*
-             * var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-            var _jumpMove = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
-            _jumpMove *= _moveSpeed_Jump;
-            */
-
-            _move *= _moveSpeed_Jump;
-            //_parent.transform.localPosition += _move;
-            _myRB.MovePosition(_move + _parent.transform.position);
-
-
-            //if (_jumpMove.x + _jumpMove.z > 0)
-            //{
-            //    _myRB.velocity = _jumpMove;
-            //}
-            return;
-        }
-
-        if (_player.PlayerState == Player.playerState.RUN)
-        {
-            RunMove();
-        }
-
-        else if(_player.PlayerState == Player.playerState.SQUAT ||
-                _player.PlayerState == Player.playerState.MOVE)
-        {
-            WalkMove();
-        }
+        check = _myRB.velocity;
 
     }
 
@@ -249,7 +247,7 @@ public class PlayerMove : MonoBehaviour
     }
 
     #region ジャンプ
-    public void Jump()
+    public void Jump(Vector3 moveSpeed, float jumpPower)
     {
         if (_jumpFlg == true && _playerSkyMove.BoostGage > 0)
         {
@@ -264,7 +262,7 @@ public class PlayerMove : MonoBehaviour
         {
             SlidingCancel(true);
         }
-        _myRB.velocity = new Vector3(0, _jumpPower, 0);
+        _myRB.velocity = new Vector3(moveSpeed.x * 60, jumpPower, moveSpeed.z * 60);
         _myRB.useGravity = true;
 
         _jumpFlg = true;
@@ -409,7 +407,7 @@ public class PlayerMove : MonoBehaviour
         else
         {
             _myRB.useGravity = true;
-            _jumpFlg = true;
+            Jump(_move, 0.0f);
             //_parent.transform.position += new Vector3(0, -0.1f, 0);
         }
     }
