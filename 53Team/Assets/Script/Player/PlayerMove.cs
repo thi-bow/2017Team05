@@ -145,12 +145,17 @@ public class PlayerMove : MonoBehaviour
         //ジャンプ中はゆっくり移動以外の移動に関する動作はできない
         if(_jumpFlg)
         {
-            var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            /*
+             * var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
             var _jumpMove = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
-
             _jumpMove *= _moveSpeed_Jump;
+            */
+
+            _move *= _moveSpeed_Jump;
             //_parent.transform.localPosition += _move;
             _myRB.MovePosition(_move + _parent.transform.position);
+
+
             //if (_jumpMove.x + _jumpMove.z > 0)
             //{
             //    _myRB.velocity = _jumpMove;
@@ -397,14 +402,12 @@ public class PlayerMove : MonoBehaviour
 
         if (_hit.collider != null && _hit.collider.tag != "Player")
         {
-            print("Rayが当たってる");
             _myRB.useGravity = false;
             //print(_hit.point.y);
             _parent.transform.position = new Vector3(_parent.transform.position.x, _hit.point.y, _parent.transform.position.z);
         }
         else
         {
-            print("Rayが当たってない");
             _myRB.useGravity = true;
             _jumpFlg = true;
             //_parent.transform.position += new Vector3(0, -0.1f, 0);
