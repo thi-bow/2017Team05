@@ -29,7 +29,7 @@ public class PlayerMove : MonoBehaviour
     private float _moveSpeed_Jump = 0.5f;
     private bool _runFlg = false;
     private bool _squatflg = false;
-    Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
+    private Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
     #endregion
 
     #region 特殊移動に関する変数
@@ -411,8 +411,13 @@ public class PlayerMove : MonoBehaviour
             //_parent.transform.position += new Vector3(0, -0.1f, 0);
         }
     }
+    #endregion
 
-
+    #region MovePara
+    public Vector3 MovePara
+    {
+        get { return _move; }
+    }
     #endregion
 
 }
