@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SampleWeapon : MonoBehaviour {
 
+    // TPSカメラ
+    [SerializeField]
+    private GameObject tpsCamera;
     // FPSカメラ
     [SerializeField]
     private GameObject fpsCamera;
@@ -35,6 +38,8 @@ public class SampleWeapon : MonoBehaviour {
     public GameObject aimPos;
     public GameObject setPos;
 
+    public GameObject nozzle;
+
     public float ShotTime;
 
     private bool isAim = false;
@@ -55,27 +60,55 @@ public class SampleWeapon : MonoBehaviour {
 
     public void Shot()
     {
-        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) || Input.GetKeyDown(KeyCode.E) && bullets > 0)
+        if (fpsCamera.activeInHierarchy)
         {
-            Ray ray;
-            ShotTime += Time.deltaTime;
-            if (ShotTime >= 60.0f / m)
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) || Input.GetKeyDown(KeyCode.E) && bullets > 0)
             {
-                bullets--;
+                Ray ray;
+                ShotTime += Time.deltaTime;
+                if (ShotTime >= 60.0f / m)
+                {
+                    bullets--;
+                    ShotTime = 0;
+                }
+
+                ray = fpsCamera.GetComponent<Camera>().ScreenPointToRay(center);
+
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, 100))
+                {
+                    print("SampleWeapon : " + hit.transform.name);
+                }
+            }
+            else
+            {
                 ShotTime = 0;
             }
-
-            ray = fpsCamera.GetComponent<Camera>().ScreenPointToRay(center);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100))
-            {
-                print("SampleWeapon : " + hit.transform.name);
-            }
         }
-        else
+        if (tpsCamera.activeInHierarchy)
         {
-            ShotTime = 0;
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) || Input.GetKeyDown(KeyCode.E) && bullets > 0)
+            {
+                Ray ray;
+                ShotTime += Time.deltaTime;
+                if (ShotTime >= 60.0f / m)
+                {
+                    bullets--;
+                    ShotTime = 0;
+                }
+
+                ray = new Ray(nozzle.transform.position, transform.forward);
+
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, distance))
+                {
+                    print("TestWeapon : " + hit.transform.name);
+                }
+            }
+            else
+            {
+                ShotTime = 0;
+            }
         }
     }
 

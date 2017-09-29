@@ -39,12 +39,11 @@ public class TestWeapon : MonoBehaviour {
     public GameObject aimPos;
     public GameObject setPos;
 
+    public GameObject nozzle;
+
     public float ShotTime;
 
     private bool isAim = false;
-
-    public GameObject mText;
-    public GameObject bText;
 
     // Use this for initialization
     void Start () {
@@ -58,9 +57,6 @@ public class TestWeapon : MonoBehaviour {
 
         // 武器照準
         Aim();
-
-        bText.GetComponent<Text>().text = bullets.ToString();
-        mText.GetComponent<Text>().text = maxBullets.ToString();
     }
 
     // 射撃
@@ -78,6 +74,31 @@ public class TestWeapon : MonoBehaviour {
                 }
 
                 ray = fpsCamera.GetComponent<Camera>().ScreenPointToRay(center);
+
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, distance))
+                {
+                    print("TestWeapon : " + hit.transform.name);
+                }
+            }
+            else
+            {
+                ShotTime = 0;
+            }
+        }
+        if (tpsCamera.activeInHierarchy)
+        {
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) || Input.GetKeyDown(KeyCode.E) && bullets > 0)
+            {
+                Ray ray;
+                ShotTime += Time.deltaTime;
+                if (ShotTime >= 60.0f / m)
+                {
+                    bullets--;
+                    ShotTime = 0;
+                }
+
+                ray = new Ray(nozzle.transform.position, transform.forward);
 
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, distance))

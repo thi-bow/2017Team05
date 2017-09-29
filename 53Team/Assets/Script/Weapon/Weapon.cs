@@ -14,6 +14,8 @@ public class Weapon : MonoBehaviour {
     [SerializeField] private GameObject fpsCamera;
     [SerializeField] private GameObject tpsCamera;
 
+    public GameObject reticle;
+
     // Use this for initialization
     void Start () {
         //player = GameObject.Find("Player_Sample");
@@ -36,6 +38,10 @@ public class Weapon : MonoBehaviour {
         if(numWeapon.name == "TestWeapon")
         {
             numWeapon.GetComponent<TestWeapon>().Reload();
+        }
+        if (numWeapon.name == "SampleWeapon")
+        {
+            numWeapon.GetComponent<SampleWeapon>().Reload();
         }
     }
 
@@ -66,10 +72,12 @@ public class Weapon : MonoBehaviour {
         if (fpsCamera.activeInHierarchy)
         {
             transform.parent = fpsCamera.transform;
+            reticle.SetActive(true);
         }
         if (tpsCamera.activeInHierarchy)
         {
             transform.parent = player.transform;
+            reticle.SetActive(false);
         }
     }
 }
