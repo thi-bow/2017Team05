@@ -167,17 +167,22 @@ namespace Enemy
 
             bool run = false;
 
+            Vector3 targetPos = target.position;
+            targetPos.y += 0.5f;
+
             // 対象までのベクトル
-            var vec = target.position - my.position;
+            var vec = targetPos - my.position;
             // 対象までの距離(2乗)
             var dis = Vector3.SqrMagnitude(vec);
             // 対象との角度
-            var ang = Vector3.Angle(my.forward, vec);
+            var vec2 = vec;
+            vec2.y = my.forward.y;
+            var ang = Vector3.Angle(my.forward, vec2);
 
             // 指定した距離以内
             if(dis <= distance * distance)
             {
-                Debug.DrawLine(my.position, target.position, Color.blue);
+                Debug.DrawLine(my.position, targetPos, Color.blue);
 
                 // 指定した角度以内
                 if (ang <= angle)
