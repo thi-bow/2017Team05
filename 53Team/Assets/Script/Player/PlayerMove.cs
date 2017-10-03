@@ -73,7 +73,7 @@ public class PlayerMove : MonoBehaviour
     public void Move()
     {
         //中に浮いてたら下に移動させる(ジャンプ中はできない)
-        if (!_jumpFlg)
+        if (!_jumpFlg && Mathf.Abs(_move.x) + Mathf.Abs(_move.z) > 0)
         {
             RayCheck();
         }

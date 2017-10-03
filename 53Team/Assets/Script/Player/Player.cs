@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class Player : CharaParameter
 {
     public enum playerState
     {
@@ -20,7 +20,8 @@ public class Player : MonoBehaviour
         Ability,
         SKILL,
     }
-    
+
+    [Header("プレイヤーのパラメーター")]
     [SerializeField] private PlayerMove _playerMove = null;
     [SerializeField] private PlayerSkyMove _playerSkyMove = null;
     public GameObject _mainCamera = null;
