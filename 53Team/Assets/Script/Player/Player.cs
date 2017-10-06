@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : CharaParameter
+public class Player : CharaBase
 {
     public enum playerState
     {
@@ -22,8 +22,10 @@ public class Player : CharaParameter
     }
 
     [Header("プレイヤーのパラメーター")]
-    [SerializeField] private PlayerMove _playerMove = null;
-    [SerializeField] private PlayerSkyMove _playerSkyMove = null;
+    [SerializeField]
+    private GameObject _playerChild = null;
+    private PlayerMove _playerMove = null;
+    private PlayerSkyMove _playerSkyMove = null;
     public GameObject _mainCamera = null;
     #region プレイヤーの状態に関する変数
     [SerializeField] private playerState _status = playerState.IDLE;
@@ -33,14 +35,18 @@ public class Player : CharaParameter
     
 
     // Use this for initialization
-    void Start ()
+    protected override void Start ()
     {
+        base.Start();
+        _playerMove = _playerChild.GetComponent<PlayerMove>();
+        _playerSkyMove = _playerChild.GetComponent<PlayerSkyMove>();
         _status = playerState.IDLE;
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    protected override void Update ()
     {
+        base.Update();
     }
 
     private void LateUpdate()

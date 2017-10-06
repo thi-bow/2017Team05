@@ -214,6 +214,8 @@ public class PlayerMove : MonoBehaviour
                 _move *= _moveSpeed;
             }
         }
+        //移動スピードが変更されている場合はここで変更を対応させる
+        _move *= _player._speed;
         //this.transform.localPosition += _move;
         _myRB.MovePosition(_move + _parent.transform.position);
 
@@ -227,6 +229,8 @@ public class PlayerMove : MonoBehaviour
             //移動処理
             _move *= _moveSpeed_Run;
         }
+        //移動スピードが変更されている場合はここで変更を対応させる
+        _move *= _player._speed;
         //this.transform.localPosition += _move;
         _myRB.MovePosition(_move + _parent.transform.position);
 
@@ -391,7 +395,7 @@ public class PlayerMove : MonoBehaviour
         RaycastHit _hit;
         Ray _ray;
         Vector3 _pos = Vector3.zero;
-        _ray = new Ray(transform.position + new Vector3(0, 0, 0), -this.transform.up);
+        _ray = new Ray(transform.position + new Vector3(0, 1, 0), -this.transform.up);
 
         if (Physics.Raycast(_ray, out _hit, length))
         {
