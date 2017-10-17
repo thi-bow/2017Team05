@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class CharaParameter : MonoBehaviour
 {
+
     [Header("キャラクターの基本のパラメーター")]
     public int _hp = 1000;
+
+    #region Defense
     public int _defense = 0;
+    protected int _totalDefense;
+    #endregion
     public int _attack = 1;
     public float _speed = 1.0f;
 
@@ -21,7 +26,6 @@ public class CharaParameter : MonoBehaviour
     {
 
     }
-
 
 
 }
