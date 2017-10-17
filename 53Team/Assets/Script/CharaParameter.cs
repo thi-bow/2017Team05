@@ -7,10 +7,16 @@ public class CharaParameter : MonoBehaviour
 
     [Header("キャラクターの基本のパラメーター")]
     public int _hp = 1000;
+    protected int _headHp = 0;
+    protected int _bodyHp;
+    protected int _rightArmHp;
+    protected int _leftArmHp;
+    protected int _rightLegHp;
+    protected int _leftLegHP;
+    protected int _boosterHP;
 
     #region Defense
     public int _defense = 0;
-    protected int _totalDefense;
     protected int _headDefense;
     protected int _bodyDefense;
     protected int _rightArmDefense;
@@ -21,18 +27,5 @@ public class CharaParameter : MonoBehaviour
     #endregion
     public int _attack = 1;
     public float _speed = 1.0f;
-
-    // Use this for initialization
-    protected virtual void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    protected virtual void Update()
-    {
-
-    }
-
 
 }
