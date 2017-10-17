@@ -9,13 +9,19 @@ public class NormalBullet : MonoBehaviour {
 
     private Transform m_startTransform;
     private Transform m_targetTransform;
+    private Action m_onHitAction;
 
-    public IObservable<Unit> Shot(Transform aPos, Transform aTarget)
+    public IObservable<Unit> Shot(Transform aPos, Transform aTarget, Action aOnHit)
     {
         m_startTransform = aPos;
         m_targetTransform = aTarget;
+        m_onHitAction = aOnHit;
 
-        return Observable.ReturnUnit();
+        transform.position = m_startTransform.position;
+
+        return Observable.Timer(TimeSpan.FromSeconds(1)).ForEachAsync(_ => {
+            m_onHitAction();
+        });
     }
 }
 

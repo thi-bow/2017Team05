@@ -61,13 +61,14 @@ namespace Enemy
 
             if (m_enemyStatus.hp == 0)
             {
-                // ここに死亡時処理
-
-
                 if (OnDead != null)
                 {
                     OnDead.OnNext(1);
                 }
+
+                // ここに死亡時処理
+                //TODO 一旦Destroy
+                Destroy(gameObject);
             }
         }
 
@@ -252,6 +253,10 @@ namespace Enemy
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
+
+                EffectMan.Instance.NormalBullet(_base.transform, _base.m_target, () => {
+                    Debug.Log("ﾋｯﾄｫｫｫｫｫｫｫｫｫｫｫｫｫx");
+                });
             }
 
             public override void OnExit()
