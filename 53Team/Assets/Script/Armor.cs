@@ -1,0 +1,34 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Armor : MonoBehaviour {
+
+    [Header("装備のパラメーター")]
+    public int _armorHp = 0;
+    public int _armorDefense = 0;
+    public float _armorSpeed = 0.0f;
+
+    // Use this for initialization
+    void Start () {
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
+    public int ArmorHpPara
+    {
+        get { return _armorHp; }
+    }
+    public int ArmorDefPara
+    {
+        get { return _armorDefense; }
+    }
+
+    public float ArmortSpeedPara
+    {
+        get { return _armorSpeed; }
+    }
+}
