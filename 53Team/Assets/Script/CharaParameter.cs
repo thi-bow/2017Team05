@@ -11,6 +11,13 @@ public class CharaParameter : MonoBehaviour
     #region Defense
     public int _defense = 0;
     protected int _totalDefense;
+    protected int _headDefense;
+    protected int _bodyDefense;
+    protected int _rightArmDefense;
+    protected int _leftArmDefense;
+    protected int _rightLegDefense;
+    protected int _leftLegDefense;
+    protected int _boosterDefense;
     #endregion
     public int _attack = 1;
     public float _speed = 1.0f;
