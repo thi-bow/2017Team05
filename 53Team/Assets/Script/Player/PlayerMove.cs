@@ -215,7 +215,7 @@ public class PlayerMove : MonoBehaviour
             }
         }
         //移動スピードが変更されている場合はここで変更を対応させる
-        _move *= _player._speed;
+        _move *= _player.Speed;
         //this.transform.localPosition += _move;
         _myRB.MovePosition(_move + _parent.transform.position);
 
@@ -230,7 +230,7 @@ public class PlayerMove : MonoBehaviour
             _move *= _moveSpeed_Run;
         }
         //移動スピードが変更されている場合はここで変更を対応させる
-        _move *= _player._speed;
+        _move *= _player.Speed;
         //this.transform.localPosition += _move;
         _myRB.MovePosition(_move + _parent.transform.position);
 
