@@ -253,6 +253,11 @@ public class PlayerMove : MonoBehaviour
     #region ジャンプ
     public void Jump(Vector3 moveSpeed, float jumpPower)
     {
+        /*//ブースターを所持したいなかったら、ジャンプ中は何もできない
+        if(_jumpFlg == true && _player.BoosterArmorList.Count <= 0)
+        {
+            return;
+        }*/
         if (_jumpFlg == true && _playerSkyMove.BoostGage > 0)
         {
             _player.PlayerState = Player.playerState.SKYMOVE;
@@ -266,10 +271,14 @@ public class PlayerMove : MonoBehaviour
         {
             SlidingCancel(true);
         }
-        _myRB.velocity = new Vector3(moveSpeed.x * 60, jumpPower, moveSpeed.z * 60);
-        _myRB.useGravity = true;
 
-        _jumpFlg = true;
+        if (!_jumpFlg)
+        {
+            _myRB.velocity = new Vector3(moveSpeed.x * 60, jumpPower, moveSpeed.z * 60);
+            _myRB.useGravity = true;
+
+            _jumpFlg = true;
+        }
     }
 
     public bool JumpFlg

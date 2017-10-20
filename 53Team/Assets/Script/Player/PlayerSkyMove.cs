@@ -39,7 +39,20 @@ public class PlayerSkyMove : MonoBehaviour
 
         var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
         _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
-        _move *= _moveSpeed;
+
+        if (_player.BoosterArmorList.Count <= 1)
+        {
+            _move *= 0.0f;
+        }
+
+        else if (_player.BoosterArmorList.Count <= 2)
+        {
+            _move *= _moveSpeed * 0.5f;
+        }
+        else
+        {
+            _move *= _moveSpeed;
+        }
 
         //上昇Flagが立っている間は上昇、それ以外は下降する
         if (_useBoostFlg)

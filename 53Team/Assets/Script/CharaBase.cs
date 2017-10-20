@@ -6,25 +6,21 @@ public class CharaBase : CharaParameter
 {
     public enum Parts
     {
-        Head = 0,
-        Body,
+        Body = 0,
         RightArm,
         LeftArm,
-        RihtLeg,
-        LeftLeg,
+        Leg,
         Booster,
     }
 
     #region 装備
     [Header("キャラクターベース")]
-    [SerializeField] private List<Armor> _headList = new List<Armor>();
     [SerializeField] private List<Armor> _bodyList = new List<Armor>();
     [SerializeField] private List<Armor> _rightArmList = new List<Armor>();
     [SerializeField] private List<Armor> _leftArmList = new List<Armor>();
-    [SerializeField] private List<Armor> _rightLegList = new List<Armor>();
-    [SerializeField] private List<Armor> _leftLegList = new List<Armor>();
+    [SerializeField] private List<Armor> _legList = new List<Armor>();
     [SerializeField] private List<Armor> _boosterList = new List<Armor>();
-    List<List<Armor>> _allArmorList = new List<List<Armor>>(); 
+    List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
     #endregion
@@ -32,7 +28,7 @@ public class CharaBase : CharaParameter
     // Use this for initialization
     protected virtual void Start ()
     {
-        _allArmorList=new List<List<Armor>> { _headList, _bodyList, _rightArmList, _leftArmList, _rightLegList, _leftLegList, _boosterList };
+        _allPartsList = new List<Parts> { Parts.Body, Parts.RightArm, Parts.LeftArm, Parts.Leg, Parts.Booster };
     }
 
     // Update is called once per frame
@@ -43,70 +39,41 @@ public class CharaBase : CharaParameter
     #region PartsAdd
     public void PartsAdd(Parts parts, Armor armor)
     {
+        if (_totalWeight >= _maxWeight)
+        {
+            return;
+        }
         switch (parts)
         {
-            case Parts.Head:
-                if(_headList.Count >= partsMax)
-                {
-                    _headDefense += armor._armorDefense;
-                    _headHp += armor._armorHp;
-                    break;
-                }
-                _headList.Add(armor);
-                break;
             case Parts.Body:
-                if (_bodyList.Count >= partsMax)
-                {
-                    _bodyDefense += armor._armorDefense;
-                    _bodyHp += armor._armorHp;
-                    break;
-                }
                 _bodyList.Add(armor);
+                _bodyDefense += armor.ArmorDefPara;
+                _bodyHp += armor.ArmorHpPara;
+                _bodyWeight += (int)armor.ArmorWeightPara;
                 break;
             case Parts.RightArm:
-                if (_rightArmList.Count >= partsMax)
-                {
-                    _rightArmDefense += armor._armorDefense;
-                    _rightArmHp += armor._armorHp;
-                    break;
-                }
                 _rightArmList.Add(armor);
+                _rightArmDefense += armor.ArmorDefPara;
+                _rightArmHp += armor.ArmorHpPara;
+                _rightArmWeight += (int)armor.ArmorWeightPara;
                 break;
             case Parts.LeftArm:
-                if (_leftArmList.Count >= partsMax)
-                {
-                    _leftArmDefense += armor._armorDefense;
-                    _leftArmHp += armor._armorHp;
-                    break;
-                }
                 _leftArmList.Add(armor);
+                _leftArmDefense += armor.ArmorDefPara;
+                _leftArmHp += armor.ArmorHpPara;
+                _leftArmWeight += (int)armor.ArmorWeightPara;
                 break;
-            case Parts.RihtLeg:
-                if (_rightLegList.Count >= partsMax)
-                {
-                    _rightLegDefense += armor._armorDefense;
-                    _rightLegHp += armor._armorHp;
-                    break;
-                }
-                _rightLegList.Add(armor);
-                break;
-            case Parts.LeftLeg:
-                if (_leftLegList.Count >= partsMax)
-                {
-                    _leftLegDefense += armor._armorDefense;
-                    _leftLegHP += armor._armorHp;
-                    break;
-                }
-                _leftLegList.Add(armor);
+            case Parts.Leg:
+                _legList.Add(armor);
+                _legDefense += armor.ArmorDefPara;
+                _legHp += armor.ArmorHpPara;
+                _legWeight += (int)armor.ArmorWeightPara;
                 break;
             case Parts.Booster:
-                if (_boosterList.Count >= partsMax)
-                {
-                    _boosterDefense += armor._armorDefense;
-                    _boosterHP += armor._armorHp;
-                    break;
-                }
                 _boosterList.Add(armor);
+                _boosterDefense += armor.ArmorDefPara;
+                _boosterHP += armor.ArmorHpPara;
+                _boosterWeight += (int)armor.ArmorWeightPara;
                 break;
             default:
                 break;
@@ -119,14 +86,6 @@ public class CharaBase : CharaParameter
     {
         switch (parts)
         {
-            case Parts.Head:
-                for(int i = 0; i < _headList.Count; i++)
-                {
-                    _headList[i].transform.parent = null;
-                }
-                _headList.Clear();
-                _headDefense = 0;
-                break;
             case Parts.Body:
                 for (int i = 0; i < _bodyList.Count; i++)
                 {
@@ -134,6 +93,8 @@ public class CharaBase : CharaParameter
                 }
                 _bodyList.Clear();
                 _bodyDefense = 0;
+                _totalWeight -= _bodyWeight;
+                _bodyWeight = 0;
                 break;
             case Parts.RightArm:
                 for (int i = 0; i < _rightArmList.Count; i++)
@@ -142,6 +103,8 @@ public class CharaBase : CharaParameter
                 }
                 _rightArmList.Clear();
                 _rightArmDefense = 0;
+                _totalWeight -= _rightArmWeight;
+                _rightArmWeight = 0;
                 break;
             case Parts.LeftArm:
                 for (int i = 0; i < _leftArmList.Count; i++)
@@ -150,22 +113,18 @@ public class CharaBase : CharaParameter
                 }
                 _leftArmList.Clear();
                 _leftArmDefense = 0;
+                _totalWeight -= _leftArmWeight;
+                _leftArmWeight = 0;
                 break;
-            case Parts.RihtLeg:
-                for (int i = 0; i < _rightLegList.Count; i++)
+            case Parts.Leg:
+                for (int i = 0; i < _legList.Count; i++)
                 {
-                    _rightLegList[i].transform.parent = null;
+                    _legList[i].transform.parent = null;
                 }
-                _rightLegList.Clear();
-                _rightLegDefense = 0;
-                break;
-            case Parts.LeftLeg:
-                for (int i = 0; i < _leftLegList.Count; i++)
-                {
-                    _leftLegList[i].transform.parent = null;
-                }
-                _leftLegList.Clear();
-                _leftLegDefense = 0;
+                _legList.Clear();
+                _legDefense = 0;
+                _totalWeight -= _legWeight;
+                _legWeight = 0;
                 break;
             case Parts.Booster:
                 for (int i = 0; i < _boosterList.Count; i++)
@@ -174,6 +133,8 @@ public class CharaBase : CharaParameter
                 }
                 _boosterList.Clear();
                 _boosterDefense = 0;
+                _totalWeight -= _boosterWeight;
+                _boosterWeight = 0;
                 break;
             default:
                 break;
@@ -184,13 +145,9 @@ public class CharaBase : CharaParameter
     #region FullParge
     public void FullParge()
     {
-        for (int i = 0; i < _allArmorList.Count; i++)
+        for (int i = 0; i < _allPartsList.Count; i++)
         {
-            for(int j = 0; j <_allArmorList[i].Count; j++)
-            {
-                _allArmorList[i][j].transform.parent = null;
-            }
-            _allArmorList[i].Clear();
+            PartsPurge(_allPartsList[i]);
         }
     }
     #endregion
@@ -200,20 +157,14 @@ public class CharaBase : CharaParameter
     {
         switch (parts)
         {
-            case Parts.Head:
-                attackPower -= _headDefense;
-                if(attackPower <= 1)
-                {
-                    attackPower = 1;
-                }
-                _headHp -= attackPower;
-                if(_headHp <= 0)
-                {
-                    _headHp = 0;
-                    PartsPurge(parts);
-                }
-                break;
             case Parts.Body:
+                //パーツに何もついてなければ本体にダメージが入る
+                if (_bodyHp <= 0)
+                {
+                    Damage(attackPower);
+                    break;
+                }
+
                 attackPower -= _bodyDefense;
                 if (attackPower <= 1)
                 {
@@ -225,9 +176,16 @@ public class CharaBase : CharaParameter
                     _bodyHp = 0;
                     PartsPurge(parts);
                 }
+                Damage(attackPower);
                 break;
             case Parts.RightArm:
-                attackPower -= _rightArmDefense;
+                //パーツに何もついてなければ本体にダメージが入る
+                if (_rightArmHp <= 0)
+                {
+                    Damage(attackPower);
+                    break;
+                }
+
                 if (attackPower <= 1)
                 {
                     attackPower = 1;
@@ -240,7 +198,13 @@ public class CharaBase : CharaParameter
                 }
                 break;
             case Parts.LeftArm:
-                attackPower -= _leftArmDefense;
+                //パーツに何もついてなければ本体にダメージが入る
+                if (_leftArmHp <= 0)
+                {
+                    Damage(attackPower);
+                    break;
+                }
+
                 if (attackPower <= 1)
                 {
                     attackPower = 1;
@@ -252,34 +216,33 @@ public class CharaBase : CharaParameter
                     PartsPurge(parts);
                 }
                 break;
-            case Parts.RihtLeg:
-                attackPower -= _rightLegDefense;
+            case Parts.Leg:
+                //パーツに何もついてなければ本体にダメージが入る
+                if (_legHp <= 0)
+                {
+                    Damage(attackPower);
+                    break;
+                }
+
                 if (attackPower <= 1)
                 {
                     attackPower = 1;
                 }
-                _rightLegHp -= attackPower;
-                if (_rightLegHp <= 0)
+                _legHp -= attackPower;
+                if (_legHp <= 0)
                 {
-                    _rightLegHp = 0;
-                    PartsPurge(parts);
-                }
-                break;
-            case Parts.LeftLeg:
-                attackPower -= _leftLegDefense;
-                if (attackPower <= 1)
-                {
-                    attackPower = 1;
-                }
-                _leftLegHP -= attackPower;
-                if (_leftLegHP <= 0)
-                {
-                    _leftLegHP = 0;
+                    _legHp = 0;
                     PartsPurge(parts);
                 }
                 break;
             case Parts.Booster:
-                attackPower -= _boosterDefense;
+                //パーツに何もついてなければ本体にダメージが入る
+                if (_boosterHP <= 0)
+                {
+                    Damage(attackPower);
+                    break;
+                }
+
                 if (attackPower <= 1)
                 {
                     attackPower = 1;
@@ -295,7 +258,6 @@ public class CharaBase : CharaParameter
                 break;
         }
 
-        Damage(attackPower, true);
     }
     #endregion
 
@@ -304,15 +266,12 @@ public class CharaBase : CharaParameter
     /// Damageを受けたときの処理
     /// </summary>
     /// <param name="attackPower">攻撃力</param>
-    public virtual void Damage(int attackPower, bool partsDamege = false)
+    public virtual void Damage(int attackPower)
     {
-        if (!partsDamege)
+        attackPower -= _defense;
+        if (attackPower <= 1)
         {
-            attackPower -= _defense;
-            if (attackPower <= 1)
-            {
-                attackPower = 1;
-            }
+            attackPower = 1;
         }
 
         _hp -= attackPower;
@@ -330,6 +289,34 @@ public class CharaBase : CharaParameter
     public virtual void Dead()
     {
         Destroy(this.gameObject);
+    }
+    #endregion
+
+    #region 装備のプロパティ
+
+    public List<Armor> BodyArmorList
+    {
+        get { return _bodyList; }
+    }
+
+    public List<Armor> RightArmArmorList
+    {
+        get { return _rightArmList; }
+    }
+
+    public List<Armor> LeftArmArmorList
+    {
+        get { return _leftArmList; }
+    }
+
+    public List<Armor> LegArmorList
+    {
+        get { return _legList; }
+    }
+
+    public List<Armor> BoosterArmorList
+    {
+        get { return _boosterList; }
     }
     #endregion
 }

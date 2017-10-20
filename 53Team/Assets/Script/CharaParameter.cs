@@ -6,24 +6,32 @@ public class CharaParameter : MonoBehaviour
 {
 
     [Header("キャラクターの基本のパラメーター")]
+    #region Hp
     public int _hp = 1000;
-    protected int _headHp = 0;
-    protected int _bodyHp;
-    protected int _rightArmHp;
-    protected int _leftArmHp;
-    protected int _rightLegHp;
-    protected int _leftLegHP;
-    protected int _boosterHP;
+    protected int _bodyHp = 0;
+    protected int _rightArmHp = 0;
+    protected int _leftArmHp = 0;
+    protected int _legHp = 0;
+    protected int _boosterHP = 0;
+    #endregion
 
     #region Defense
     public int _defense = 0;
-    protected int _headDefense;
-    protected int _bodyDefense;
-    protected int _rightArmDefense;
-    protected int _leftArmDefense;
-    protected int _rightLegDefense;
-    protected int _leftLegDefense;
-    protected int _boosterDefense;
+    protected int _bodyDefense = 0;
+    protected int _rightArmDefense = 0;
+    protected int _leftArmDefense = 0;
+    protected int _legDefense = 0;
+    protected int _boosterDefense = 0;
+    #endregion
+
+    #region Weight
+    protected int _totalWeight = 0;
+    protected int _maxWeight = 0;
+    protected int _bodyWeight = 0;
+    protected int _rightArmWeight = 0;
+    protected int _leftArmWeight = 0;
+    protected int _legWeight = 0;
+    protected int _boosterWeight = 0;
     #endregion
     public int _attack = 1;
     public float _speed = 1.0f;
