@@ -8,6 +8,7 @@ public class Armor : MonoBehaviour {
     public int _armorHp = 0;
     public int _armorDefense = 0;
     public float _armorSpeed = 0.0f;
+    public float _armorWeight = 0.0f;
 
     // Use this for initialization
     void Start () {
@@ -27,8 +28,13 @@ public class Armor : MonoBehaviour {
         get { return _armorDefense; }
     }
 
-    public float ArmortSpeedPara
+    public float ArmorSpeedPara
     {
         get { return _armorSpeed; }
+    }
+
+    public float ArmorWeightPara
+    {
+        get { return _armorWeight; }
     }
 }
