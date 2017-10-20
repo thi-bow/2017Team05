@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UniRx;
 using UniRx.Triggers;
+using DG.Tweening;
 
 namespace Enemy
 {
@@ -218,6 +219,23 @@ namespace Enemy
             float y = p2.y - p1.y;
             float rad = Mathf.Atan2(y, x);
             return rad * Mathf.Rad2Deg;
+        }
+
+        // 周りを見渡す動作をする
+        public virtual void SearchAction(Transform aTransform = null, Action aEndAction = null)
+        {
+            if(aTransform == null)
+            {
+                aTransform = transform;
+            }
+
+            // 目標角度
+            // Vector3 targetVec1, targetVec2;
+            // targetVec1 = transform.forward
+
+            Sequence sequence = DOTween.Sequence();
+
+            //sequence.Append(aTransform.DORotate())
         }
     }
 }
