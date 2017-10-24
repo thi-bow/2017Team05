@@ -67,6 +67,7 @@ public class CharaBase : MonoBehaviour
     List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
+    [SerializeField] private GameObject[] _partsLocation;
     #endregion
 
     private Action pargeBefore = null;
@@ -165,33 +166,51 @@ public class CharaBase : MonoBehaviour
         {
             case Parts.Body:
                 _bodyList.Add(armor);
+                //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._bodyDefense += armor.ArmorDefPara;
                 _charaPara._bodyHp += armor.ArmorHpPara;
                 _charaPara._bodyWeight += armor.ArmorWeightPara;
+                armor.gameObject.transform.SetParent(_partsLocation[0].transform);
+                armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 break;
             case Parts.RightArm:
                 _rightArmList.Add(armor);
+                //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._rightArmDefense += armor.ArmorDefPara;
                 _charaPara._rightArmHp += armor.ArmorHpPara;
                 _charaPara._rightArmWeight += armor.ArmorWeightPara;
+                armor.gameObject.transform.SetParent(_partsLocation[1].transform);
+                armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 break;
             case Parts.LeftArm:
                 _leftArmList.Add(armor);
+                //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._leftArmDefense += armor.ArmorDefPara;
                 _charaPara._leftArmHp += armor.ArmorHpPara;
                 _charaPara._leftArmWeight += armor.ArmorWeightPara;
+                armor.gameObject.transform.SetParent(_partsLocation[2].transform);
+                armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 break;
             case Parts.Leg:
                 _legList.Add(armor);
+                //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._legDefense += armor.ArmorDefPara;
                 _charaPara._legHp += armor.ArmorHpPara;
                 _charaPara._legWeight += armor.ArmorWeightPara;
+
+                //足に装着する場合は、右足か左足かランダムで決める
+                int rand = UnityEngine.Random.Range(3, 5);
+                armor.gameObject.transform.SetParent(_partsLocation[rand].transform);
+                armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 break;
             case Parts.Booster:
                 _boosterList.Add(armor);
+                //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._boosterDefense += armor.ArmorDefPara;
                 _charaPara._boosterHp += armor.ArmorHpPara;
                 _charaPara._boosterWeight += armor.ArmorWeightPara;
+                armor.gameObject.transform.SetParent(_partsLocation[5].transform);
+                armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 break;
             default:
                 break;
@@ -200,6 +219,7 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
+    //部位ごとにパージする
     #region PartsPurge
     public void PartsPurge(Parts parts, Action action = null)
     {
@@ -286,6 +306,7 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
+    //全ての装備をパージする
     #region FullParge
     public void FullParge(Action action = null)
     {
@@ -300,6 +321,7 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
+    //部位に攻撃が当たった時のダメージ計算
     #region PartsDamage
     public void PartsDamage(int attackPower, Parts parts, Action action = null)
     {
@@ -409,6 +431,7 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
+    //ダメージを受けた時の計算
     #region Damage
     /// <summary>
     /// Damageを受けたときの処理
