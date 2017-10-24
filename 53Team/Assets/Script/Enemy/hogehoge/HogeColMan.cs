@@ -4,15 +4,12 @@ using UnityEngine;
 using UniRx;
 using UniRx.Triggers;
 
-public class HogeColMan : MonoBehaviour {
-
-    public int hp;
-
+public class HogeColMan : CharaBase {
 
     [Header("各部位の当たり判定")]
     public BoneCollide[] m_boneCollides;
 
-    private void Start()
+    protected override void Start()
     {
         for (int i = 0; i < m_boneCollides.Length; i++)
         {
@@ -20,6 +17,7 @@ public class HogeColMan : MonoBehaviour {
             m_boneCollides[n].OnDamage.Subscribe(dmg => 
             {
                 Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", m_boneCollides[n].m_parts.ToString(), dmg);
+                PartsDamage(dmg, m_boneCollides[n].m_parts);
             });
         }
     }
