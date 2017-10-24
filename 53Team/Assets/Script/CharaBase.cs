@@ -69,6 +69,8 @@ public class CharaBase : MonoBehaviour
     private Parts _parts;
     #endregion
 
+    private Action pargeBefore = null;
+
 
     #region 装備のプロパティ
 
@@ -199,7 +201,7 @@ public class CharaBase : MonoBehaviour
     #endregion
 
     #region PartsPurge
-    public void PartsPurge(Parts parts)
+    public void PartsPurge(Parts parts, Action action = null)
     {
         switch (parts)
         {
@@ -207,6 +209,10 @@ public class CharaBase : MonoBehaviour
                 for (int i = 0; i < _bodyList.Count; i++)
                 {
                     _bodyList[i].transform.parent = null;
+                }
+                if(action != null)
+                {
+                    action();
                 }
                 _bodyList.Clear();
                 _charaPara._bodyDefense = 0;
@@ -218,6 +224,10 @@ public class CharaBase : MonoBehaviour
                 {
                     _rightArmList[i].transform.parent = null;
                 }
+                if (action != null)
+                {
+                    action();
+                }
                 _rightArmList.Clear();
                 _charaPara._rightArmDefense = 0;
                 _charaPara._totalWeight -= _charaPara._rightArmWeight;
@@ -227,6 +237,10 @@ public class CharaBase : MonoBehaviour
                 for (int i = 0; i < _leftArmList.Count; i++)
                 {
                     _leftArmList[i].transform.parent = null;
+                }
+                if (action != null)
+                {
+                    action();
                 }
                 _leftArmList.Clear();
                 _charaPara._leftArmDefense = 0;
@@ -238,6 +252,10 @@ public class CharaBase : MonoBehaviour
                 {
                     _legList[i].transform.parent = null;
                 }
+                if (action != null)
+                {
+                    action();
+                }
                 _legList.Clear();
                 _charaPara._legDefense = 0;
                 _charaPara._totalWeight -= _charaPara._legWeight;
@@ -247,6 +265,10 @@ public class CharaBase : MonoBehaviour
                 for (int i = 0; i < _boosterList.Count; i++)
                 {
                     _boosterList[i].transform.parent = null;
+                }
+                if (action != null)
+                {
+                    action();
                 }
                 _boosterList.Clear();
                 _charaPara._boosterDefense = 0;
@@ -260,8 +282,12 @@ public class CharaBase : MonoBehaviour
     #endregion
 
     #region FullParge
-    public void FullParge()
+    public void FullParge(Action action = null)
     {
+        if (action != null)
+        {
+            action();
+        }
         for (int i = 0; i < _allPartsList.Count; i++)
         {
             PartsPurge(_allPartsList[i]);
@@ -270,7 +296,7 @@ public class CharaBase : MonoBehaviour
     #endregion
 
     #region PartsDamage
-    public void PartsDamage(int attackPower, Parts parts)
+    public void PartsDamage(int attackPower, Parts parts, Action action = null)
     {
         switch (parts)
         {
@@ -291,7 +317,7 @@ public class CharaBase : MonoBehaviour
                 if (_charaPara._bodyHp <= 0)
                 {
                     _charaPara._bodyHp = 0;
-                    PartsPurge(parts);
+                    PartsPurge(parts, action);
                 }
                 Damage(attackPower);
                 break;
@@ -311,7 +337,7 @@ public class CharaBase : MonoBehaviour
                 if (_charaPara._rightArmHp <= 0)
                 {
                     _charaPara._rightArmHp = 0;
-                    PartsPurge(parts);
+                    PartsPurge(parts, action);
                 }
                 break;
             case Parts.LeftArm:
@@ -330,7 +356,7 @@ public class CharaBase : MonoBehaviour
                 if (_charaPara._leftArmHp <= 0)
                 {
                     _charaPara._leftArmHp = 0;
-                    PartsPurge(parts);
+                    PartsPurge(parts, action);
                 }
                 break;
             case Parts.Leg:
@@ -349,7 +375,7 @@ public class CharaBase : MonoBehaviour
                 if (_charaPara._legHp <= 0)
                 {
                     _charaPara._legHp = 0;
-                    PartsPurge(parts);
+                    PartsPurge(parts, action);
                 }
                 break;
             case Parts.Booster:
@@ -368,7 +394,7 @@ public class CharaBase : MonoBehaviour
                 if (_charaPara._boosterHp <= 0)
                 {
                     _charaPara._boosterHp = 0;
-                    PartsPurge(parts);
+                    PartsPurge(parts, action);
                 }
                 break;
             default:
