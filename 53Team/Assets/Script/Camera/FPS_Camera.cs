@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class FPS_Camera : MonoBehaviour {
 
-    private GameObject targetObj;
+    [SerializeField] private GameObject targetObj;
     Vector3 targetPos;
 
     // Use this for initialization
     void Start()
     {
-        targetObj = GameObject.Find("Player_Sample");
     }
 
     // Update is called once per frame
