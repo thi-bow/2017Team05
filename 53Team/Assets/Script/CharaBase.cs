@@ -206,6 +206,7 @@ public class CharaBase : MonoBehaviour
         switch (parts)
         {
             case Parts.Body:
+                if (_bodyList.Count <= 0) return;
                 for (int i = 0; i < _bodyList.Count; i++)
                 {
                     _bodyList[i].transform.parent = null;
@@ -220,6 +221,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._bodyWeight = 0;
                 break;
             case Parts.RightArm:
+                if (_rightArmList.Count <= 0) return;
                 for (int i = 0; i < _rightArmList.Count; i++)
                 {
                     _rightArmList[i].transform.parent = null;
@@ -234,6 +236,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._rightArmWeight = 0;
                 break;
             case Parts.LeftArm:
+                if (_leftArmList.Count <= 0) return;
                 for (int i = 0; i < _leftArmList.Count; i++)
                 {
                     _leftArmList[i].transform.parent = null;
@@ -248,6 +251,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._leftArmWeight = 0;
                 break;
             case Parts.Leg:
+                if (_legList.Count <= 0) return;
                 for (int i = 0; i < _legList.Count; i++)
                 {
                     _legList[i].transform.parent = null;
@@ -262,6 +266,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._legWeight = 0;
                 break;
             case Parts.Booster:
+                if (_boosterList.Count <= 0) return;
                 for (int i = 0; i < _boosterList.Count; i++)
                 {
                     _boosterList[i].transform.parent = null;
