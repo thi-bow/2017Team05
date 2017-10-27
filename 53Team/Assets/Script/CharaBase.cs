@@ -155,6 +155,7 @@ public class CharaBase : MonoBehaviour
     {
     }
 
+    //パーツの装着
     #region PartsAdd
     public void PartsAdd(Parts parts, Armor armor)
     {
@@ -215,6 +216,7 @@ public class CharaBase : MonoBehaviour
             default:
                 break;
         }
+        armor.GetComponent<BoxCollider>().enabled = false;
         _charaPara._totalWeight += armor.ArmorWeightPara;
     }
     #endregion
@@ -310,6 +312,11 @@ public class CharaBase : MonoBehaviour
     #region FullParge
     public void FullParge(Action action = null)
     {
+        //何も装備していなかったら何もしない
+        if(_bodyList.Count + _rightArmList.Count + _leftArmList.Count + _legList.Count + _boosterList.Count <= 0)
+        {
+            return;
+        }
         if (action != null)
         {
             action();
@@ -317,6 +324,44 @@ public class CharaBase : MonoBehaviour
         for (int i = 0; i < _allPartsList.Count; i++)
         {
             PartsPurge(_allPartsList[i]);
+        }
+    }
+    #endregion
+
+    //右腕の射撃攻撃
+    #region RighArmtShot
+    protected void RighArmtShot()
+    {
+        if (_rightArmList.Count <= 0) return;
+        for(int i = 0; i < _rightArmList.Count; i++)
+        {
+            Weapon _wepon = null;
+            _wepon = _rightArmList[i].GetComponent<Weapon>();
+            if(_wepon == null)
+            {
+                print("右腕の" + i + "この装備には射撃がない");
+                continue;
+            }
+            _wepon.Shooting();
+        }
+    }
+    #endregion
+
+    //左腕の射撃攻撃
+    #region LeftArmShot
+    protected void LeftArmShot()
+    {
+        if (_leftArmList.Count <= 0) return;
+        for (int i = 0; i < _leftArmList.Count; i++)
+        {
+            Weapon _wepon = null;
+            _wepon = _leftArmList[i].GetComponent<Weapon>();
+            if (_wepon == null)
+            {
+                print("左腕の" + i + "この装備には射撃がない");
+                continue;
+            }
+            _wepon.Shooting();
         }
     }
     #endregion
