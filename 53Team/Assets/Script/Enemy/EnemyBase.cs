@@ -50,7 +50,7 @@ namespace Enemy
 
     // Enemyの基底クラス
     [RequireComponent(typeof(NavMeshAgent))]
-    public class EnemyBase<T, TEnum> : MonoBehaviour
+    public class EnemyBase<T, TEnum> : CharaBase
         where T : class where TEnum : IConvertible
     {
         // 開始のタイミングを制御するかどうか
@@ -58,6 +58,12 @@ namespace Enemy
 
         [Header("ターゲット")]
         public Transform m_target;
+
+        [Header("各部位の当たり判定")]
+        public BoneCollide[] m_boneCollides;
+
+        [Header("デバッグ用パーツ")]
+        public Armor m_armor;
 
         // Enemyの初期ステータス
         [Space(10)]
@@ -81,12 +87,30 @@ namespace Enemy
         // ステートマシンクラス
         protected StateMachine<T> m_stateMachine;
         
-        protected virtual void Start()
+        protected override void Start()
         {
             m_agent = GetComponent<NavMeshAgent>();
 
             m_enemyStatus.hp = m_enemyStatus.max_hp;
             m_agent.angularSpeed = 30 * m_enemyStatus.rotateSpd;
+
+            if (m_armor != null) { PartsAdd(Parts.RightArm, m_armor); }
+
+
+            for (int i = 0; i < m_boneCollides.Length; i++)
+            {
+                int n = i;
+                m_boneCollides[n].OnDamage.Subscribe(dmg =>
+                {
+                    Parts parts = m_boneCollides[n].m_parts;
+                    Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", parts.ToString(), dmg);
+                    PartsDamage(dmg, parts, () => {
+                        Debug.Log(parts + "パージ!!");
+                        m_armor.gameObject.GetComponent<Collider>().enabled = true;
+                        m_armor.gameObject.AddComponent<Rigidbody>();
+                    });
+                });
+            }
 
             if (m_seachAreaDraw)
             {
@@ -145,7 +169,7 @@ namespace Enemy
             return m_stateMachine.GetCurrentState() == m_stateList[state.ToInt32(null)];
         }
 
-        protected virtual void Update()
+        protected override void Update()
         {
             if (m_stateMachine != null)
             {
