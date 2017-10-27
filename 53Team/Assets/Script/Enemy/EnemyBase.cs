@@ -231,20 +231,6 @@ namespace Enemy
             return run;
         }
 
-        public Subject<int> OnDead
-        {
-            get; set;
-        }
-
-        // 角度を求める(xy面上)
-        public virtual float GetAngle(Vector2 p1, Vector2 p2)
-        {
-            float x = p2.x - p1.x;
-            float y = p2.y - p1.y;
-            float rad = Mathf.Atan2(y, x);
-            return rad * Mathf.Rad2Deg;
-        }
-
         // 周りを見渡す動作をする
         public virtual void SearchAction(Transform aTransform = null, Action aEndAction = null)
         {
