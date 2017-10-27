@@ -241,9 +241,9 @@ namespace Enemy
                     return;
                 }
 
-                EffectMan.Instance.NormalBullet(_base.transform, _base.m_target, () => {
-                    Debug.Log("ﾋｯﾄｫｫｫｫｫｫｫｫｫｫｫｫｫx");
-                });
+                //EffectMan.Instance.NormalBullet(_base.transform, _base.m_target, () => {
+                //    Debug.Log("ﾋｯﾄｫｫｫｫｫｫｫｫｫｫｫｫｫx");
+                //});
             }
 
             public override void OnExit()
