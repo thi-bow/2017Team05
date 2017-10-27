@@ -26,6 +26,7 @@ public class HogeColMan : CharaBase {
                 Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", parts.ToString(), dmg);
                 PartsDamage(dmg, parts, () => {
                     Debug.Log(parts + "パージ!!");
+                    m_armor.gameObject.GetComponent<Collider>().enabled = true;
                     m_armor.gameObject.AddComponent<Rigidbody>();
                 });
             });

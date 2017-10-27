@@ -14,7 +14,10 @@ public class HogeRayShot : MonoBehaviour {
             RaycastHit hit = new RaycastHit();
             if(Physics.Raycast(ray, out hit))
             {
-                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(10);
+                if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
+                {
+                    hit.collider.gameObject.GetComponent<BoneCollide>().Damage(10);
+                }
             }
         }
 	}

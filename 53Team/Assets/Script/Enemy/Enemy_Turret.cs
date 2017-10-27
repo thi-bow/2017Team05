@@ -41,22 +41,9 @@ namespace Enemy {
             this.state = state;
         }
 
-        public void Damage(int damage)
+        public override void Damage(int damage)
         {
             Debug.LogFormat("{0}に{1}ダメージ!!", m_enemyStatus.name, damage);
-
-            m_enemyStatus.hp = Mathf.Max(m_enemyStatus.hp - damage, 0);
-
-            if(m_enemyStatus.hp == 0)
-            {
-                // ここに死亡時処理
-
-
-                if(OnDead != null)
-                {
-                    OnDead.OnNext(1);
-                }
-            }
         }
 
         #region ---------------  State処理  ---------------
