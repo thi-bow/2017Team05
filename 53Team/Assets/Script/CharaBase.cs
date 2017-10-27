@@ -312,6 +312,11 @@ public class CharaBase : MonoBehaviour
     #region FullParge
     public void FullParge(Action action = null)
     {
+        //何も装備していなかったら何もしない
+        if(_bodyList.Count + _rightArmList.Count + _leftArmList.Count + _legList.Count + _boosterList.Count <= 0)
+        {
+            return;
+        }
         if (action != null)
         {
             action();
