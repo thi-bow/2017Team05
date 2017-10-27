@@ -215,6 +215,7 @@ public class CharaBase : MonoBehaviour
             default:
                 break;
         }
+        armor.GetComponent<BoxCollider>().enabled = false;
         _charaPara._totalWeight += armor.ArmorWeightPara;
     }
     #endregion

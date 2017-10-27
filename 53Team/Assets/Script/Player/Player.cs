@@ -96,13 +96,6 @@ public class Player : CharaBase
                 _playerSkyMove.UseBoost = false;
             }
         }
-
-        //落ちている武器に当たれば、その武器を装着する
-        if (collision.gameObject.tag == "Armor")
-        {
-            print("hogehoge");
-            PartsAdd(Parts.Body, collision.gameObject.GetComponent<Armor>());
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -125,13 +118,7 @@ public class Player : CharaBase
         //落ちている武器に当たれば、その武器を装着する
         if (other.tag == "Armor")
         {
-            print("hogehoge2");
             PartsAdd(Parts.Body, other.GetComponent<Armor>());
         }
     }
-
-
-
-
-
 }
