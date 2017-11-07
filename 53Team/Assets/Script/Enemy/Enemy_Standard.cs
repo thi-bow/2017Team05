@@ -63,7 +63,7 @@ namespace Enemy
         {
             Debug.Log("死んだぁ！！");
             var transforms = GetComponentsInChildren<Transform>();
-            Vector3 pos = transform.position;
+            Vector3 pos = transform.position + transform.forward * 2;
 
             for (int i = 0; i < transforms.Length; i++)
             {
@@ -73,8 +73,8 @@ namespace Enemy
                 var rd = transforms[i].gameObject.AddComponent<Rigidbody>();
                 rd = rd != null ? rd : transform.GetComponent<Rigidbody>();
                 if (rd != null) {
-                    rd.AddExplosionForce(10.0f, pos, 10.0f, 100.0f, ForceMode.Impulse);
-                    Observable.Timer(System.TimeSpan.FromSeconds(Random.Range(5.0f, 8.0f))).Subscribe(_ => 
+                    rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
+                    Observable.Timer(System.TimeSpan.FromSeconds(Random.Range(5.0f, 6.0f))).Subscribe(_ => 
                     {
                         Destroy(rd.gameObject);
                     });
@@ -271,6 +271,7 @@ namespace Enemy
                     return;
                 }
 
+                _base.EnemyRighArmtShot();
                 //EffectMan.Instance.NormalBullet(_base.transform, _base.m_target, () => {
                 //    Debug.Log("ﾋｯﾄｫｫｫｫｫｫｫｫｫｫｫｫｫx");
                 //});
