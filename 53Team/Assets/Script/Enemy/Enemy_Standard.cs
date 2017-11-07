@@ -271,7 +271,7 @@ namespace Enemy
                     return;
                 }
 
-                _base.EnemyRighArmtShot();
+                _base.EnemyRighArmtShot(new Ray(_base.transform.position, _base.transform.forward));
                 //EffectMan.Instance.NormalBullet(_base.transform, _base.m_target, () => {
                 //    Debug.Log("ﾋｯﾄｫｫｫｫｫｫｫｫｫｫｫｫｫx");
                 //});

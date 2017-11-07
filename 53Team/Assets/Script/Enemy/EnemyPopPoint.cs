@@ -22,12 +22,12 @@ public class EnemyPopPoint : MonoBehaviour {
         }
     }
 
-    public void PopEnemy(int n, int delay)
+    public void PopEnemy(int n, float delay)
     {
         StartCoroutine(popEnemy(n, delay));
     }
 
-    IEnumerator popEnemy(int n, int delay)
+    IEnumerator popEnemy(int n, float delay)
     {
         for (int i = 0; i < n; i++)
         {
