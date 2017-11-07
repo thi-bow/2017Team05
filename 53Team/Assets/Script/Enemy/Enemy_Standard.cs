@@ -136,6 +136,7 @@ namespace Enemy
                     return;
                 }
 
+
                 // ターゲットの最終発見ポイントがあればそこまで移動
                 if(_base.m_lastPosition != _base.m_vectorZero)
                 {
