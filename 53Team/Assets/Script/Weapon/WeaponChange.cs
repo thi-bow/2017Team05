@@ -9,7 +9,6 @@ public class WeaponChange : MonoBehaviour {
     private Weapon _Weapon;
 
     private int num;
-    int add;
 
     // Use this for initialization
     void Start () {
@@ -31,20 +30,17 @@ public class WeaponChange : MonoBehaviour {
 	void Update () {
     }
 
-    public void Change() {
-
-        if (Input.GetKeyDown(KeyCode.C))
+    public void Change()
+    {
+        weapons[num].SetActive(false);
+        num++;
+        if (num >= weapons.Length)
         {
-           weapons[num].SetActive(false);
-            num++;
-            if (num >= weapons.Length)
-            {
-                num = 0;
-            }
-
-            weapons[num].SetActive(true);
-            _Weapon.SetWeapon(weapons[num]);
+            num = 0;
         }
+
+        weapons[num].SetActive(true);
+        _Weapon.SetWeapon(weapons[num]);
     }
 
     public GameObject GetWeapon()
