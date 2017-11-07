@@ -89,11 +89,13 @@ public class CharaBase : MonoBehaviour
     [SerializeField] private List<Armor> _leftArmList = new List<Armor>();
     [SerializeField] private List<Armor> _legList = new List<Armor>();
     [SerializeField] private List<Armor> _boosterList = new List<Armor>();
+
     [Space(10)]
     [SerializeField] private List<Armor> _legPartsPair = new List<Armor>();
     List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
+
     [Space(10)]
     [SerializeField] private GameObject[] _partsLocation;
     #endregion
@@ -378,13 +380,6 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
-    #region PartsChenge
-    public void PartsChenge()
-    {
-        //近接と射撃で、2個以上の差が付いたら、モデルを変更する
-    }
-    #endregion
-
     #region PartsCheck
     protected void PartsCheck()
     {
@@ -513,7 +508,7 @@ public class CharaBase : MonoBehaviour
         {
             Weapon _wepon = null;
             _wepon = _rightArmList[i].GetComponent<Weapon>();
-            if(_wepon == null)
+            if(_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
             {
                 print("右腕の" + i + "この装備には射撃がない");
                 continue;
@@ -532,7 +527,7 @@ public class CharaBase : MonoBehaviour
         {
             Weapon _wepon = null;
             _wepon = _leftArmList[i].GetComponent<Weapon>();
-            if (_wepon == null)
+            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
             {
                 print("左腕の" + i + "この装備には射撃がない");
                 continue;
@@ -551,7 +546,64 @@ public class CharaBase : MonoBehaviour
         {
             Weapon _wepon = null;
             _wepon = _legList[i].GetComponent<Weapon>();
-            if (_wepon == null)
+            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            {
+                print("足の" + i + "この装備には射撃がない");
+                continue;
+            }
+            _wepon.Shooting();
+        }
+    }
+    #endregion
+
+    //右腕の射撃攻撃
+    #region EnemyRighArmtShot
+    protected void EnemyRighArmtShot()
+    {
+        if (_rightArmList.Count <= 0) return;
+        for (int i = 0; i < _rightArmList.Count; i++)
+        {
+            Weapon _wepon = null;
+            _wepon = _rightArmList[i].GetComponent<Weapon>();
+            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            {
+                print("右腕の" + i + "この装備には射撃がない");
+                continue;
+            }
+            _wepon.Shooting();
+        }
+    }
+    #endregion
+
+    //左腕の射撃攻撃
+    #region EnemyLeftArmShot
+    protected void EnemyLeftArmShot()
+    {
+        if (_leftArmList.Count <= 0) return;
+        for (int i = 0; i < _leftArmList.Count; i++)
+        {
+            Weapon _wepon = null;
+            _wepon = _leftArmList[i].GetComponent<Weapon>();
+            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            {
+                print("左腕の" + i + "この装備には射撃がない");
+                continue;
+            }
+            _wepon.Shooting();
+        }
+    }
+    #endregion
+
+    //脚の射撃攻撃
+    #region EnemyLegShot
+    protected void EnemyLegShot()
+    {
+        if (_legList.Count <= 0) return;
+        for (int i = 0; i < _legList.Count; i++)
+        {
+            Weapon _wepon = null;
+            _wepon = _legList[i].GetComponent<Weapon>();
+            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
             {
                 print("足の" + i + "この装備には射撃がない");
                 continue;
