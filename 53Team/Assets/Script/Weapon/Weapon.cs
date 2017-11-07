@@ -7,7 +7,8 @@ public class Weapon : MonoBehaviour {
     public enum Attack_State
     {
         shooting,
-        approach
+        approach,
+        NULL
     }
 
     public Attack_State state;
@@ -48,7 +49,9 @@ public class Weapon : MonoBehaviour {
     // スクリーン中央取得用
     private Vector3 center;
 
+    // 射撃時間
     private float ShotTime;
+
 
     // Use this for initialization
     void Start () {
@@ -143,6 +146,8 @@ public class Weapon : MonoBehaviour {
             }
         }
     }
+
+
 
     // 
     public void Aim()
