@@ -37,6 +37,9 @@ public class Weapon : MonoBehaviour {
     // トータル威力
     public int total_atk;
 
+    // 弾速
+    public float shotspeed = 0.01f;
+
     // リロードするか
     [SerializeField]
     private bool isReload = false;
@@ -51,7 +54,6 @@ public class Weapon : MonoBehaviour {
 
     // 射撃時間
     private float ShotTime;
-
 
     // Use this for initialization
     void Start () {
@@ -88,7 +90,7 @@ public class Weapon : MonoBehaviour {
             // リロード完了までの時間処理
             if (reloadTime > reloadFinishTime)
             {
-                Debug.Log("リロード");
+                //Debug.Log("リロード");
                 bullets = maxBullets;
                 reloadTime = 0;
                 isReload = false;
@@ -96,6 +98,7 @@ public class Weapon : MonoBehaviour {
         }
     }
 
+    // 射撃
     public void Shooting()
     {
         if (bullets >= 0)
@@ -103,25 +106,13 @@ public class Weapon : MonoBehaviour {
             ShotTime += Time.deltaTime;
             if (ShotTime >= 60.0f / m)
             {
-                bullets--;
-                Vector3 shotPos = tpsCamera.GetComponent<Camera>().ScreenToWorldPoint(center);
-                Ray ray;
-
-                ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
-
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, distance))
-                {
-                    if (hit.collider)
-                    {
-                        Debug.Log(hit.collider.name);
-                    }
-                }
-                ShotTime = 0;
+                StartCoroutine(ShootingInterval());
+                
             }
         }
     }
 
+    // 射撃(Ray)
     public void Shooting(Ray shotRay) {
         if (bullets >= 0)
         {
@@ -129,28 +120,54 @@ public class Weapon : MonoBehaviour {
             if (ShotTime >= 60.0f / m)
             {
                 bullets--;
-                Vector3 shotPos = tpsCamera.GetComponent<Camera>().ScreenToWorldPoint(center);
-                Ray ray;
-
-                ray = shotRay;
-
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, distance))
-                {
-                    if (hit.collider)
-                    {
-                        Debug.Log(hit.collider.name);
-                    }
-                }
-                ShotTime = 0;
+                StartCoroutine(ShootingInterval(shotRay));
             }
         }
     }
 
+    IEnumerator ShootingInterval()
+    {
+        yield return new WaitForSeconds(shotspeed);
+        bullets--;
+        Vector3 shotPos = tpsCamera.GetComponent<Camera>().ScreenToWorldPoint(center);
+        Ray ray;
 
+        ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
 
-    // 
-    public void Aim()
+        //GameObject b = Instantiate(bullet, transform.position, Quaternion.identity);
+        //b.transform.position = tpsCamera.transform.forward * 10;
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, distance))
+        {
+            if (hit.collider)
+            {
+                Debug.Log(hit.collider.name);
+            }
+        }
+        ShotTime = 0;
+    }
+
+    IEnumerator ShootingInterval(Ray shotRay)
+    {
+        yield return new WaitForSeconds(shotspeed);
+        Vector3 shotPos = tpsCamera.GetComponent<Camera>().ScreenToWorldPoint(center);
+        Ray ray;
+
+        ray = shotRay;
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, distance))
+        {
+            if (hit.collider)
+            {
+                Debug.Log(hit.collider.name);
+            }
+        }
+        ShotTime = 0;
+    }
+
+        public void Aim()
     {
     }
 
@@ -167,7 +184,7 @@ public class Weapon : MonoBehaviour {
     // 現在のカメラ
     public void CameraCheck()
     {
-        if (fpsCamera.activeInHierarchy)
+        /*if (fpsCamera.activeInHierarchy)
         {
             transform.parent = homing.transform;
 
@@ -176,7 +193,7 @@ public class Weapon : MonoBehaviour {
         {
             transform.parent = player.transform;
             //reticle.SetActive(false);
-        }
+        }*/
     }
 
     // 攻撃力の取得
