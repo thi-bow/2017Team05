@@ -508,12 +508,19 @@ public class CharaBase : MonoBehaviour
         {
             Weapon _wepon = null;
             _wepon = _rightArmList[i].GetComponent<Weapon>();
-            if(_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
             {
-                print("右腕の" + i + "この装備には射撃がない");
-                continue;
+                print("右腕の特殊射撃");
             }
-            _wepon.Shooting();
+            else if(_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
+            {
+                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                {
+                    print("右腕の" + i + "この装備には射撃がない");
+                    continue;
+                }
+                _wepon.Shooting();
+            }             
         }
     }
     #endregion
@@ -527,10 +534,17 @@ public class CharaBase : MonoBehaviour
         {
             Weapon _wepon = null;
             _wepon = _leftArmList[i].GetComponent<Weapon>();
-            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            if (_charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
             {
-                print("左腕の" + i + "この装備には射撃がない");
-                continue;
+                print("左腕の特殊射撃");
+            }
+            else if(_charaPara._leftArm_AttackState == Weapon.Attack_State.NULL)
+            {
+                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                {
+                    print("左腕の" + i + "この装備には射撃がない");
+                    continue;
+                }
             }
             _wepon.Shooting();
         }
@@ -546,10 +560,17 @@ public class CharaBase : MonoBehaviour
         {
             Weapon _wepon = null;
             _wepon = _legList[i].GetComponent<Weapon>();
-            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
             {
-                print("足の" + i + "この装備には射撃がない");
-                continue;
+                print("脚の特殊射撃");
+            }
+            else if (_charaPara._leg_AttackState == Weapon.Attack_State.NULL)
+            {
+                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                {
+                    print("脚の" + i + "この装備には射撃がない");
+                    continue;
+                }
             }
             _wepon.Shooting();
         }
@@ -558,57 +579,78 @@ public class CharaBase : MonoBehaviour
 
     //右腕の射撃攻撃
     #region EnemyRighArmtShot
-    protected void EnemyRighArmtShot()
+    protected void EnemyRighArmtShot(Ray ray)
     {
         if (_rightArmList.Count <= 0) return;
         for (int i = 0; i < _rightArmList.Count; i++)
         {
             Weapon _wepon = null;
             _wepon = _rightArmList[i].GetComponent<Weapon>();
-            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
             {
-                print("右腕の" + i + "この装備には射撃がない");
-                continue;
+                print("右腕の特殊射撃");
             }
-            _wepon.Shooting();
+            else if (_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
+            {
+                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                {
+                    print("右腕の" + i + "この装備には射撃がない");
+                    continue;
+                }
+            }
+            _wepon.Shooting(ray);
         }
     }
     #endregion
 
     //左腕の射撃攻撃
     #region EnemyLeftArmShot
-    protected void EnemyLeftArmShot()
+    protected void EnemyLeftArmShot(Ray ray)
     {
         if (_leftArmList.Count <= 0) return;
         for (int i = 0; i < _leftArmList.Count; i++)
         {
             Weapon _wepon = null;
             _wepon = _leftArmList[i].GetComponent<Weapon>();
-            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            if (_charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
             {
-                print("左腕の" + i + "この装備には射撃がない");
-                continue;
+                print("左腕の特殊射撃");
             }
-            _wepon.Shooting();
+            else if (_charaPara._leftArm_AttackState == Weapon.Attack_State.NULL)
+            {
+                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                {
+                    print("左腕の" + i + "この装備には射撃がない");
+                    continue;
+                }
+            }
+            _wepon.Shooting(ray);
         }
     }
     #endregion
 
     //脚の射撃攻撃
     #region EnemyLegShot
-    protected void EnemyLegShot()
+    protected void EnemyLegShot(Ray ray)
     {
         if (_legList.Count <= 0) return;
         for (int i = 0; i < _legList.Count; i++)
         {
             Weapon _wepon = null;
             _wepon = _legList[i].GetComponent<Weapon>();
-            if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+            if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
             {
-                print("足の" + i + "この装備には射撃がない");
-                continue;
+                print("脚の特殊射撃");
             }
-            _wepon.Shooting();
+            else if (_charaPara._leg_AttackState == Weapon.Attack_State.NULL)
+            {
+                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                {
+                    print("脚の" + i + "この装備には射撃がない");
+                    continue;
+                }
+            }
+            _wepon.Shooting(ray);
         }
     }
     #endregion
