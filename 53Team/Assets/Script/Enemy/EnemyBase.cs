@@ -97,16 +97,24 @@ namespace Enemy
                 {
                     Parts parts = m_boneCollides[n].m_parts;
                     Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", parts.ToString(), dmg);
-                    PartsDamage(dmg, parts, () => {
-                        Debug.Log(parts + "パージ!!");
+                    if(parts == Parts.WeakPoint)
+                    {
+                        Damage(dmg);
+                    }
+                    else
+                    {
+                        PartsDamage(dmg, parts, () => {
+                            Debug.Log(parts + "パージ!!");
 
-                        var list = RightArmArmorList;
-                        for (int j = 0; j < list.Count; j++)
-                        {
-                            list[j].gameObject.GetComponent<Collider>().enabled = true;
-                            list[j].gameObject.AddComponent<Rigidbody>();
-                        }
-                    });
+                            var list = GetPartsList(parts);
+                            for (int j = 0; j < list.Count; j++)
+                            {
+                                list[j].gameObject.GetComponent<Collider>().enabled = true;
+                                list[j].gameObject.AddComponent<Rigidbody>();
+                            }
+                        });
+
+                    }
                 });
             }
 

@@ -43,7 +43,7 @@ namespace Enemy
         }
 
         public override void Initialize()
-        {
+        {            
             ChangeState(standard_State.move);
         }
 
@@ -56,7 +56,31 @@ namespace Enemy
         public override void Damage(int damage)
         {
             Debug.LogFormat("{0}に{1}ダメージ!!", m_enemyStatus.name, damage);
+            base.Damage(damage);
+        }
 
+        public override void Dead()
+        {
+            Debug.Log("死んだぁ！！");
+            var transforms = GetComponentsInChildren<Transform>();
+            Vector3 pos = transform.position;
+
+            for (int i = 0; i < transforms.Length; i++)
+            {
+                if(transform == transforms[i]) { continue; }
+
+                transforms[i].transform.SetParent(transform);
+                var rd = transforms[i].gameObject.AddComponent<Rigidbody>();
+                rd = rd != null ? rd : transform.GetComponent<Rigidbody>();
+                if (rd != null) {
+                    rd.AddExplosionForce(10.0f, pos, 10.0f, 100.0f, ForceMode.Impulse);
+                    Observable.Timer(System.TimeSpan.FromSeconds(Random.Range(5.0f, 8.0f))).Subscribe(_ => 
+                    {
+                        Destroy(rd.gameObject);
+                    });
+                }
+            }
+            // base.Dead();
         }
 
         public Transform[] LootPosition
