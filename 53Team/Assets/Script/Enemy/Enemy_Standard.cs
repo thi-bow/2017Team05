@@ -59,6 +59,12 @@ namespace Enemy
 
         }
 
+        public Transform[] LootPosition
+        {
+            get { return m_lootPosition; }
+            set { m_lootPosition = value; }
+        }
+
 
         #region ---------------  State処理  ---------------
 

@@ -46,6 +46,11 @@ namespace Enemy {
             Debug.LogFormat("{0}に{1}ダメージ!!", m_enemyStatus.name, damage);
         }
 
+        public Transform[] LootPosition
+        {
+            get; set;
+        }
+
         #region ---------------  State処理  ---------------
 
         public class StateSearch : State<Enemy_Turret>

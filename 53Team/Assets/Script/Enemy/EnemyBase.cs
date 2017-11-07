@@ -14,6 +14,9 @@ namespace Enemy
 
         // ダメージ関数
         void Damage(int damage);
+
+        // 移動ルート
+        Transform[] LootPosition { get; set; }
     }
 
 
@@ -22,22 +25,18 @@ namespace Enemy
     public class EnemyStatus
     {
         public string name;
-        public int hp;
-        public int max_hp;
-        public float attackDis;
-        public float attackAng;
-        public float seachMainDis;
-        public float seachMainAng;
-        public float seachSubDis;
-        public float seachSubAng;
-        public float rotateSpd;
+        public float attackDis;         // 攻撃開始距離
+        public float attackAng;         // 攻撃範囲(角度)
+        public float seachMainDis;      // メイン索敵距離
+        public float seachMainAng;      // メイン索敵範囲(角度)
+        public float seachSubDis;       // サブ索敵距離
+        public float seachSubAng;       // サブ索敵範囲(角度)
+        public float rotateSpd;         // 旋回速度
 
 
-        public EnemyStatus(string name, int hp, int max_hp, float attackDis, float attackAng, float seachMainDis, float seachMainAng, float seachSubDis, float seachSubAng, float rotateSpd)
+        public EnemyStatus(string name, float attackDis, float attackAng, float seachMainDis, float seachMainAng, float seachSubDis, float seachSubAng, float rotateSpd)
         {
             this.name = name;
-            this.hp = hp;
-            this.max_hp = max_hp;
             this.attackDis = attackDis;
             this.attackAng = attackAng;
             this.seachMainDis = seachMainDis;
@@ -61,9 +60,6 @@ namespace Enemy
 
         [Header("各部位の当たり判定")]
         public BoneCollide[] m_boneCollides;
-
-        [Header("デバッグ用パーツ")]
-        public Armor m_armor;
 
         // Enemyの初期ステータス
         [Space(10)]
@@ -91,10 +87,7 @@ namespace Enemy
         {
             m_agent = GetComponent<NavMeshAgent>();
 
-            m_enemyStatus.hp = m_enemyStatus.max_hp;
             m_agent.angularSpeed = 30 * m_enemyStatus.rotateSpd;
-
-            if (m_armor != null) { PartsAdd(Parts.RightArm, m_armor); }
 
 
             for (int i = 0; i < m_boneCollides.Length; i++)
@@ -106,8 +99,13 @@ namespace Enemy
                     Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", parts.ToString(), dmg);
                     PartsDamage(dmg, parts, () => {
                         Debug.Log(parts + "パージ!!");
-                        m_armor.gameObject.GetComponent<Collider>().enabled = true;
-                        m_armor.gameObject.AddComponent<Rigidbody>();
+
+                        var list = RightArmArmorList;
+                        for (int j = 0; j < list.Count; j++)
+                        {
+                            list[j].gameObject.GetComponent<Collider>().enabled = true;
+                            list[j].gameObject.AddComponent<Rigidbody>();
+                        }
                     });
                 });
             }
