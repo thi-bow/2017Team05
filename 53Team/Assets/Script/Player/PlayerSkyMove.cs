@@ -9,6 +9,7 @@ public class PlayerSkyMove : MonoBehaviour
     private GameObject _mainCamera = null;
     private Rigidbody _myRigidbody = null;
     Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
+    public int _boosterLevel = 1;
     
     [Header("----------------移動速度---------------------")]
     [SerializeField] private float _moveSpeed = 1.0f;
@@ -40,12 +41,12 @@ public class PlayerSkyMove : MonoBehaviour
         var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
         _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
 
-        if (_player.BoosterArmorList.Count <= 1)
+        if (_boosterLevel <= 1)
         {
             _move *= 0.0f;
         }
 
-        else if (_player.BoosterArmorList.Count <= 2)
+        else if (_boosterLevel <= 2)
         {
             _move *= _moveSpeed * 0.5f;
         }

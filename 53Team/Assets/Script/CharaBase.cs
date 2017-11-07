@@ -37,10 +37,35 @@ public class CharaParameter
     public int _legWeight = 0;
     public int _boosterWeight = 0;
     #endregion
+
+    [Header("キャラクターのWeight")]
+    #region Lv
+    public int _bodyLevel = 1;
+    public int _rightArmLevel = 1;
+    public int _leftArmLevel = 1;
+    public int _legLevel = 1;
+    public int _boosterLevel = 1;
+    #endregion
+
     [Space(10)]
     public int _attack = 1;
     [Space(10)]
     public float _speed = 1.0f;
+
+
+    [Header("キャラクターの装備見た目変更する最低個数")]
+    public int _rightArm_BorderNumber = 5;
+    public int _leftArm_BorderNumber = 5;
+    public int _leg_BorderNumber = 5;
+
+    [Header("キャラクターの装備見た目を切り替える個数")]
+    public int _rightArm_SwitchNumber = 5;
+    public int _leftArm_SwitchNumber = 5;
+    public int _leg_SwitchNumber = 5;
+
+    [System.NonSerialized] public Weapon.Attack_State _rightArm_AttackState = Weapon.Attack_State.shooting;
+    [System.NonSerialized] public Weapon.Attack_State _leftArm_AttackState = Weapon.Attack_State.shooting;
+    [System.NonSerialized] public Weapon.Attack_State _leg_AttackState = Weapon.Attack_State.shooting;
 }
 
 public class CharaBase : MonoBehaviour
@@ -64,13 +89,16 @@ public class CharaBase : MonoBehaviour
     [SerializeField] private List<Armor> _leftArmList = new List<Armor>();
     [SerializeField] private List<Armor> _legList = new List<Armor>();
     [SerializeField] private List<Armor> _boosterList = new List<Armor>();
+    [Space(10)]
+    [SerializeField] private List<Armor> _legPartsPair = new List<Armor>();
     List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
+    [Space(10)]
     [SerializeField] private GameObject[] _partsLocation;
     #endregion
 
-    private Action pargeBefore = null;
+    protected Action _deadAction = null;
 
 
     #region 装備のプロパティ
@@ -155,6 +183,32 @@ public class CharaBase : MonoBehaviour
     {
     }
 
+    protected List<Armor> GetPartsList(Parts partsCheck)
+    {
+        List<Armor> partsList = new List<Armor>();
+        switch (partsCheck)
+        {
+            case Parts.Body:
+                partsList = BodyArmorList;
+                break;
+            case Parts.RightArm:
+                partsList = RightArmArmorList;
+                break;
+            case Parts.LeftArm:
+                partsList = LeftArmArmorList;
+                break;
+            case Parts.Leg:
+                partsList = LegArmorList;
+                break;
+            case Parts.Booster:
+                partsList = BoosterArmorList;
+                break;
+            default:
+                break;
+        }
+        return partsList;
+    }
+
     //パーツの装着
     #region PartsAdd
     public void PartsAdd(Parts parts, Armor armor)
@@ -163,6 +217,7 @@ public class CharaBase : MonoBehaviour
         {
             return;
         }
+        armor.GetComponent<BoxCollider>().enabled = false;
         switch (parts)
         {
             case Parts.Body:
@@ -181,7 +236,26 @@ public class CharaBase : MonoBehaviour
                 _charaPara._rightArmHp += armor.ArmorHpPara;
                 _charaPara._rightArmWeight += armor.ArmorWeightPara;
                 armor.gameObject.transform.SetParent(_partsLocation[1].transform);
-                armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+                armor.transform.localPosition = PartsAddPara.PlayerRightArmPosition[_rightArmList.Count - 1];
+                armor.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerRightArmRotation[_rightArmList.Count - 1]);
+
+                if(_rightArmList.Count < _charaPara._rightArm_BorderNumber)
+                {
+                    break;
+                }
+                int _shootNumber = 0;
+                //右腕が近接攻撃特化か、遠距離攻撃特化か見極める
+                for(int i = 0; i < _rightArmList.Count; i++)
+                {
+                    if (_rightArmList[i].GetComponent<Weapon>() != null && _rightArmList[i].GetComponent<Weapon>().state == Weapon.Attack_State.shooting)
+                    {
+                        _shootNumber++;
+                    }
+                    else if (_rightArmList[i].GetComponent<Weapon>() != null && _rightArmList[i].GetComponent<Weapon>().state == Weapon.Attack_State.approach)
+                    {
+                        _shootNumber--;
+                    }
+                }
                 break;
             case Parts.LeftArm:
                 _leftArmList.Add(armor);
@@ -195,14 +269,20 @@ public class CharaBase : MonoBehaviour
             case Parts.Leg:
                 _legList.Add(armor);
                 //装備のパラメータをプレイヤーに上乗せする
+                Armor pair = Instantiate(armor);
                 _charaPara._legDefense += armor.ArmorDefPara;
                 _charaPara._legHp += armor.ArmorHpPara;
                 _charaPara._legWeight += armor.ArmorWeightPara;
 
-                //足に装着する場合は、右足か左足かランダムで決める
-                int rand = UnityEngine.Random.Range(3, 5);
-                armor.gameObject.transform.SetParent(_partsLocation[rand].transform);
-                armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+                //足に装着する場合は、右足と左足両方に装着する
+                armor.gameObject.transform.SetParent(_partsLocation[3].transform);
+                armor.transform.localPosition = PartsAddPara.PlayerRightLegPosition[_legList.Count - 1];
+                armor.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerRightLegRotation[_legList.Count - 1]);
+                pair.gameObject.transform.SetParent(_partsLocation[4].transform);
+                pair.transform.localPosition = PartsAddPara.PlayerLeftLegPosition[_legList.Count - 1];
+                pair.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerLeftLegRotation[_legList.Count - 1]);
+                _legPartsPair.Add(pair);
+
                 break;
             case Parts.Booster:
                 _boosterList.Add(armor);
@@ -216,8 +296,21 @@ public class CharaBase : MonoBehaviour
             default:
                 break;
         }
-        armor.GetComponent<BoxCollider>().enabled = false;
         _charaPara._totalWeight += armor.ArmorWeightPara;
+    }
+    #endregion
+
+    #region PartsChenge
+    public void PartsChenge()
+    {
+        //近接と射撃で、2個以上の差が付いたら、モデルを変更する
+    }
+    #endregion
+
+    #region PartsCheck
+    protected void PartsCheck()
+    {
+
     }
     #endregion
 
@@ -286,6 +379,11 @@ public class CharaBase : MonoBehaviour
                 _charaPara._legDefense = 0;
                 _charaPara._totalWeight -= _charaPara._legWeight;
                 _charaPara._legWeight = 0;
+                for(int i = 0; i < _legPartsPair.Count; i++)
+                {
+                    Destroy(_legPartsPair[i].gameObject);
+                }
+                _legPartsPair.Clear();
                 break;
             case Parts.Booster:
                 if (_boosterList.Count <= 0) return;
@@ -359,6 +457,25 @@ public class CharaBase : MonoBehaviour
             if (_wepon == null)
             {
                 print("左腕の" + i + "この装備には射撃がない");
+                continue;
+            }
+            _wepon.Shooting();
+        }
+    }
+    #endregion
+
+    //脚の射撃攻撃
+    #region LegShot
+    protected void LegShot()
+    {
+        if (_legList.Count <= 0) return;
+        for (int i = 0; i < _legList.Count; i++)
+        {
+            Weapon _wepon = null;
+            _wepon = _legList[i].GetComponent<Weapon>();
+            if (_wepon == null)
+            {
+                print("足の" + i + "この装備には射撃がない");
                 continue;
             }
             _wepon.Shooting();
@@ -504,7 +621,14 @@ public class CharaBase : MonoBehaviour
     /// </summary>
     public virtual void Dead()
     {
-        Destroy(this.gameObject);
+        if (_deadAction != null)
+        {
+            _deadAction();
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
     #endregion
 
