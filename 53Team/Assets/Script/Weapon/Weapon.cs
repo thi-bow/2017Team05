@@ -93,7 +93,8 @@ public class Weapon : MonoBehaviour {
         }
     }
 
-    public void Shooting() {
+    public void Shooting()
+    {
         if (bullets >= 0)
         {
             ShotTime += Time.deltaTime;
@@ -104,6 +105,31 @@ public class Weapon : MonoBehaviour {
                 Ray ray;
 
                 ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
+
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, distance))
+                {
+                    if (hit.collider)
+                    {
+                        Debug.Log(hit.collider.name);
+                    }
+                }
+                ShotTime = 0;
+            }
+        }
+    }
+
+    public void Shooting(Ray shotRay) {
+        if (bullets >= 0)
+        {
+            ShotTime += Time.deltaTime;
+            if (ShotTime >= 60.0f / m)
+            {
+                bullets--;
+                Vector3 shotPos = tpsCamera.GetComponent<Camera>().ScreenToWorldPoint(center);
+                Ray ray;
+
+                ray = shotRay;
 
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, distance))
