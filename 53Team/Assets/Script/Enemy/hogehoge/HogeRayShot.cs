@@ -5,6 +5,7 @@ using UnityEngine;
 public class HogeRayShot : MonoBehaviour {
 
     public Camera m_camera;
+    public LayerMask m_layerMask;
 
 	// Update is called once per frame
 	void Update () {
@@ -12,7 +13,7 @@ public class HogeRayShot : MonoBehaviour {
         {
             Ray ray = m_camera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit = new RaycastHit();
-            if(Physics.Raycast(ray, out hit))
+            if(Physics.Raycast(ray, out hit, m_layerMask))
             {
                 if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
                 {

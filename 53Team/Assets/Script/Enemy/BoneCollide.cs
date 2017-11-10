@@ -17,15 +17,16 @@ public class BoneCollide : MonoBehaviour {
     /// <summary>
     /// ダメージ関数
     /// </summary>
-    /// <param name="aAttckValue">攻撃側ダメージ</param>
+    /// <param name="aDmg">攻撃側ダメージ</param>
     /// <param name="aExprosition">弱点無視かどうか</param>
-    public void Damage(int aAttckValue, bool aExprosition = false)
+    public void Damage(int aDmg, bool aExprosition = false)
     {
         if(m_weakPoint && !aExprosition)
         {
-            aAttckValue *= 2;
+            aDmg *= 2;
         }
 
-        OnDamage.OnNext(aAttckValue);
+        Debug.LogFormat("{0}パーツに{1}だめーじ", m_parts, aDmg);
+        OnDamage.OnNext(aDmg);
     }
 }
