@@ -96,14 +96,14 @@ namespace Enemy
                 m_boneCollides[n].OnDamage.Subscribe(dmg =>
                 {
                     Parts parts = m_boneCollides[n].m_parts;
-                    Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", parts.ToString(), dmg);
-                    if(parts == Parts.WeakPoint)
+                    Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", parts.ToString(), dmg.value);
+                    if(parts == Parts.WeakPoint || dmg.type == Weapon.Attack_State.approach)
                     {
-                        Damage(dmg);
+                        Damage(dmg.value);
                     }
                     else
                     {
-                        PartsDamage(dmg, parts, () => {
+                        PartsDamage(dmg.value, parts, () => {
                             Debug.Log(parts + "パージ!!");
 
                             var list = GetPartsList(parts);
@@ -249,7 +249,7 @@ namespace Enemy
             // Vector3 targetVec1, targetVec2;
             // targetVec1 = transform.forward
 
-            Sequence sequence = DOTween.Sequence();
+            // Sequence sequence = DOTween.Sequence();
 
             //sequence.Append(aTransform.DORotate())
         }

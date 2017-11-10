@@ -143,7 +143,7 @@ public class Weapon : MonoBehaviour {
             if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
             {
                 print("Hit");
-                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk);
+                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Attack_State.shooting);
             }
         }
         ShotTime = 0;
@@ -162,7 +162,7 @@ public class Weapon : MonoBehaviour {
         {
             if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
             {
-                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk);
+                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Attack_State.shooting);
             }
         }
         ShotTime = 0;

@@ -43,7 +43,10 @@ namespace Enemy
         }
 
         public override void Initialize()
-        {            
+        {
+            if (!m_target) {
+                m_target = GameObject.FindGameObjectWithTag("Player").transform;
+            }
             ChangeState(standard_State.move);
         }
 
