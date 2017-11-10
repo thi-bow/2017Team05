@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx;
 
 public class Player : CharaBase
 {
@@ -36,6 +37,7 @@ public class Player : CharaBase
     [SerializeField] private GameObject _pargeAttack;
     private SphereCollider _pargeColl;
     private bool parge = false;
+    [SerializeField] BoneCollide[] _boneCollide;
 
     // Use this for initialization
     protected override void Start ()
@@ -47,6 +49,18 @@ public class Player : CharaBase
 
         _pargeAttack = GameObject.Find("PargeAttack");
         _pargeColl = _pargeAttack.GetComponent<SphereCollider>();
+
+        if (_boneCollide.Length > 0)
+        {
+            for (int i = 0; i < _boneCollide.Length; i++)
+            {
+                int number = i;
+                _boneCollide[number].OnDamage.Subscribe(n =>
+                {
+                    Parts par = _boneCollide[number].m_parts;
+                });
+            }
+        }
     }
 
     // Update is called once per frame
