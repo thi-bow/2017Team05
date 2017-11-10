@@ -70,10 +70,10 @@ public class Weapon : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            _WeaponChange.Change();
-        }
+        //if (Input.GetKeyDown(KeyCode.C))
+        //{
+        //    _WeaponChange.Change();
+        //}
     }
 
     public void Reload()
@@ -139,8 +139,10 @@ public class Weapon : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, distance))
         {
+            Debug.Log(hit.collider.name);
             if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
             {
+                print("Hit");
                 hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk);
             }
         }
