@@ -87,7 +87,7 @@ public class SceneManagerScript : MonoBehaviour
     void Awake()
     {
         //カーソル非表示
-        Cursor.visible = false;
+        //Cursor.visible = false;
         _eventSystem = GameObject.FindObjectOfType<EventSystem>();
         _fade = _fade_Object.GetComponent<RectTransform>();
         if (_lord != null)
@@ -125,12 +125,12 @@ public class SceneManagerScript : MonoBehaviour
             return;
         }
 
-        //Escキーをおしたらゲーム終了
-        if (Input.GetKeyDown(KeyCode.Escape) || (Input.GetButton("BackButton") && Input.GetButton("Pause")))
-        {
-            QuitCheck();
-            return;
-        }
+        ////Escキーをおしたらゲーム終了
+        //if (Input.GetKeyDown(KeyCode.Escape) || (Input.GetButton("BackButton") && Input.GetButton("Pause")))
+        //{
+        //    QuitCheck();
+        //    return;
+        //}
 
         //放置でシーン移動するならこの下の処理を行う
         if (_leave_Alone == true)
