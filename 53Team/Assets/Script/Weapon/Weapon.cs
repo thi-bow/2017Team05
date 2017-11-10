@@ -13,29 +13,26 @@ public class Weapon : MonoBehaviour {
 
     public Attack_State state;
 
-    [SerializeField] GameObject player;
-
     private GameObject nowWeapon;
 
     private WeaponChange _WeaponChange;
-
-    [SerializeField] private GameObject fpsCamera;
     [SerializeField] private GameObject tpsCamera;
 
-    [SerializeField] private GameObject homing;
-
+    [Header("残弾数")]
     // 残弾数
     public int bullets;
+    [Header("最高装填数")]
     // 最高装填数
     public int maxBullets;
-    // 分間銃撃数
-    public float m;
+    [Header("1分間に何発撃てるか")]
+    // 分間射撃数
+    public float minuteShot;
+    [Header("攻撃力")]
     // 威力
     public int atk;
+    [Header("距離")]
     // 距離
     public float distance;
-    // トータル威力
-    public int total_atk;
 
     // 弾速
     public float shotspeed = 0.01f;
@@ -45,6 +42,8 @@ public class Weapon : MonoBehaviour {
     private bool isReload = false;
     // リロード完了までの経過時間
     private float reloadTime = 0f;
+
+    [Header("リロード時間")]
     // リロード完了までにかかる時間の設定
     [SerializeField]
     private float reloadFinishTime;
@@ -104,7 +103,7 @@ public class Weapon : MonoBehaviour {
         if (bullets >= 0)
         {
             ShotTime += Time.deltaTime;
-            if (ShotTime >= 60.0f / m)
+            if (ShotTime >= 60.0f / minuteShot)
             {
                 StartCoroutine(ShootingInterval());
                 
@@ -117,7 +116,7 @@ public class Weapon : MonoBehaviour {
         if (bullets >= 0)
         {
             ShotTime += Time.deltaTime;
-            if (ShotTime >= 60.0f / m)
+            if (ShotTime >= 60.0f / minuteShot)
             {
                 bullets--;
                 StartCoroutine(ShootingInterval(shotRay));
@@ -140,9 +139,9 @@ public class Weapon : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, distance))
         {
-            if (hit.collider)
+            if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
             {
-                Debug.Log(hit.collider.name);
+                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk);
             }
         }
         ShotTime = 0;
@@ -159,9 +158,9 @@ public class Weapon : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, distance))
         {
-            if (hit.collider)
+            if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
             {
-                Debug.Log(hit.collider.name);
+                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk);
             }
         }
         ShotTime = 0;
