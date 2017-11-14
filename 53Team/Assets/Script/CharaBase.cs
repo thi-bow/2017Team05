@@ -99,7 +99,7 @@ public class CharaBase : MonoBehaviour
     [SerializeField] private List<Armor> _boosterList = new List<Armor>();
 
     [Space(10)]
-    [SerializeField] private List<Armor> _legPartsPair = new List<Armor>();
+    [SerializeField] protected List<Armor> _legPartsPair = new List<Armor>(); //両脚に着けるために、複製したアームを入れるリスト
     List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
@@ -193,6 +193,7 @@ public class CharaBase : MonoBehaviour
     {
     }
 
+    #region GetPartsList
     protected List<Armor> GetPartsList(Parts partsCheck)
     {
         List<Armor> partsList = new List<Armor>();
@@ -218,6 +219,7 @@ public class CharaBase : MonoBehaviour
         }
         return partsList;
     }
+    #endregion
 
     //パーツの装着
     #region PartsAdd
@@ -241,6 +243,7 @@ public class CharaBase : MonoBehaviour
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
                 armor.gameObject.transform.SetParent(_partsLocation[0].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+                armor.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 break;
             case Parts.RightArm:
                 _rightArmList.Add(armor);
@@ -400,6 +403,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._boosterWeight += armor.ArmorWeightPara;
                 armor.gameObject.transform.SetParent(_partsLocation[5].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+                armor.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
                 break;
             default:
                 break;
@@ -519,8 +523,38 @@ public class CharaBase : MonoBehaviour
         }
         for (int i = 0; i < _allPartsList.Count; i++)
         {
-            PartsPurge(_allPartsList[i]);
+            BrowOffParge(_allPartsList[i]);
         }
+    }
+    #endregion
+
+    #region BrowOffParge
+    public void BrowOffParge(Parts parts)
+    {
+        PartsPurge(parts, () => {
+            for (int i = 0; i < GetPartsList(parts).Count; i++)
+            {
+                GetPartsList(parts)[i].gameObject.AddComponent<Rigidbody>();
+                float randx = UnityEngine.Random.Range(-20, 20);
+                float randy = UnityEngine.Random.Range(0, 20);
+                float randz = UnityEngine.Random.Range(-20, 20);
+                GetPartsList(parts)[i].GetComponent<Rigidbody>().velocity = new Vector3(randx, randy, randz);
+                Destroy(GetPartsList(parts)[i].gameObject, 2.0f);
+            }
+            if (parts == Parts.Leg)
+            {
+                for (int i = 0; i < _legPartsPair.Count; i++)
+                {
+                    _legPartsPair[i].gameObject.AddComponent<Rigidbody>();
+                    float randx = UnityEngine.Random.Range(-20, 20);
+                    float randy = UnityEngine.Random.Range(0, 20);
+                    float randz = UnityEngine.Random.Range(-20, 20);
+                    _legPartsPair[i].GetComponent<Rigidbody>().velocity = new Vector3(randx, randy, randz);
+                    Destroy(_legPartsPair[i].gameObject, 2.0f);
+                }
+            }
+
+        });
     }
     #endregion
 

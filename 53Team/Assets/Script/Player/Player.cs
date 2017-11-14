@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx;
 
 public class Player : CharaBase
 {
@@ -32,7 +33,11 @@ public class Player : CharaBase
     public playerSkill _skillStatus = playerSkill.NONE;
     private bool _attackPlay = false;
     #endregion
-    
+
+    [SerializeField] private GameObject _pargeAttack;
+    private SphereCollider _pargeColl;
+    private bool parge = false;
+    [SerializeField] BoneCollide[] _boneCollide;
 
     // Use this for initialization
     protected override void Start ()
@@ -41,11 +46,31 @@ public class Player : CharaBase
         _playerMove = _playerChild.GetComponent<PlayerMove>();
         _playerSkyMove = _playerChild.GetComponent<PlayerSkyMove>();
         _status = playerState.IDLE;
+
+        _pargeAttack = GameObject.Find("PargeAttack");
+        _pargeColl = _pargeAttack.GetComponent<SphereCollider>();
+
+        if (_boneCollide.Length > 0)
+        {
+            for (int i = 0; i < _boneCollide.Length; i++)
+            {
+                int number = i;
+                _boneCollide[number].OnDamage.Subscribe(n =>
+                {
+                    Parts par = _boneCollide[number].m_parts;
+                });
+            }
+        }
     }
 
     // Update is called once per frame
     protected override void Update ()
     {
+        if (Input.GetButtonDown("Parge"))
+        {
+            FullParge(ArmorParge);
+        }
+
         base.Update();
     }
 
@@ -119,6 +144,16 @@ public class Player : CharaBase
         if (other.tag == "Armor")
         {
             PartsAdd(Parts.Body, other.GetComponent<Armor>());
+        }
+    }
+
+    public void ArmorParge()
+    {
+        parge = true;
+        _pargeColl.radius += Time.deltaTime;
+        if (_pargeColl.radius <= 2.0f)
+        {
+            parge = false;
         }
     }
 }
