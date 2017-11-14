@@ -9,6 +9,7 @@ public class CharaParameter
 
     [Header("キャラクターのHP")]
     #region Hp
+    public int _maxHP = 1000;
     public int _hp = 1000;
     public int _bodyHp = 0;
     public int _rightArmHp = 0;
@@ -517,7 +518,6 @@ public class CharaBase : MonoBehaviour
         switch (parts)
         {
             case Parts.Body:
-                _bodyParge = false;
                 if (_bodyList.Count <= 0) return;
                 for (int i = 0; i < _bodyList.Count; i++)
                 {
@@ -531,9 +531,9 @@ public class CharaBase : MonoBehaviour
                 _charaPara._bodyDefense = 0;
                 _charaPara._totalWeight -= _charaPara._bodyWeight;
                 _charaPara._bodyWeight = 0;
+                _bodyParge = false;
                 break;
             case Parts.RightArm:
-                _rightArmParge = false;
                 if (_rightArmList.Count <= 0) return;
                 for (int i = 0; i < _rightArmList.Count; i++)
                 {
@@ -548,9 +548,9 @@ public class CharaBase : MonoBehaviour
                 _charaPara._rightAttack = 0;
                 _charaPara._totalWeight -= _charaPara._rightArmWeight;
                 _charaPara._rightArmWeight = 0;
+                _rightArmParge = false;
                 break;
             case Parts.LeftArm:
-                _leftArmParge = false;
                 if (_leftArmList.Count <= 0) return;
                 for (int i = 0; i < _leftArmList.Count; i++)
                 {
@@ -565,9 +565,9 @@ public class CharaBase : MonoBehaviour
                 _charaPara._leftAttack = 0;
                 _charaPara._totalWeight -= _charaPara._leftArmWeight;
                 _charaPara._leftArmWeight = 0;
+                _leftArmParge = false;
                 break;
             case Parts.Leg:
-                _legParge = false;
                 if (_legList.Count <= 0) return;
                 for (int i = 0; i < _legList.Count; i++)
                 {
@@ -587,9 +587,9 @@ public class CharaBase : MonoBehaviour
                     Destroy(_legPartsPair[i].gameObject);
                 }
                 _legPartsPair.Clear();
+                _legParge = false;
                 break;
             case Parts.Booster:
-                _boosterParge = false;
                 if (_boosterList.Count <= 0) return;
                 for (int i = 0; i < _boosterList.Count; i++)
                 {
@@ -603,6 +603,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._boosterDefense = 0;
                 _charaPara._totalWeight -= _charaPara._boosterWeight;
                 _charaPara._boosterWeight = 0;
+                _boosterParge = false;
                 break;
             default:
                 break;
@@ -615,11 +616,11 @@ public class CharaBase : MonoBehaviour
     public void FullParge(Action action = null)
     {
         //何も装備していなかったら何もしない
-        if(_bodyList.Count + _rightArmList.Count + _leftArmList.Count + _legList.Count + _boosterList.Count <= 0 ||
-            !_fullParge)
+        if(_bodyList.Count + _rightArmList.Count + _leftArmList.Count + _legList.Count + _boosterList.Count <= 0)
         {
             return;
         }
+        _fullParge = true;
         if (action != null)
         {
             action();
@@ -628,6 +629,7 @@ public class CharaBase : MonoBehaviour
         {
             BrowOffParge(_allPartsList[i]);
         }
+        _fullParge = false;
     }
     #endregion
 
@@ -752,7 +754,7 @@ public class CharaBase : MonoBehaviour
     protected void LegShot()
     {
         //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
-        if(!_legStrike && _charaPara._leg_AttackState == Weapon.Attack_State.approach)
+        if(_charaPara._leg_AttackState == Weapon.Attack_State.approach && !_legStrike)
         {
             //ここに近接攻撃を命令するものを作成する
             _legStrike = true;
@@ -839,7 +841,7 @@ public class CharaBase : MonoBehaviour
     protected void EnemyLegShot(Ray ray)
     {
         //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
-        if (!_legStrike && _charaPara._leg_AttackState == Weapon.Attack_State.approach)
+        if (_charaPara._leg_AttackState == Weapon.Attack_State.approach && !_legStrike)
         {
             //ここに近接攻撃を命令するものを作成する
             _legStrike = true;

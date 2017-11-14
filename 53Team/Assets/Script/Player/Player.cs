@@ -99,9 +99,9 @@ public class Player : CharaBase
         }
 
 
-        if (Input.GetButtonDown("Parge"))
+        if (Input.GetButtonDown("Parge") && !_fullParge)
         {
-            FullParge(FullPargeAttack);
+            FullParge(() => { _fullParge = true; PargeAttackCollide(1000, true);});
         }
 
         base.Update();
@@ -203,6 +203,7 @@ public class Player : CharaBase
         }
     }
 
+
     //必殺技をやるときはこの関数を呼ぶ
     public void ArmorParge(Parts parts, Action action)
     {
@@ -212,14 +213,12 @@ public class Player : CharaBase
         BrowOffParge(parts);
     }
 
-    public void FullPargeAttack()
+    public void PargeAttackCollide(int attackPower, bool fullParge = false)
     {
-        parge = true;
-        _pargeColl.radius += Time.deltaTime;
-        if (_pargeColl.radius <= 2.0f)
-        {
-            parge = false;
-            _pargeColl.radius = 0.1f;
-        }
+        float maxSize = 2.0f;
+        _pargeColl.gameObject.SetActive(true);
+        if (fullParge) maxSize = 5.0f;
+        _pargeColl.GetComponent<PargeAttackCollider>().PargeStart(attackPower, maxSize);
+
     }
 }
