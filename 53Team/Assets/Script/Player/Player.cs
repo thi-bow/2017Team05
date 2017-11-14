@@ -33,9 +33,8 @@ public class Player : CharaBase
     public playerSkill _skillStatus = playerSkill.NONE;
     private bool _attackPlay = false;
     #endregion
-
-    [SerializeField] private GameObject _pargeAttack;
-    private SphereCollider _pargeColl;
+    
+    [SerializeField]  private SphereCollider _pargeColl;
     private bool parge = false;
     [SerializeField] BoneCollide[] _boneCollide;
 
@@ -46,10 +45,7 @@ public class Player : CharaBase
         _playerMove = _playerChild.GetComponent<PlayerMove>();
         _playerSkyMove = _playerChild.GetComponent<PlayerSkyMove>();
         _status = playerState.IDLE;
-
-        _pargeAttack = GameObject.Find("PargeAttack");
-        _pargeColl = _pargeAttack.GetComponent<SphereCollider>();
-
+        
         if (_boneCollide.Length > 0)
         {
             for (int i = 0; i < _boneCollide.Length; i++)
@@ -58,6 +54,15 @@ public class Player : CharaBase
                 _boneCollide[number].OnDamage.Subscribe(n =>
                 {
                     Parts par = _boneCollide[number].m_parts;
+                    if (n.type == Weapon.Attack_State.shooting)
+                    {
+                        PartsDamage(n.value, par);
+                    }
+                    else
+                    {
+                        Damage(n.value);
+                    }
+
                 });
             }
         }
@@ -66,6 +71,7 @@ public class Player : CharaBase
     // Update is called once per frame
     protected override void Update ()
     {
+
         if (Input.GetButtonDown("Parge"))
         {
             FullParge(ArmorParge);
@@ -143,7 +149,30 @@ public class Player : CharaBase
         //落ちている武器に当たれば、その武器を装着する
         if (other.tag == "Armor")
         {
-            PartsAdd(Parts.Body, other.GetComponent<Armor>());
+            if (other.GetComponent<Armor>().GetParts == Parts.Body || other.GetComponent<Armor>().GetParts == Parts.Booster)
+            {
+                PartsAdd(other.GetComponent<Armor>().GetParts, other.GetComponent<Armor>());
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        //落ちている武器に当たれば、その武器を装着する
+        if (other.tag == "Armor" && other.GetComponent<Armor>().GetParts != Parts.Body && other.GetComponent<Armor>().GetParts != Parts.Booster)
+        {
+            if (Input.GetAxis("crossX") > 0)
+            {
+                PartsAdd(Parts.RightArm, other.GetComponent<Armor>());
+            }
+            if (Input.GetAxis("crossX") < 0)
+            {
+                PartsAdd(Parts.LeftArm, other.GetComponent<Armor>());
+            }
+            if (Input.GetAxis("crossY") > 0)
+            {
+                PartsAdd(Parts.Leg, other.GetComponent<Armor>());
+            }
         }
     }
 

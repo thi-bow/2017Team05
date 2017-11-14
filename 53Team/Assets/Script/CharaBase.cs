@@ -96,13 +96,18 @@ public class CharaBase : MonoBehaviour
     [SerializeField] private List<Armor> _rightArmList = new List<Armor>();
     [SerializeField] private List<Armor> _leftArmList = new List<Armor>();
     [SerializeField] private List<Armor> _legList = new List<Armor>();
-    [SerializeField] private List<Armor> _boosterList = new List<Armor>();
-
-    [Space(10)]
+    [SerializeField] private List<Armor> _boosterList = new List<Armor>();    
     [SerializeField] protected List<Armor> _legPartsPair = new List<Armor>(); //両脚に着けるために、複製したアームを入れるリスト
     List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
+
+    protected bool _fullParge = false;
+    protected bool _bodyParge = false;
+    protected bool _rightArmParge = false;
+    protected bool _leftArmParge = false;
+    protected bool _legParge = false;
+    protected bool _boosterParge = false;
 
     [Space(10)]
     [SerializeField] private GameObject[] _partsLocation;
@@ -244,6 +249,12 @@ public class CharaBase : MonoBehaviour
                 armor.gameObject.transform.SetParent(_partsLocation[0].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                PartsLevelChenge(_bodyList.Count, out _charaPara._bodyLevel);
+
+                if (_charaPara._bodyLevel >= 3)
+                {
+                    _bodyParge = true;
+                }
                 break;
             case Parts.RightArm:
                 _rightArmList.Add(armor);
@@ -292,6 +303,13 @@ public class CharaBase : MonoBehaviour
                     print("右腕をガラクタがくっついている状態に切り替えた");
                     _charaPara._rightArm_AttackState = Weapon.Attack_State.NULL;
                 }
+
+                PartsLevelChenge(_rightArmList.Count, out _charaPara._rightArmLevel);
+
+                if (_charaPara._rightArmLevel >= 3)
+                {
+                    _rightArmParge = true;
+                }
                 break;
             case Parts.LeftArm:
                 _leftArmList.Add(armor);
@@ -338,6 +356,13 @@ public class CharaBase : MonoBehaviour
                 {
                     print("左腕をガラクタがくっついている状態に切り替えた");
                     _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
+                }
+
+                PartsLevelChenge(_leftArmList.Count, out _charaPara._leftArmLevel);
+
+                if (_charaPara._leftArmLevel >= 3)
+                {
+                    _leftArmParge = true;
                 }
                 break;
             case Parts.Leg:
@@ -394,6 +419,13 @@ public class CharaBase : MonoBehaviour
                     print("脚をガラクタがくっついている状態に切り替えた");
                     _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
                 }
+
+                PartsLevelChenge(_legList.Count, out _charaPara._legLevel);
+
+                if (_charaPara._legLevel >= 3)
+                {
+                    _legParge = true;
+                }
                 break;
             case Parts.Booster:
                 _boosterList.Add(armor);
@@ -404,6 +436,13 @@ public class CharaBase : MonoBehaviour
                 armor.gameObject.transform.SetParent(_partsLocation[5].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
+
+                PartsLevelChenge(_boosterList.Count, out _charaPara._boosterLevel);
+
+                if (_charaPara._boosterLevel >= 3)
+                {
+                    _boosterParge = true;
+                }
                 break;
             default:
                 break;
@@ -411,7 +450,27 @@ public class CharaBase : MonoBehaviour
         _charaPara._totalWeight += armor.ArmorWeightPara;
     }
     #endregion
-    
+
+    #region PartsLevelChenge
+    private void PartsLevelChenge(int count, out int level)
+    {
+        int checkLevel = 0;
+        if(count >= 8)
+        {
+            checkLevel = 3;
+        }
+        else if(count >= 3)
+        {
+            checkLevel = 2;
+        }
+        else
+        {
+            checkLevel = 1;
+        }
+        level = checkLevel;
+    }
+    #endregion
+
 
     //部位ごとにパージする
     #region PartsPurge
@@ -420,6 +479,7 @@ public class CharaBase : MonoBehaviour
         switch (parts)
         {
             case Parts.Body:
+                _bodyParge = false;
                 if (_bodyList.Count <= 0) return;
                 for (int i = 0; i < _bodyList.Count; i++)
                 {
@@ -435,6 +495,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._bodyWeight = 0;
                 break;
             case Parts.RightArm:
+                _rightArmParge = false;
                 if (_rightArmList.Count <= 0) return;
                 for (int i = 0; i < _rightArmList.Count; i++)
                 {
@@ -451,6 +512,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._rightArmWeight = 0;
                 break;
             case Parts.LeftArm:
+                _leftArmParge = false;
                 if (_leftArmList.Count <= 0) return;
                 for (int i = 0; i < _leftArmList.Count; i++)
                 {
@@ -467,6 +529,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._leftArmWeight = 0;
                 break;
             case Parts.Leg:
+                _legParge = false;
                 if (_legList.Count <= 0) return;
                 for (int i = 0; i < _legList.Count; i++)
                 {
@@ -488,6 +551,7 @@ public class CharaBase : MonoBehaviour
                 _legPartsPair.Clear();
                 break;
             case Parts.Booster:
+                _boosterParge = false;
                 if (_boosterList.Count <= 0) return;
                 for (int i = 0; i < _boosterList.Count; i++)
                 {
@@ -513,7 +577,8 @@ public class CharaBase : MonoBehaviour
     public void FullParge(Action action = null)
     {
         //何も装備していなかったら何もしない
-        if(_bodyList.Count + _rightArmList.Count + _leftArmList.Count + _legList.Count + _boosterList.Count <= 0)
+        if(_bodyList.Count + _rightArmList.Count + _leftArmList.Count + _legList.Count + _boosterList.Count <= 0 ||
+            !_fullParge)
         {
             return;
         }
