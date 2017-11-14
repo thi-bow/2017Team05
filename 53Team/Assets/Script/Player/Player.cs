@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using UniRx;
 
 public class Player : CharaBase
@@ -71,10 +72,36 @@ public class Player : CharaBase
     // Update is called once per frame
     protected override void Update ()
     {
+        //右腕の攻撃
+        if(Input.GetAxis("ArmShot") > 0.5f )
+        {
+            RightArmtShot();
+        }
+        else if(Input.GetButtonDown("RightArmStrike") && !_rightArmStrike)
+        {
+            _rightArmStrike = true;
+        }
+
+        //左腕の攻撃
+        if (Input.GetAxis("ArmShot") < -0.5f)
+        {
+            LeftArmShot();
+        }
+        else if (Input.GetButtonDown("LeftArmStrike") && !_leftArmStrike)
+        {
+            _leftArmStrike = true;
+        }
+
+        //脚の攻撃
+        if(Input.GetButton("LegAttack"))
+        {
+            LegShot();
+        }
+
 
         if (Input.GetButtonDown("Parge"))
         {
-            FullParge(ArmorParge);
+            FullParge(FullPargeAttack);
         }
 
         base.Update();
@@ -176,13 +203,23 @@ public class Player : CharaBase
         }
     }
 
-    public void ArmorParge()
+    //必殺技をやるときはこの関数を呼ぶ
+    public void ArmorParge(Parts parts, Action action)
+    {
+        //この中にパージしたときの必殺技処理を入れる
+        action();
+        //
+        BrowOffParge(parts);
+    }
+
+    public void FullPargeAttack()
     {
         parge = true;
         _pargeColl.radius += Time.deltaTime;
         if (_pargeColl.radius <= 2.0f)
         {
             parge = false;
+            _pargeColl.radius = 0.1f;
         }
     }
 }

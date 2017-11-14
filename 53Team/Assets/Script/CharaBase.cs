@@ -109,8 +109,19 @@ public class CharaBase : MonoBehaviour
     protected bool _legParge = false;
     protected bool _boosterParge = false;
 
+
     [Space(10)]
     [SerializeField] private GameObject[] _partsLocation;
+
+    protected bool _rightArmStrike = false;
+    protected bool _leftArmStrike = false;
+    protected bool _legStrike = false;
+    [SerializeField] private float _rightStrikeCoolTime = 3.0f;
+    private float _rightStrileCoolCount = 0.0f;
+    [SerializeField] private float _leftStrikeCoolTime = 3.0f;
+    private float _leftStrileCoolCount = 0.0f;
+    [SerializeField] private float _legStrikeCoolTime = 3.0f;
+    private float _legStrileCoolCount = 0.0f;
     #endregion
 
     protected Action _deadAction = null;
@@ -196,6 +207,33 @@ public class CharaBase : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update ()
     {
+        if(_rightArmStrike)
+        {
+            _rightStrileCoolCount += Time.deltaTime;
+            if(_rightStrileCoolCount >= _rightStrikeCoolTime)
+            {
+                _rightStrileCoolCount = 0.0f;
+                _rightArmStrike = false;
+            }
+        }
+        if (_leftArmStrike)
+        {
+            _legStrileCoolCount += Time.deltaTime;
+            if (_legStrileCoolCount >= _legStrikeCoolTime)
+            {
+                _legStrileCoolCount = 0.0f;
+                _leftArmStrike = false;
+            }
+        }
+        if (_legStrike)
+        {
+            _legStrileCoolCount += Time.deltaTime;
+            if (_legStrileCoolCount >= _legStrikeCoolTime)
+            {
+                _legStrileCoolCount = 0.0f;
+                _legStrike = false;
+            }
+        }
     }
 
     #region GetPartsList
@@ -665,6 +703,7 @@ public class CharaBase : MonoBehaviour
         {
             Weapon _wepon = null;
             _wepon = _rightArmList[i].GetComponent<Weapon>();
+            //特殊射撃かどうか
             if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
             {
                 print("右腕の特殊射撃");
@@ -708,11 +747,20 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
-    //脚の射撃攻撃
+    //脚の攻撃
     #region LegShot
     protected void LegShot()
     {
-        if (_legList.Count <= 0) return;
+        //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
+        if(!_legStrike && _charaPara._leg_AttackState == Weapon.Attack_State.approach)
+        {
+            //ここに近接攻撃を命令するものを作成する
+            _legStrike = true;
+            return;
+        }
+
+        //脚の攻撃状態が近接、もしくは武器を装着していなかったら攻撃はできない
+        if (_legList.Count <= 0 || _charaPara._leg_AttackState == Weapon.Attack_State.approach) return;
         for (int i = 0; i < _legList.Count; i++)
         {
             Weapon _wepon = null;
@@ -734,7 +782,7 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
-    //右腕の射撃攻撃
+    //敵の右腕の射撃攻撃
     #region EnemyRightArmtShot
     protected void EnemyRightArmtShot(Ray ray)
     {
@@ -760,7 +808,7 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
-    //左腕の射撃攻撃
+    //敵の左腕の射撃攻撃
     #region EnemyLeftArmShot
     protected void EnemyLeftArmShot(Ray ray)
     {
@@ -786,11 +834,20 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
-    //脚の射撃攻撃
+    //敵の脚の射撃攻撃
     #region EnemyLegShot
     protected void EnemyLegShot(Ray ray)
     {
-        if (_legList.Count <= 0) return;
+        //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
+        if (!_legStrike && _charaPara._leg_AttackState == Weapon.Attack_State.approach)
+        {
+            //ここに近接攻撃を命令するものを作成する
+            _legStrike = true;
+            return;
+        }
+
+        //脚の攻撃状態が近接、もしくは武器を装着していなかったら攻撃はできない
+        if (_legList.Count <= 0 || _charaPara._leg_AttackState == Weapon.Attack_State.approach) return;
         for (int i = 0; i < _legList.Count; i++)
         {
             Weapon _wepon = null;
