@@ -9,7 +9,6 @@ public class PlayerSkyMove : MonoBehaviour
     private GameObject _mainCamera = null;
     private Rigidbody _myRigidbody = null;
     Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
-    public int _boosterLevel = 1;
     
     [Header("----------------移動速度---------------------")]
     [SerializeField] private float _moveSpeed = 1.0f;
@@ -17,6 +16,8 @@ public class PlayerSkyMove : MonoBehaviour
     [SerializeField] private float _downSpeed = 2.0f;
     public bool _useBoostFlg = false;
     [SerializeField] private  float _boostGage = 100.0f;
+    private bool _boostParge = false;
+    private float _pargeCount = 0.0f;
 
     // Use this for initialization
     void Start ()
@@ -33,6 +34,17 @@ public class PlayerSkyMove : MonoBehaviour
 
     public void SkyMove()
     {
+        if(_boostParge)
+        {
+            PargeSkyMove();
+            return;
+        }
+
+        if(_boostGage <= 0)
+        {
+            _useBoostFlg = false;
+            return;
+        }
         if(Input.GetButtonDown("Jump"))
         {
             _useBoostFlg = !_useBoostFlg;
@@ -41,17 +53,18 @@ public class PlayerSkyMove : MonoBehaviour
         var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
         _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
 
-        if (_boosterLevel <= 1)
+        if (_player._charaPara._boosterLevel <= 1)
         {
             _move *= 0.0f;
         }
 
-        else if (_boosterLevel <= 2)
+        else if (_player._charaPara._boosterLevel <= 2)
         {
             _move *= _moveSpeed * 0.5f;
         }
         else
         {
+            print("ブーストレベル3");
             _move *= _moveSpeed;
         }
 
@@ -70,8 +83,13 @@ public class PlayerSkyMove : MonoBehaviour
         {
             _move += new Vector3(0, _downSpeed, 0);
         }
-
+        
         _myRigidbody.MovePosition(_parent.transform.localPosition + _move);
+    }
+
+    void PargeSkyMove()
+    {
+
     }
 
     public bool UseBoost
