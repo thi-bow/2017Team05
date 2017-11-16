@@ -120,6 +120,11 @@ public class Player : CharaBase
             {
                 _playerSkyMove.BoostGage += 1.0f;
             }
+
+            if (_playerSkyMove.BoostGage < _playerSkyMove._maxBosstGage)
+            {
+                _playerSkyMove.BoostGage += 1.0f;
+            }
         }
     }
 

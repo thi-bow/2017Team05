@@ -264,7 +264,8 @@ public class PlayerMove : MonoBehaviour
             _jumpFlg = false;
             _playerSkyMove.UseBoost = true;
             _myRB.useGravity = false;
-            _myRB.velocity = new Vector3(0, 0, 0);
+            _playerSkyMove.boostVelocity = _myRB.velocity;
+            _myRB.velocity = Vector3.zero;
             return;
         }
         if(_slidingFlg)

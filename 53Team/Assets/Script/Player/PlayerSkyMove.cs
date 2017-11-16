@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerSkyMove : MonoBehaviour
 {
-    private GameObject _parent = null;
     [SerializeField] private Player _player;
     private GameObject _mainCamera = null;
     private Rigidbody _myRigidbody = null;
@@ -14,7 +13,9 @@ public class PlayerSkyMove : MonoBehaviour
     [SerializeField] private float _moveSpeed = 1.0f;
     [SerializeField] private float _boostPower = 2.0f;
     [SerializeField] private float _downSpeed = 2.0f;
+    [System.NonSerialized] public Vector3 boostVelocity = Vector3.zero;
     public bool _useBoostFlg = false;
+    [System.NonSerialized] public float _maxBosstGage = 0.0f;
     [SerializeField] private  float _boostGage = 100.0f;
     private bool _boostParge = false;
     private float _pargeCount = 0.0f;
@@ -22,9 +23,9 @@ public class PlayerSkyMove : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        _parent = this.transform.parent.gameObject;
         _mainCamera = _player._mainCamera;
-        _myRigidbody = _parent.GetComponent<Rigidbody>();
+        _myRigidbody = _player.GetComponent<Rigidbody>();
+        _maxBosstGage = _boostGage;
     }
 	
 	// Update is called once per frame
@@ -39,13 +40,8 @@ public class PlayerSkyMove : MonoBehaviour
             PargeSkyMove();
             return;
         }
-
-        if(_boostGage <= 0)
-        {
-            _useBoostFlg = false;
-            return;
-        }
-        if(Input.GetButtonDown("Jump"))
+        
+        if(Input.GetButtonDown("Jump") && _boostGage > 0 )
         {
             _useBoostFlg = !_useBoostFlg;
         }
@@ -60,18 +56,30 @@ public class PlayerSkyMove : MonoBehaviour
 
         else if (_player._charaPara._boosterLevel <= 2)
         {
-            _move *= _moveSpeed * 0.5f;
+            _move *= 0.5f;
         }
         else
         {
             print("ブーストレベル3");
-            _move *= _moveSpeed;
+            _move *= 1.0f;
         }
 
         //上昇Flagが立っている間は上昇、それ以外は下降する
         if (_useBoostFlg)
         {
-            _move += new Vector3(0, _boostPower, 0) + (_myRigidbody.velocity * 0.9f);
+            if (_player._charaPara._boosterLevel >= 2)
+            {
+                _move += new Vector3(0, _boostPower, 0);
+            }
+            else if (boostVelocity.y >= 0)
+            {
+                _move += new Vector3(0, _boostPower, 0) + (boostVelocity * 0.1f);
+            }
+            else
+            {
+                _move += new Vector3(0, _boostPower, 0) + new Vector3(boostVelocity.x, 0.0f, boostVelocity.z) * 0.03f;
+            }
+            Debug.Log(_myRigidbody.velocity * 0.9f);
             _boostGage -= 1.0f;
             if(_boostGage <= 0)
             {
@@ -81,10 +89,18 @@ public class PlayerSkyMove : MonoBehaviour
         }
         else
         {
-            _move += new Vector3(0, _downSpeed, 0);
+
+            if (_player._charaPara._boosterLevel >= 2)
+            {
+                _move += new Vector3(0, _downSpeed, 0);
+            }
+            else
+            {
+                _move += new Vector3(0, _downSpeed, 0) + new Vector3(boostVelocity.x, 0.0f, boostVelocity.z) * 0.03f;
+            }
         }
-        
-        _myRigidbody.MovePosition(_parent.transform.localPosition + _move);
+        _move *= _moveSpeed;
+        _myRigidbody.MovePosition(_player.transform.localPosition + _move);
     }
 
     void PargeSkyMove()
