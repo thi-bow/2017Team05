@@ -105,7 +105,11 @@ public class PlayerSkyMove : MonoBehaviour
 
     void PargeSkyMove()
     {
-
+        var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+        _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
+        _move += new Vector3(0, _boostPower, 0) + new Vector3(boostVelocity.x, 0.0f, boostVelocity.z) * 0.03f;
+        _move *= _moveSpeed;
+        _myRigidbody.MovePosition(_player.transform.localPosition + _move);
     }
 
     public bool UseBoost
