@@ -709,6 +709,23 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
+    #region PargeAttack
+    public void PargeAttack(Parts parts)
+    {
+        switch (parts)
+        {
+            case Parts.RightArm:
+                break;
+            case Parts.LeftArm:
+                break;
+            case Parts.Leg:
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+
     #region BrowOffParge
     public void BrowOffParge(Parts parts)
     {
@@ -736,39 +753,6 @@ public class CharaBase : MonoBehaviour
             }
 
         });
-    }
-    #endregion
-
-    #region PargeAttack
-    public void PargeAttack(Parts parts)
-    {
-        switch (parts)
-        {
-            case Parts.Body:
-                _partsLocation[0].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[0].transform.parent = null;
-                break;
-            case Parts.RightArm:
-                _partsLocation[1].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[1].transform.parent = null;
-                break;
-            case Parts.LeftArm:
-                _partsLocation[2].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[2].transform.parent = null;
-                break;
-            case Parts.Leg:
-                _partsLocation[3].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[4].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[3].transform.parent = null;
-                _partsLocation[4].transform.parent = null;
-                break;
-            case Parts.Booster:;
-                _partsLocation[5].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[5].transform.parent = null;
-                break;
-            default:
-                break;
-        }
     }
     #endregion
 
