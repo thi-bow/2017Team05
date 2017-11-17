@@ -15,7 +15,7 @@ public class PlayerMove : MonoBehaviour
     // インスペクターで主観カメラを紐づける
     [SerializeField]private GameObject firstPersonCamera;
     // インスペクターで第三者視点カメラを紐づける
-    [SerializeField]private GameObject thirdPersonCamera;
+    [SerializeField]private TPS_Camera thirdPersonCamera;
 
     #region 移動に関する変数
     [Header("----------------移動速度---------------------")]
@@ -135,7 +135,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         // キャラクターの向きを進行方向に
-        if (_move != Vector3.zero && thirdPersonCamera.activeInHierarchy)
+        if (_move != Vector3.zero && thirdPersonCamera.gameObject.activeInHierarchy)
         {
             transform.rotation = Quaternion.LookRotation(_move);
         }
@@ -145,7 +145,7 @@ public class PlayerMove : MonoBehaviour
         {
             // ↓現在のactive状態から反転 
             firstPersonCamera.SetActive(!firstPersonCamera.activeInHierarchy);
-            thirdPersonCamera.SetActive(!thirdPersonCamera.activeInHierarchy);
+            thirdPersonCamera.gameObject.SetActive(!thirdPersonCamera.gameObject.activeInHierarchy);
         }
 
 
