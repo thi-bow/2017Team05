@@ -9,6 +9,7 @@ public class CharaParameter
 
     [Header("キャラクターのHP")]
     #region Hp
+    public int _maxHP = 1000;
     public int _hp = 1000;
     public int _bodyHp = 0;
     public int _rightArmHp = 0;
@@ -96,16 +97,34 @@ public class CharaBase : MonoBehaviour
     [SerializeField] private List<Armor> _rightArmList = new List<Armor>();
     [SerializeField] private List<Armor> _leftArmList = new List<Armor>();
     [SerializeField] private List<Armor> _legList = new List<Armor>();
-    [SerializeField] private List<Armor> _boosterList = new List<Armor>();
-
-    [Space(10)]
+    [SerializeField] private List<Armor> _boosterList = new List<Armor>();    
     [SerializeField] protected List<Armor> _legPartsPair = new List<Armor>(); //両脚に着けるために、複製したアームを入れるリスト
     List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
 
+    protected bool _fullParge = false;
+    protected bool _bodyParge = false;
+    protected bool _rightArmParge = false;
+    protected bool _leftArmParge = false;
+    protected bool _legParge = false;
+    protected bool _boosterParge = false;
+
+
     [Space(10)]
     [SerializeField] private GameObject[] _partsLocation;
+    [SerializeField] private GameObject[] _specialWepon_Shot;
+    [SerializeField] private GameObject[] _specialWepon_Approach;
+
+    protected bool _rightArmStrike = false;
+    protected bool _leftArmStrike = false;
+    protected bool _legStrike = false;
+    [SerializeField] private float _rightStrikeCoolTime = 3.0f;
+    private float _rightStrileCoolCount = 0.0f;
+    [SerializeField] private float _leftStrikeCoolTime = 3.0f;
+    private float _leftStrileCoolCount = 0.0f;
+    [SerializeField] private float _legStrikeCoolTime = 3.0f;
+    private float _legStrileCoolCount = 0.0f;
     #endregion
 
     protected Action _deadAction = null;
@@ -191,6 +210,33 @@ public class CharaBase : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update ()
     {
+        if(_rightArmStrike)
+        {
+            _rightStrileCoolCount += Time.deltaTime;
+            if(_rightStrileCoolCount >= _rightStrikeCoolTime)
+            {
+                _rightStrileCoolCount = 0.0f;
+                _rightArmStrike = false;
+            }
+        }
+        if (_leftArmStrike)
+        {
+            _legStrileCoolCount += Time.deltaTime;
+            if (_legStrileCoolCount >= _legStrikeCoolTime)
+            {
+                _legStrileCoolCount = 0.0f;
+                _leftArmStrike = false;
+            }
+        }
+        if (_legStrike)
+        {
+            _legStrileCoolCount += Time.deltaTime;
+            if (_legStrileCoolCount >= _legStrikeCoolTime)
+            {
+                _legStrileCoolCount = 0.0f;
+                _legStrike = false;
+            }
+        }
     }
 
     #region GetPartsList
@@ -244,6 +290,12 @@ public class CharaBase : MonoBehaviour
                 armor.gameObject.transform.SetParent(_partsLocation[0].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                PartsLevelChenge(_bodyList.Count, out _charaPara._bodyLevel);
+
+                if (_charaPara._bodyLevel >= 3)
+                {
+                    _bodyParge = true;
+                }
                 break;
             case Parts.RightArm:
                 _rightArmList.Add(armor);
@@ -279,18 +331,50 @@ public class CharaBase : MonoBehaviour
                 }
                 if(_shootNumber >= _charaPara._rightArm_SwitchNumber)
                 {
-                    print("右腕を遠距離攻撃に切り替えた");
-                    _charaPara._rightArm_AttackState = Weapon.Attack_State.shooting;
+                    if (_charaPara._rightArm_AttackState != Weapon.Attack_State.shooting)
+                    {
+                        print("右腕を遠距離攻撃に切り替えた");
+                        //遠距離特殊武器のActiveをtrueにし、近距離攻撃のActiveをfalseにする
+                        _specialWepon_Shot[0].SetActive(true);
+                        _specialWepon_Approach[0].SetActive(false);
+                        //
+                        _partsLocation[1].gameObject.SetActive(false);
+                        _charaPara._rightArm_AttackState = Weapon.Attack_State.shooting;
+                    }
                 }
                 else if(_shootNumber <= -_charaPara._rightArm_SwitchNumber)
                 {
-                    print("右腕を近距離攻撃に切り替えた");
-                    _charaPara._rightArm_AttackState = Weapon.Attack_State.approach;
+                    if (_charaPara._rightArm_AttackState != Weapon.Attack_State.approach)
+                    {
+                        print("右腕を近距離攻撃に切り替えた");
+                        //近距離特殊武器のActiveをtrueにし、遠距離攻撃のActiveをfalseにする
+                        _specialWepon_Shot[0].SetActive(false);
+                        _specialWepon_Approach[0].SetActive(true);
+                        //
+                        _partsLocation[1].gameObject.SetActive(false);
+                        _charaPara._rightArm_AttackState = Weapon.Attack_State.approach;
+                    }
                 }
                 else
                 {
-                    print("右腕をガラクタがくっついている状態に切り替えた");
-                    _charaPara._rightArm_AttackState = Weapon.Attack_State.NULL;
+                    //特殊状態から切り替えるときは、武器のActiveがfalseになったいるためtrueにする
+                    if (_charaPara._rightArm_AttackState != Weapon.Attack_State.NULL)
+                    {
+                        print("右腕をガラクタがくっついている状態に切り替えた");
+                        //近距離特殊武器と遠距離攻撃のActiveをfalseにする
+                        _specialWepon_Shot[0].SetActive(false);
+                        _specialWepon_Approach[0].SetActive(false);
+                        //
+                        _partsLocation[1].gameObject.SetActive(true);
+                        _charaPara._rightArm_AttackState = Weapon.Attack_State.NULL;
+                    }
+                }
+
+                PartsLevelChenge(_rightArmList.Count, out _charaPara._rightArmLevel);
+
+                if (_charaPara._rightArmLevel >= 3)
+                {
+                    _rightArmParge = true;
                 }
                 break;
             case Parts.LeftArm:
@@ -327,17 +411,43 @@ public class CharaBase : MonoBehaviour
                 if (_shootNumber >= _charaPara._leftArm_SwitchNumber)
                 {
                     print("左腕を遠距離攻撃に切り替えた");
+                    //遠距離特殊武器のActiveをtrueにし、近距離攻撃のActiveをfalseにする
+                    _specialWepon_Shot[1].SetActive(true);
+                    _specialWepon_Approach[1].SetActive(false);
+                    //
+                    _partsLocation[2].gameObject.SetActive(false);
                     _charaPara._leftArm_AttackState = Weapon.Attack_State.shooting;
                 }
                 else if (_shootNumber <= -_charaPara._leftArm_SwitchNumber)
                 {
                     print("左腕を近距離攻撃に切り替えた");
+                    //近距離特殊武器のActiveをtrueにし、遠距離攻撃のActiveをfalseにする
+                    _specialWepon_Shot[1].SetActive(false);
+                    _specialWepon_Approach[1].SetActive(true);
+                    //
+                    _partsLocation[2].gameObject.SetActive(false);
                     _charaPara._leftArm_AttackState = Weapon.Attack_State.approach;
                 }
                 else
                 {
-                    print("左腕をガラクタがくっついている状態に切り替えた");
-                    _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
+                    //特殊状態から切り替えるときは、武器のActiveがfalseになったいるためtrueにする
+                    if(_charaPara._leg_AttackState != Weapon.Attack_State.NULL)
+                    {
+                        print("左腕をガラクタがくっついている状態に切り替えた");
+                        //近距離特殊武器と遠距離攻撃のActiveをfalseにする
+                        _specialWepon_Shot[1].SetActive(false);
+                        _specialWepon_Approach[1].SetActive(false);
+                        //
+                        _partsLocation[2].gameObject.SetActive(true);
+                        _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
+                    }
+                }
+
+                PartsLevelChenge(_leftArmList.Count, out _charaPara._leftArmLevel);
+
+                if (_charaPara._leftArmLevel >= 3)
+                {
+                    _leftArmParge = true;
                 }
                 break;
             case Parts.Leg:
@@ -381,18 +491,53 @@ public class CharaBase : MonoBehaviour
                 }
                 if (_shootNumber >= _charaPara._leg_SwitchNumber)
                 {
-                    print("脚を遠距離攻撃に切り替えた");
-                    _charaPara._leg_AttackState = Weapon.Attack_State.shooting;
+                    if (_charaPara._leg_AttackState != Weapon.Attack_State.shooting)
+                    {
+                        print("脚を遠距離攻撃に切り替えた");
+                        //遠距離特殊武器のActiveをtrueにし、近距離攻撃のActiveをfalseにする
+                        _specialWepon_Shot[2].SetActive(true);
+                        _specialWepon_Approach[2].SetActive(false);
+                        //
+                        _partsLocation[3].gameObject.SetActive(false);
+                        _partsLocation[4].gameObject.SetActive(false);
+                        _charaPara._leg_AttackState = Weapon.Attack_State.shooting;
+                    }
                 }
                 else if (_shootNumber <= -_charaPara._leg_SwitchNumber)
                 {
-                    print("脚を近距離攻撃に切り替えた");
-                    _charaPara._leg_AttackState = Weapon.Attack_State.approach;
+                    if (_charaPara._leg_AttackState != Weapon.Attack_State.approach)
+                    {
+                        print("脚を近距離攻撃に切り替えた");
+                        //近距離特殊武器のActiveをtrueにし、遠距離攻撃のActiveをfalseにする
+                        _specialWepon_Shot[2].SetActive(false);
+                        _specialWepon_Approach[2].SetActive(true);
+
+                        //
+                        _partsLocation[3].gameObject.SetActive(false);
+                        _partsLocation[4].gameObject.SetActive(false);
+                        _charaPara._leg_AttackState = Weapon.Attack_State.approach;
+                    }
                 }
                 else
                 {
-                    print("脚をガラクタがくっついている状態に切り替えた");
-                    _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
+                    if (_charaPara._leg_AttackState != Weapon.Attack_State.NULL)
+                    {
+                        print("脚をガラクタがくっついている状態に切り替えた");
+                        //近距離特殊武器と遠距離攻撃のActiveをfalseにする
+                        _specialWepon_Shot[2].SetActive(false);
+                        _specialWepon_Approach[2].SetActive(false);
+                        //
+                        _partsLocation[3].gameObject.SetActive(true);
+                        _partsLocation[4].gameObject.SetActive(true);
+                        _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
+                    }
+                }
+
+                PartsLevelChenge(_legList.Count, out _charaPara._legLevel);
+
+                if (_charaPara._legLevel >= 3)
+                {
+                    _legParge = true;
                 }
                 break;
             case Parts.Booster:
@@ -404,6 +549,13 @@ public class CharaBase : MonoBehaviour
                 armor.gameObject.transform.SetParent(_partsLocation[5].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
+
+                PartsLevelChenge(_boosterList.Count, out _charaPara._boosterLevel);
+
+                if (_charaPara._boosterLevel >= 3)
+                {
+                    _boosterParge = true;
+                }
                 break;
             default:
                 break;
@@ -411,7 +563,27 @@ public class CharaBase : MonoBehaviour
         _charaPara._totalWeight += armor.ArmorWeightPara;
     }
     #endregion
-    
+
+    #region PartsLevelChenge
+    private void PartsLevelChenge(int count, out int level)
+    {
+        int checkLevel = 0;
+        if(count >= 8)
+        {
+            checkLevel = 3;
+        }
+        else if(count >= 3)
+        {
+            checkLevel = 2;
+        }
+        else
+        {
+            checkLevel = 1;
+        }
+        level = checkLevel;
+    }
+    #endregion
+
 
     //部位ごとにパージする
     #region PartsPurge
@@ -433,6 +605,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._bodyDefense = 0;
                 _charaPara._totalWeight -= _charaPara._bodyWeight;
                 _charaPara._bodyWeight = 0;
+                _bodyParge = true;
                 break;
             case Parts.RightArm:
                 if (_rightArmList.Count <= 0) return;
@@ -449,6 +622,14 @@ public class CharaBase : MonoBehaviour
                 _charaPara._rightAttack = 0;
                 _charaPara._totalWeight -= _charaPara._rightArmWeight;
                 _charaPara._rightArmWeight = 0;
+                _rightArmParge = true;
+                if (_charaPara._rightArm_AttackState != Weapon.Attack_State.NULL)
+                {
+                    _specialWepon_Shot[0].SetActive(false);
+                    _specialWepon_Approach[0].SetActive(false);
+                    _partsLocation[1].SetActive(true);
+                    _charaPara._rightArm_AttackState = Weapon.Attack_State.NULL;
+                }
                 break;
             case Parts.LeftArm:
                 if (_leftArmList.Count <= 0) return;
@@ -465,6 +646,14 @@ public class CharaBase : MonoBehaviour
                 _charaPara._leftAttack = 0;
                 _charaPara._totalWeight -= _charaPara._leftArmWeight;
                 _charaPara._leftArmWeight = 0;
+                _leftArmParge = true;
+                if (_charaPara._leftArm_AttackState != Weapon.Attack_State.NULL)
+                {
+                    _specialWepon_Shot[1].SetActive(false);
+                    _specialWepon_Approach[1].SetActive(false);
+                    _partsLocation[2].SetActive(true);
+                    _charaPara._leftArm_AttackState = Weapon.Attack_State.NULL;
+                }
                 break;
             case Parts.Leg:
                 if (_legList.Count <= 0) return;
@@ -486,6 +675,15 @@ public class CharaBase : MonoBehaviour
                     Destroy(_legPartsPair[i].gameObject);
                 }
                 _legPartsPair.Clear();
+                _legParge = true;
+                if (_charaPara._leg_AttackState != Weapon.Attack_State.NULL)
+                {
+                    _specialWepon_Shot[2].SetActive(false);
+                    _specialWepon_Approach[2].SetActive(false);
+                    _partsLocation[3].SetActive(true);
+                    _partsLocation[4].SetActive(true);
+                    _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
+                }
                 break;
             case Parts.Booster:
                 if (_boosterList.Count <= 0) return;
@@ -501,6 +699,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._boosterDefense = 0;
                 _charaPara._totalWeight -= _charaPara._boosterWeight;
                 _charaPara._boosterWeight = 0;
+                _boosterParge = true;
                 break;
             default:
                 break;
@@ -517,6 +716,7 @@ public class CharaBase : MonoBehaviour
         {
             return;
         }
+        _fullParge = false;
         if (action != null)
         {
             action();
@@ -525,6 +725,9 @@ public class CharaBase : MonoBehaviour
         {
             BrowOffParge(_allPartsList[i]);
         }
+
+        //デバッグ中は、フルパージが終了したらいつでもフルパージできるようにする(パージ処理が全て慣性したらこの処理を消す)
+        _fullParge = true;
     }
     #endregion
 
@@ -600,9 +803,11 @@ public class CharaBase : MonoBehaviour
         {
             Weapon _wepon = null;
             _wepon = _rightArmList[i].GetComponent<Weapon>();
+            //特殊射撃かどうか
             if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
             {
                 print("右腕の特殊射撃");
+                continue;
             }
             else if(_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
             {
@@ -629,25 +834,35 @@ public class CharaBase : MonoBehaviour
             if (_charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
             {
                 print("左腕の特殊射撃");
+                continue;
             }
             else if(_charaPara._leftArm_AttackState == Weapon.Attack_State.NULL)
             {
-                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
                     print("左腕の" + i + "この装備には射撃がない");
                     continue;
                 }
+                _wepon.Shooting();
             }
-            _wepon.Shooting();
         }
     }
     #endregion
 
-    //脚の射撃攻撃
+    //脚の攻撃
     #region LegShot
     protected void LegShot()
     {
-        if (_legList.Count <= 0) return;
+        //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
+        if(_charaPara._leg_AttackState == Weapon.Attack_State.approach && !_legStrike)
+        {
+            //ここに近接攻撃を命令するものを作成する
+            _legStrike = true;
+            return;
+        }
+
+        //脚の攻撃状態が近接、もしくは武器を装着していなかったら攻撃はできない
+        if (_legList.Count <= 0 || _charaPara._leg_AttackState == Weapon.Attack_State.approach) return;
         for (int i = 0; i < _legList.Count; i++)
         {
             Weapon _wepon = null;
@@ -655,21 +870,22 @@ public class CharaBase : MonoBehaviour
             if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
             {
                 print("脚の特殊射撃");
+                continue;
             }
             else if (_charaPara._leg_AttackState == Weapon.Attack_State.NULL)
             {
-                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
                     print("脚の" + i + "この装備には射撃がない");
                     continue;
                 }
+                _wepon.Shooting();
             }
-            _wepon.Shooting();
         }
     }
     #endregion
 
-    //右腕の射撃攻撃
+    //敵の右腕の射撃攻撃
     #region EnemyRightArmtShot
     protected void EnemyRightArmtShot(Ray ray)
     {
@@ -681,68 +897,80 @@ public class CharaBase : MonoBehaviour
             if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
             {
                 print("右腕の特殊射撃");
+                continue;
             }
             else if (_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
             {
-                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
                     print("右腕の" + i + "この装備には射撃がない");
                     continue;
                 }
+                _wepon.Shooting(ray);
             }
-            _wepon.Shooting(ray);
         }
     }
     #endregion
 
-    //左腕の射撃攻撃
+    //敵の左腕の射撃攻撃
     #region EnemyLeftArmShot
     protected void EnemyLeftArmShot(Ray ray)
     {
         if (_leftArmList.Count <= 0) return;
         for (int i = 0; i < _leftArmList.Count; i++)
         {
-            Weapon _wepon = null;
-            _wepon = _leftArmList[i].GetComponent<Weapon>();
             if (_charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
             {
                 print("左腕の特殊射撃");
+                continue;
             }
             else if (_charaPara._leftArm_AttackState == Weapon.Attack_State.NULL)
             {
-                if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
+                Weapon _wepon = null;
+                _wepon = _leftArmList[i].GetComponent<Weapon>();
+                if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
                     print("左腕の" + i + "この装備には射撃がない");
                     continue;
                 }
+                _wepon.Shooting(ray);
             }
-            _wepon.Shooting(ray);
         }
     }
     #endregion
 
-    //脚の射撃攻撃
+    //敵の脚の射撃攻撃
     #region EnemyLegShot
     protected void EnemyLegShot(Ray ray)
     {
-        if (_legList.Count <= 0) return;
+        //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
+        if (_charaPara._leg_AttackState == Weapon.Attack_State.approach && !_legStrike)
+        {
+            //ここに近接攻撃を命令するものを作成する
+            _legStrike = true;
+            return;
+        }
+
+        //脚の攻撃状態が近接、もしくは武器を装着していなかったら攻撃はできない
+        if (_legList.Count <= 0 || _charaPara._leg_AttackState == Weapon.Attack_State.approach) return;
         for (int i = 0; i < _legList.Count; i++)
         {
-            Weapon _wepon = null;
-            _wepon = _legList[i].GetComponent<Weapon>();
             if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
             {
                 print("脚の特殊射撃");
+                continue;
             }
             else if (_charaPara._leg_AttackState == Weapon.Attack_State.NULL)
             {
+                Weapon _wepon = null;
+                _wepon = _legList[i].GetComponent<Weapon>();
                 if (_wepon == null && _wepon.state != Weapon.Attack_State.shooting)
                 {
                     print("脚の" + i + "この装備には射撃がない");
                     continue;
                 }
+                _wepon.Shooting(ray);
             }
-            _wepon.Shooting(ray);
         }
     }
     #endregion

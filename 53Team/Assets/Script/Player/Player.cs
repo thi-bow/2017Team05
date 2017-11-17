@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using UniRx;
 
 public class Player : CharaBase
@@ -33,9 +34,8 @@ public class Player : CharaBase
     public playerSkill _skillStatus = playerSkill.NONE;
     private bool _attackPlay = false;
     #endregion
-
-    [SerializeField] private GameObject _pargeAttack;
-    private SphereCollider _pargeColl;
+    
+    [SerializeField]  private SphereCollider _pargeColl;
     private bool parge = false;
     [SerializeField] BoneCollide[] _boneCollide;
 
@@ -47,9 +47,6 @@ public class Player : CharaBase
         _playerSkyMove = _playerChild.GetComponent<PlayerSkyMove>();
         _status = playerState.IDLE;
 
-        //_pargeAttack = GameObject.Find("PargeAttack");
-        _pargeColl = _pargeAttack.GetComponent<SphereCollider>();
-
         if (_boneCollide.Length > 0)
         {
             for (int i = 0; i < _boneCollide.Length; i++)
@@ -58,6 +55,15 @@ public class Player : CharaBase
                 _boneCollide[number].OnDamage.Subscribe(n =>
                 {
                     Parts par = _boneCollide[number].m_parts;
+                    if (n.type == Weapon.Attack_State.shooting)
+                    {
+                        PartsDamage(n.value, par);
+                    }
+                    else
+                    {
+                        Damage(n.value);
+                    }
+
                 });
             }
         }
@@ -66,9 +72,36 @@ public class Player : CharaBase
     // Update is called once per frame
     protected override void Update ()
     {
-        if (Input.GetButtonDown("Parge"))
+        //右腕の攻撃
+        if(Input.GetAxis("ArmShot") > 0.5f )
         {
-            FullParge(ArmorParge);
+            RightArmtShot();
+        }
+        else if(Input.GetButtonDown("RightArmStrike") && !_rightArmStrike)
+        {
+            _rightArmStrike = true;
+        }
+
+        //左腕の攻撃
+        if (Input.GetAxis("ArmShot") < -0.5f)
+        {
+            LeftArmShot();
+        }
+        else if (Input.GetButtonDown("LeftArmStrike") && !_leftArmStrike)
+        {
+            _leftArmStrike = true;
+        }
+
+        //脚の攻撃
+        if(Input.GetButton("LegAttack"))
+        {
+            LegShot();
+        }
+
+
+        if (Input.GetButtonDown("Parge") && !_fullParge)
+        {
+            FullParge(() => { _fullParge = true; PargeAttackCollide(1000, true);});
         }
 
         base.Update();
@@ -84,6 +117,11 @@ public class Player : CharaBase
         {
             _playerMove.Move();
             if (_playerSkyMove.BoostGage < 100)
+            {
+                _playerSkyMove.BoostGage += 1.0f;
+            }
+
+            if (_playerSkyMove.BoostGage < _playerSkyMove._maxBosstGage)
             {
                 _playerSkyMove.BoostGage += 1.0f;
             }
@@ -143,17 +181,49 @@ public class Player : CharaBase
         //落ちている武器に当たれば、その武器を装着する
         if (other.tag == "Armor")
         {
-            PartsAdd(Parts.Body, other.GetComponent<Armor>());
+            if (other.GetComponent<Armor>().GetParts == Parts.Body || other.GetComponent<Armor>().GetParts == Parts.Booster)
+            {
+                PartsAdd(other.GetComponent<Armor>().GetParts, other.GetComponent<Armor>());
+            }
         }
     }
 
-    public void ArmorParge()
+    private void OnTriggerStay(Collider other)
     {
-        parge = true;
-        _pargeColl.radius += Time.deltaTime;
-        if (_pargeColl.radius <= 2.0f)
+        //落ちている武器に当たれば、その武器を装着する
+        if (other.tag == "Armor" && other.GetComponent<Armor>().GetParts != Parts.Body && other.GetComponent<Armor>().GetParts != Parts.Booster)
         {
-            parge = false;
+            if (Input.GetAxis("crossX") > 0)
+            {
+                PartsAdd(Parts.RightArm, other.GetComponent<Armor>());
+            }
+            if (Input.GetAxis("crossX") < 0)
+            {
+                PartsAdd(Parts.LeftArm, other.GetComponent<Armor>());
+            }
+            if (Input.GetAxis("crossY") > 0)
+            {
+                PartsAdd(Parts.Leg, other.GetComponent<Armor>());
+            }
         }
+    }
+
+
+    //必殺技をやるときはこの関数を呼ぶ
+    public void ArmorParge(Parts parts, Action action)
+    {
+        //この中にパージしたときの必殺技処理を入れる
+        action();
+        //
+        BrowOffParge(parts);
+    }
+
+    public void PargeAttackCollide(int attackPower, bool fullParge = false)
+    {
+        float maxSize = 2.0f;
+        _pargeColl.gameObject.SetActive(true);
+        if (fullParge) maxSize = 5.0f;
+        _pargeColl.GetComponent<PargeAttackCollider>().PargeStart(attackPower, maxSize);
+
     }
 }
