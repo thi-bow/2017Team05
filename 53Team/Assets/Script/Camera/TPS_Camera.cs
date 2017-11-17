@@ -6,10 +6,12 @@ public class TPS_Camera : MonoBehaviour {
 
     [Header("でばっく")]
     public bool ray;
+    public float wheel;
     public GameObject hoge;
 
     [Space(10)]
     public bool m_run;                  // マウス追従フラグ
+    public bool m_aim;                  // エイムフラグ
 
     public Camera m_camera;
     [Range(1, 100)]
@@ -23,9 +25,10 @@ public class TPS_Camera : MonoBehaviour {
     private Vector3     m_vec1, m_vec2;
     private RaycastHit  m_hit;
 
-    private readonly float clamp_angle = 60;
     private readonly int layerMask = ~(1 << 8 | 1 << 9);
-    private readonly float defRadius = 1.0f;
+    private readonly float clamp_angle = 60;
+    private readonly Vector3 def_offset = new Vector3(0, 0.2f, 0);
+    private readonly Vector3 aim_offset = new Vector3(0.3f, 0.5f, 0);
 
 	void Start () {
         if(m_targetObj == null)
@@ -37,6 +40,8 @@ public class TPS_Camera : MonoBehaviour {
 	void Update ()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) { m_run = !m_run; }
+        if (Input.GetKeyDown(KeyCode.Alpha1)) { Aim = !Aim; }
+        m_distance -= Input.GetAxis("Mouse ScrollWheel");
 
         if (m_run)
         {
@@ -96,6 +101,26 @@ public class TPS_Camera : MonoBehaviour {
     public Camera GetTPSCamera()
     {
         return m_camera;
+    }
+
+    public bool Aim
+    {
+        get { return m_aim; }
+        set
+        {
+            m_aim = value;
+            if (m_aim)
+            {
+                m_offsetPoint.localPosition = aim_offset;
+                m_distance = 1;
+            }
+            else
+            {
+                m_offsetPoint.localPosition = def_offset;
+                m_distance = 3;
+            }
+
+        }
     }
 
     private void OnDrawGizmos()
