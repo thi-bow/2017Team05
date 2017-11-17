@@ -99,9 +99,9 @@ public class Player : CharaBase
         }
 
 
-        if (Input.GetButtonDown("Parge") && !_fullParge)
+        if (Input.GetButtonDown("Parge") && _fullParge)
         {
-            FullParge(() => { _fullParge = true; PargeAttackCollide(1000, true);});
+            FullParge(() => { _fullParge = false; PargeAttackCollide(1000, true);});
         }
 
         base.Update();
