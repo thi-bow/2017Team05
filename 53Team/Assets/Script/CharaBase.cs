@@ -29,7 +29,7 @@ public class CharaParameter
     #endregion
 
 
-    [Header("キャラクターのWeight")]
+    [Header("キャラクターの攻撃力")]
     #region Attack
     public int _rightAttack = 0;
     public int _leftAttack = 0;
@@ -818,6 +818,7 @@ public class CharaBase : MonoBehaviour
         //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
         if(_charaPara._leg_AttackState == Weapon.Attack_State.approach && !_legStrike)
         {
+            
             //ここに近接攻撃を命令するものを作成する
             _legStrike = true;
             return;

@@ -79,7 +79,7 @@ public class PlayerMove : MonoBehaviour
         {
             _myRB.velocity *= 0.98f;
             var _moveForward = Vector3.Scale(new Vector3(_mainCamera.transform.forward.x, 0, _mainCamera.transform.forward.z), new Vector3(1, 0, 1)).normalized;
-            var _jumpMove = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
+            var _jumpMove = _moveForward * Input.GetAxis("Vertical") + new Vector3(_mainCamera.transform.right.x, 0, _mainCamera.transform.right.z) * Input.GetAxis("Horizontal");
             _jumpMove *= _moveSpeed_Jump;
 
             if (Mathf.Abs(_jumpMove.x) + Mathf.Abs(_jumpMove.z) > 0)
