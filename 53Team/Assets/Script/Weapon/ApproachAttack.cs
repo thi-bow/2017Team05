@@ -7,8 +7,10 @@ public class ApproachAttack : MonoBehaviour {
     // 近接攻撃中か
     [SerializeField] private bool isApproach = false;
 
+    // 攻撃力
     [SerializeField] private int hitAtk = 10;
 
+    // 攻撃時間
     [SerializeField] private float atkTime = 1.0f;
 
     RaycastHit hit;
