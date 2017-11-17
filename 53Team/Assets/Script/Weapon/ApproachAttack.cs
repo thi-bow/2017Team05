@@ -7,6 +7,8 @@ public class ApproachAttack : MonoBehaviour {
     // 近接攻撃中か
     [SerializeField] private bool isApproach = false;
 
+    [SerializeField] private int hitAtk = 10;
+
     [SerializeField] private float atkTime = 1.0f;
 
     RaycastHit hit;
@@ -43,7 +45,7 @@ public class ApproachAttack : MonoBehaviour {
 
         if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, 1.0f))
         {
-            Debug.Log(hit.collider.name);
+            hit.collider.gameObject.GetComponent<BoneCollide>().Damage(hitAtk);
         }
 
         yield return new WaitForSeconds(atkTime);
