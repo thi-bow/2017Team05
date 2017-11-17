@@ -11,7 +11,6 @@ namespace Enemy
 {
     public interface IEnemy
     {
-
         // ダメージ関数
         void Damage(int damage);
 
@@ -87,7 +86,7 @@ namespace Enemy
         {
             m_agent = GetComponent<NavMeshAgent>();
 
-            m_agent.angularSpeed = 30 * m_enemyStatus.rotateSpd;
+            m_agent.angularSpeed = 360 * m_enemyStatus.rotateSpd;
 
 
             for (int i = 0; i < m_boneCollides.Length; i++)
@@ -167,6 +166,12 @@ namespace Enemy
             }
 
             m_stateMachine.ChengeState(m_stateList[state.ToInt32(null)]);
+            OnChangeState(state);
+        }
+
+        public virtual void OnChangeState(TEnum state)
+        {
+            Debug.Log("OnChangeState!! " + state);
         }
 
         // 現在のステートと指定したステートが等しいかを返す
@@ -183,6 +188,39 @@ namespace Enemy
             }
         }
 
+        // メイン視界にターゲットがいるかどうか
+        public virtual bool IsMainSearch(Transform Target, bool Penetration = false)
+        {
+            return Search(transform, Target, m_enemyStatus.seachMainDis, m_enemyStatus.seachMainAng, Penetration);
+        }
+
+        public virtual bool IsMainSearch(bool Penetration = false)
+        {
+            return Search(transform, m_target, m_enemyStatus.seachMainDis, m_enemyStatus.seachMainAng, Penetration);
+        }
+
+        // サブ視界にターゲットがいるかどうか
+        public virtual bool IsSubSearch(Transform Target, bool Penetration = false)
+        {
+            return Search(transform, Target, m_enemyStatus.seachSubDis, m_enemyStatus.seachSubAng, Penetration);
+        }
+
+        public virtual bool IsSubSearch(bool Penetration = false)
+        {
+            return Search(transform, m_target, m_enemyStatus.seachSubDis, m_enemyStatus.seachSubAng, Penetration);
+        }
+
+        // 攻撃射程内にターゲットがいるかどうか
+        public virtual bool IsAttackSearch(Transform Target, bool Penetration = false)
+        {
+            return Search(transform, Target, m_enemyStatus.attackDis, m_enemyStatus.attackAng, Penetration);
+        }
+
+        public virtual bool IsAttackSearch(bool Penetration = false)
+        {
+            return Search(transform, m_target, m_enemyStatus.attackDis, m_enemyStatus.attackAng, Penetration);
+        }
+
         /// <summary>
         /// サーチ関数
         /// </summary>
@@ -190,9 +228,9 @@ namespace Enemy
         /// <param name="target">サーチ対象</param>
         /// <param name="distance">サーチ距離</param>
         /// <param name="angle">サーチ角度</param>
-        /// <param name="ray">Rayを飛ばすかどうか(障害物を無視するかどうか)</param>
+        /// <param name="Penetration">障害物を無視するかどうか</param>
         /// <returns></returns>
-        public virtual bool Search(Transform my, Transform target, float distance = Mathf.Infinity, float angle = 180.0f, bool ray = false)
+        public virtual bool Search(Transform my, Transform target, float distance = Mathf.Infinity, float angle = 180.0f, bool Penetration = false)
         {
             if(my == null) { return false; }
 
@@ -218,11 +256,11 @@ namespace Enemy
                 // 指定した角度以内
                 if (ang <= angle)
                 {
-                    if(!ray)
+                    if(!Penetration)
                         run = true;
 
                     // Rayがtrueの場合対象方向にRayを飛ばす
-                    if(Physics.Raycast(my.position, vec.normalized, out m_raycastHit, distance) && ray)
+                    if(Physics.Raycast(my.position, vec.normalized, out m_raycastHit, distance) && Penetration)
                     {
                         // Rayが当たった対象がtargetならtrue
                         if(m_raycastHit.transform.gameObject == target.gameObject)

@@ -1,58 +1,48 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    #region プレイヤーデータ
-    [SerializeField] private Image _skillGageImage = null;
-    private float _skillGage = 0.0f;
-    #endregion
+    public static bool m_isTutorial = true;
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public EnemyMgr m_enemyMgr;
 
+    [Space(10)]
+    public readonly int m_killBorder = 10;
 
-    //プレイヤーのスキルゲージの確認
-    public float SkillCheck
+    private IEnumerator Start()
     {
-        get { return _skillGage; }
-    }
-
-    //スキルゲージの増幅
-    public void SkillGageAdd(float addNumber = 1.0f)
-    {
-        _skillGage += addNumber;
-        if (_skillGage >= 100.0f)
+        // チュートリアルフラグが立っている時
+        if (m_isTutorial)
         {
-            _skillGage = 100.0f;
+            // チュートリアルを開始,終わるまで待機
+            yield return new WaitForSeconds(1);
         }
-        _skillGageImage.fillAmount = _skillGage / 100.0f;
+
+        // ゲーム開始に必要な準備の処理
+
+        // 一定数Playerが敵を倒すまで待つ
+        yield return new WaitWhile(() => ResultScore.KillCount < m_killBorder);
+
+        // ボス出現処理
+        m_enemyMgr.PopBossEnemy();
+        // ボスが倒されるまで待つ
+        yield return new WaitWhile(() => !m_enemyMgr.IsBossDead());
+
+        // ゲームクリア演出
+
+        yield return Clear();
+
+        // 次のシーンへ
+        SceneManagerScript.sceneManager.SceneOut("NambaTes");
     }
 
-    //スキルゲージの減少
-    public void SkillGageSub(float subNumber = 25.0f)
+    private IEnumerator Clear()
     {
-        _skillGage -= subNumber;
-        if (_skillGage <= 0.0f)
-        {
-            _skillGage = 0.0f;
-        }
-        _skillGageImage.fillAmount = _skillGage / 100.0f;
-    }
-
-    //スキルゲージのリセット
-    public void SkillGageReset()
-    {
-        _skillGage = 0.0f;
-        _skillGageImage.fillAmount = 0.0f;
+        yield return null;
     }
 }

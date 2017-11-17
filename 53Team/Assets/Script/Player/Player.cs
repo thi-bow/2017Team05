@@ -47,7 +47,7 @@ public class Player : CharaBase
         _playerSkyMove = _playerChild.GetComponent<PlayerSkyMove>();
         _status = playerState.IDLE;
 
-        _pargeAttack = GameObject.Find("PargeAttack");
+        //_pargeAttack = GameObject.Find("PargeAttack");
         _pargeColl = _pargeAttack.GetComponent<SphereCollider>();
 
         if (_boneCollide.Length > 0)
