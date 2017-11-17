@@ -103,12 +103,10 @@ public class CharaBase : MonoBehaviour
     private int partsMax = 5;
     private Parts _parts;
 
-    protected bool _fullParge = false;
-    protected bool _bodyParge = false;
-    protected bool _rightArmParge = false;
-    protected bool _leftArmParge = false;
-    protected bool _legParge = false;
-    protected bool _boosterParge = false;
+    protected bool _fullParge = true;
+    protected bool _rightArmParge = true;
+    protected bool _leftArmParge = true;
+    protected bool _legParge = true;
 
 
     [Space(10)]
@@ -291,11 +289,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 PartsLevelChenge(_bodyList.Count, out _charaPara._bodyLevel);
-
-                if (_charaPara._bodyLevel >= 3)
-                {
-                    _bodyParge = true;
-                }
+                
                 break;
             case Parts.RightArm:
                 _rightArmList.Add(armor);
@@ -371,11 +365,7 @@ public class CharaBase : MonoBehaviour
                 }
 
                 PartsLevelChenge(_rightArmList.Count, out _charaPara._rightArmLevel);
-
-                if (_charaPara._rightArmLevel >= 3)
-                {
-                    _rightArmParge = true;
-                }
+                _rightArmParge = true;
                 break;
             case Parts.LeftArm:
                 _leftArmList.Add(armor);
@@ -445,10 +435,7 @@ public class CharaBase : MonoBehaviour
 
                 PartsLevelChenge(_leftArmList.Count, out _charaPara._leftArmLevel);
 
-                if (_charaPara._leftArmLevel >= 3)
-                {
-                    _leftArmParge = true;
-                }
+                _leftArmParge = true;
                 break;
             case Parts.Leg:
                 _legList.Add(armor);
@@ -535,10 +522,7 @@ public class CharaBase : MonoBehaviour
 
                 PartsLevelChenge(_legList.Count, out _charaPara._legLevel);
 
-                if (_charaPara._legLevel >= 3)
-                {
-                    _legParge = true;
-                }
+                _legParge = true;
                 break;
             case Parts.Booster:
                 _boosterList.Add(armor);
@@ -551,16 +535,12 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
 
                 PartsLevelChenge(_boosterList.Count, out _charaPara._boosterLevel);
-
-                if (_charaPara._boosterLevel >= 3)
-                {
-                    _boosterParge = true;
-                }
                 break;
             default:
                 break;
         }
         _charaPara._totalWeight += armor.ArmorWeightPara;
+        if (!_fullParge) _fullParge = true;
     }
     #endregion
 
@@ -605,7 +585,6 @@ public class CharaBase : MonoBehaviour
                 _charaPara._bodyDefense = 0;
                 _charaPara._totalWeight -= _charaPara._bodyWeight;
                 _charaPara._bodyWeight = 0;
-                _bodyParge = true;
                 break;
             case Parts.RightArm:
                 if (_rightArmList.Count <= 0) return;
@@ -622,7 +601,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._rightAttack = 0;
                 _charaPara._totalWeight -= _charaPara._rightArmWeight;
                 _charaPara._rightArmWeight = 0;
-                _rightArmParge = true;
+                _rightArmParge = false;
                 if (_charaPara._rightArm_AttackState != Weapon.Attack_State.NULL)
                 {
                     _specialWepon_Shot[0].SetActive(false);
@@ -646,7 +625,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._leftAttack = 0;
                 _charaPara._totalWeight -= _charaPara._leftArmWeight;
                 _charaPara._leftArmWeight = 0;
-                _leftArmParge = true;
+                _leftArmParge = false;
                 if (_charaPara._leftArm_AttackState != Weapon.Attack_State.NULL)
                 {
                     _specialWepon_Shot[1].SetActive(false);
@@ -675,7 +654,7 @@ public class CharaBase : MonoBehaviour
                     Destroy(_legPartsPair[i].gameObject);
                 }
                 _legPartsPair.Clear();
-                _legParge = true;
+                _legParge = false;
                 if (_charaPara._leg_AttackState != Weapon.Attack_State.NULL)
                 {
                     _specialWepon_Shot[2].SetActive(false);
@@ -699,7 +678,6 @@ public class CharaBase : MonoBehaviour
                 _charaPara._boosterDefense = 0;
                 _charaPara._totalWeight -= _charaPara._boosterWeight;
                 _charaPara._boosterWeight = 0;
-                _boosterParge = true;
                 break;
             default:
                 break;
@@ -727,7 +705,24 @@ public class CharaBase : MonoBehaviour
         }
 
         //デバッグ中は、フルパージが終了したらいつでもフルパージできるようにする(パージ処理が全て慣性したらこの処理を消す)
-        _fullParge = true;
+        _fullParge = false;
+    }
+    #endregion
+
+    #region PargeAttack
+    public void PargeAttack(Parts parts)
+    {
+        switch (parts)
+        {
+            case Parts.RightArm:
+                break;
+            case Parts.LeftArm:
+                break;
+            case Parts.Leg:
+                break;
+            default:
+                break;
+        }
     }
     #endregion
 
@@ -758,39 +753,6 @@ public class CharaBase : MonoBehaviour
             }
 
         });
-    }
-    #endregion
-
-    #region PargeAttack
-    public void PargeAttack(Parts parts)
-    {
-        switch (parts)
-        {
-            case Parts.Body:
-                _partsLocation[0].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[0].transform.parent = null;
-                break;
-            case Parts.RightArm:
-                _partsLocation[1].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[1].transform.parent = null;
-                break;
-            case Parts.LeftArm:
-                _partsLocation[2].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[2].transform.parent = null;
-                break;
-            case Parts.Leg:
-                _partsLocation[3].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[4].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[3].transform.parent = null;
-                _partsLocation[4].transform.parent = null;
-                break;
-            case Parts.Booster:;
-                _partsLocation[5].GetComponent<BoxCollider>().enabled = true;
-                _partsLocation[5].transform.parent = null;
-                break;
-            default:
-                break;
-        }
     }
     #endregion
 

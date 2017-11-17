@@ -78,7 +78,7 @@ public class PlayerMove : MonoBehaviour
         if (_jumpFlg)
         {
             _myRB.velocity *= 0.98f;
-            var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var _moveForward = Vector3.Scale(new Vector3(_mainCamera.transform.forward.x, 0, _mainCamera.transform.forward.z), new Vector3(1, 0, 1)).normalized;
             var _jumpMove = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
             _jumpMove *= _moveSpeed_Jump;
 

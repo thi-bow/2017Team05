@@ -17,7 +17,6 @@ public class PlayerSkyMove : MonoBehaviour
     public bool _useBoostFlg = false;
     [System.NonSerialized] public float _maxBosstGage = 0.0f;
     [SerializeField] private  float _boostGage = 100.0f;
-    private bool _boostParge = false;
     private float _pargeCount = 0.0f;
 
     // Use this for initialization
@@ -34,13 +33,7 @@ public class PlayerSkyMove : MonoBehaviour
 	}
 
     public void SkyMove()
-    {
-        if(_boostParge)
-        {
-            PargeSkyMove();
-            return;
-        }
-        
+    {        
         if(Input.GetButtonDown("Jump") && _boostGage > 0 )
         {
             _useBoostFlg = !_useBoostFlg;
