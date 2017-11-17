@@ -12,20 +12,31 @@ public class BoneCollide : MonoBehaviour {
     public CharaBase.Parts m_parts;
 
     // ダメージ受けたとき
-    public Subject<int> OnDamage = new Subject<int>();
+    public Subject<Damageble> OnDamage = new Subject<Damageble>();
+
+    public struct Damageble
+    {
+        public int value;
+        public Weapon.Attack_State type;
+    }
 
     /// <summary>
     /// ダメージ関数
     /// </summary>
-    /// <param name="aAttckValue">攻撃側ダメージ</param>
+    /// <param name="aDmg">攻撃側ダメージ</param>
     /// <param name="aExprosition">弱点無視かどうか</param>
-    public void Damage(int aAttckValue, bool aExprosition = false)
+    public void Damage(int aDmg, Weapon.Attack_State aType)
     {
-        if(m_weakPoint && !aExprosition)
+        if(m_weakPoint)
         {
-            aAttckValue *= 2;
+            aDmg *= 2;
         }
 
-        OnDamage.OnNext(aAttckValue);
+        Damageble dmg;
+        dmg.value = aDmg;
+        dmg.type = aType;
+
+        Debug.LogFormat("{0}パーツに{1}だめーじ", m_parts, aDmg);
+        OnDamage.OnNext(dmg);
     }
 }

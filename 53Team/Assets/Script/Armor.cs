@@ -9,6 +9,11 @@ public class Armor : MonoBehaviour {
     public int _armorDefense = 0;
     public float _armorSpeed = 0.0f;
     public int _armorWeight = 0;
+    [SerializeField] private CharaBase.Parts _parts = CharaBase.Parts.Body;
+    public CharaBase.Parts GetParts
+    {
+        get { return _parts; }
+    }
 
     // Use this for initialization
     void Start () {

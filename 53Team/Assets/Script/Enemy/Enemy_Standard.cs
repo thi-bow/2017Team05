@@ -43,7 +43,10 @@ namespace Enemy
         }
 
         public override void Initialize()
-        {            
+        {
+            if (!m_target) {
+                m_target = GameObject.FindGameObjectWithTag("Player").transform;
+            }
             ChangeState(standard_State.move);
         }
 
@@ -122,14 +125,14 @@ namespace Enemy
             public override void OnExecute()
             {
                 // メイン視界に敵を発見
-                if (_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachMainDis, _base.m_enemyStatus.seachMainAng, true))
+                if (_base.IsMainSearch())
                 {
                     Debug.Log("<< 発見 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
                 // サブ視界に敵、又は何かを発見
-                if (_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachSubDis, _base.m_enemyStatus.seachSubAng, true))
+                if (_base.IsSubSearch())
                 {
                     Debug.Log("<< 警戒 >>");
                     _base.ChangeState(standard_State.warning);
@@ -179,14 +182,7 @@ namespace Enemy
             public override void OnExecute()
             {
                 // メイン視界に敵を発見
-                if (_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachMainDis, _base.m_enemyStatus.seachMainAng, true))
-                {
-                    Debug.Log("<< 発見 >>");
-                    _base.ChangeState(standard_State.chase);
-                    return;
-                }
-                // サブ視界に敵、又は何かを発見
-                if (_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachSubDis, _base.m_enemyStatus.seachSubAng, true))
+                if (_base.IsMainSearch() || _base.IsSubSearch())
                 {
                     Debug.Log("<< 発見 >>");
                     _base.ChangeState(standard_State.chase);
@@ -214,8 +210,7 @@ namespace Enemy
             public override void OnExecute()
             {
                 // ターゲットが視界外に消えてからn秒後にMoveStateに移行
-                if (!_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachMainDis, _base.m_enemyStatus.seachMainAng, true)
-                    && !_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.seachSubDis, _base.m_enemyStatus.seachSubAng, true))
+                if (!_base.IsMainSearch() && !_base.IsSubSearch())
                 {
                     m_timer++;
                     if(m_timer >= (_base.m_time / Time.deltaTime))
@@ -236,7 +231,7 @@ namespace Enemy
                 }
 
 
-                if(_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.attackDis, _base.m_enemyStatus.attackAng, true))
+                if(_base.IsAttackSearch())
                 {
                     Debug.Log("<< 攻撃 >>");
                     _base.ChangeState(standard_State.attack);
@@ -265,14 +260,14 @@ namespace Enemy
 
             public override void OnExecute()
             {
-                if (!_base.Search(_base.transform, _base.m_target, _base.m_enemyStatus.attackDis, _base.m_enemyStatus.attackAng, true))
+                if (!_base.IsAttackSearch())
                 {
                     Debug.Log("<< 射程外 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
 
-                _base.EnemyRighArmtShot(new Ray(_base.transform.position, _base.transform.forward));
+                _base.EnemyRightArmtShot(new Ray(_base.transform.position, _base.transform.forward));
                 //EffectMan.Instance.NormalBullet(_base.transform, _base.m_target, () => {
                 //    Debug.Log("ﾋｯﾄｫｫｫｫｫｫｫｫｫｫｫｫｫx");
                 //});

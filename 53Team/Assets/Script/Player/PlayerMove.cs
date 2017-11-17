@@ -12,10 +12,6 @@ public class PlayerMove : MonoBehaviour
     private GameObject _mainCamera = null;
     private Rigidbody _myRB = null;
 
-    // インスペクターで主観カメラを紐づける
-    [SerializeField]private GameObject firstPersonCamera;
-    // インスペクターで第三者視点カメラを紐づける
-    [SerializeField]private GameObject thirdPersonCamera;
 
     #region 移動に関する変数
     [Header("----------------移動速度---------------------")]
@@ -82,7 +78,7 @@ public class PlayerMove : MonoBehaviour
         if (_jumpFlg)
         {
             _myRB.velocity *= 0.98f;
-            var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var _moveForward = Vector3.Scale(new Vector3(_mainCamera.transform.forward.x, 0, _mainCamera.transform.forward.z), new Vector3(1, 0, 1)).normalized;
             var _jumpMove = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
             _jumpMove *= _moveSpeed_Jump;
 
@@ -135,17 +131,9 @@ public class PlayerMove : MonoBehaviour
         }
 
         // キャラクターの向きを進行方向に
-        if (_move != Vector3.zero && thirdPersonCamera.activeInHierarchy)
+        if (_move != Vector3.zero)
         {
             transform.rotation = Quaternion.LookRotation(_move);
-        }
-
-        // スペースキーでカメラを切り替える
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // ↓現在のactive状態から反転 
-            firstPersonCamera.SetActive(!firstPersonCamera.activeInHierarchy);
-            thirdPersonCamera.SetActive(!thirdPersonCamera.activeInHierarchy);
         }
 
 
@@ -264,7 +252,8 @@ public class PlayerMove : MonoBehaviour
             _jumpFlg = false;
             _playerSkyMove.UseBoost = true;
             _myRB.useGravity = false;
-            _myRB.velocity = new Vector3(0, 0, 0);
+            _playerSkyMove.boostVelocity = _myRB.velocity;
+            _myRB.velocity = Vector3.zero;
             return;
         }
         if(_slidingFlg)

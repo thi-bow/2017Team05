@@ -4,26 +4,27 @@ using UnityEngine;
 
 public class PlayerSkyMove : MonoBehaviour
 {
-    private GameObject _parent = null;
     [SerializeField] private Player _player;
     private GameObject _mainCamera = null;
     private Rigidbody _myRigidbody = null;
     Vector3 _move = new Vector3(0.0f, 0.0f, 0.0f);
-    public int _boosterLevel = 1;
     
     [Header("----------------移動速度---------------------")]
     [SerializeField] private float _moveSpeed = 1.0f;
     [SerializeField] private float _boostPower = 2.0f;
     [SerializeField] private float _downSpeed = 2.0f;
+    [System.NonSerialized] public Vector3 boostVelocity = Vector3.zero;
     public bool _useBoostFlg = false;
+    [System.NonSerialized] public float _maxBosstGage = 0.0f;
     [SerializeField] private  float _boostGage = 100.0f;
+    private float _pargeCount = 0.0f;
 
     // Use this for initialization
     void Start ()
     {
-        _parent = this.transform.parent.gameObject;
         _mainCamera = _player._mainCamera;
-        _myRigidbody = _parent.GetComponent<Rigidbody>();
+        _myRigidbody = _player.GetComponent<Rigidbody>();
+        _maxBosstGage = _boostGage;
     }
 	
 	// Update is called once per frame
@@ -32,8 +33,8 @@ public class PlayerSkyMove : MonoBehaviour
 	}
 
     public void SkyMove()
-    {
-        if(Input.GetButtonDown("Jump"))
+    {        
+        if(Input.GetButtonDown("Jump") && _boostGage > 0 )
         {
             _useBoostFlg = !_useBoostFlg;
         }
@@ -41,24 +42,37 @@ public class PlayerSkyMove : MonoBehaviour
         var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
         _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
 
-        if (_boosterLevel <= 1)
+        if (_player._charaPara._boosterLevel <= 1)
         {
             _move *= 0.0f;
         }
 
-        else if (_boosterLevel <= 2)
+        else if (_player._charaPara._boosterLevel <= 2)
         {
-            _move *= _moveSpeed * 0.5f;
+            _move *= 0.5f;
         }
         else
         {
-            _move *= _moveSpeed;
+            print("ブーストレベル3");
+            _move *= 1.0f;
         }
 
         //上昇Flagが立っている間は上昇、それ以外は下降する
         if (_useBoostFlg)
         {
-            _move += new Vector3(0, _boostPower, 0) + (_myRigidbody.velocity * 0.9f);
+            if (_player._charaPara._boosterLevel >= 2)
+            {
+                _move += new Vector3(0, _boostPower, 0);
+            }
+            else if (boostVelocity.y >= 0)
+            {
+                _move += new Vector3(0, _boostPower, 0) + (boostVelocity * 0.1f);
+            }
+            else
+            {
+                _move += new Vector3(0, _boostPower, 0) + new Vector3(boostVelocity.x, 0.0f, boostVelocity.z) * 0.03f;
+            }
+            Debug.Log(_myRigidbody.velocity * 0.9f);
             _boostGage -= 1.0f;
             if(_boostGage <= 0)
             {
@@ -68,10 +82,27 @@ public class PlayerSkyMove : MonoBehaviour
         }
         else
         {
-            _move += new Vector3(0, _downSpeed, 0);
-        }
 
-        _myRigidbody.MovePosition(_parent.transform.localPosition + _move);
+            if (_player._charaPara._boosterLevel >= 2)
+            {
+                _move += new Vector3(0, _downSpeed, 0);
+            }
+            else
+            {
+                _move += new Vector3(0, _downSpeed, 0) + new Vector3(boostVelocity.x, 0.0f, boostVelocity.z) * 0.03f;
+            }
+        }
+        _move *= _moveSpeed;
+        _myRigidbody.MovePosition(_player.transform.localPosition + _move);
+    }
+
+    void PargeSkyMove()
+    {
+        var _moveForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+        _move = _moveForward * Input.GetAxis("Vertical") + _mainCamera.transform.right * Input.GetAxis("Horizontal");
+        _move += new Vector3(0, _boostPower, 0) + new Vector3(boostVelocity.x, 0.0f, boostVelocity.z) * 0.03f;
+        _move *= _moveSpeed;
+        _myRigidbody.MovePosition(_player.transform.localPosition + _move);
     }
 
     public bool UseBoost
