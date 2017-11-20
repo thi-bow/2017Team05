@@ -77,9 +77,8 @@ public class Player : CharaBase
         {
             RightArmtShot();
         }
-        else if(Input.GetButtonDown("RightArmStrike") && !_rightArmStrike)
+        else if(Input.GetButtonDown("RightArmStrike"))
         {
-            _rightArmStrike = true;
         }
 
         //左腕の攻撃
@@ -87,9 +86,8 @@ public class Player : CharaBase
         {
             LeftArmShot();
         }
-        else if (Input.GetButtonDown("LeftArmStrike") && !_leftArmStrike)
+        else if (Input.GetButtonDown("LeftArmStrike"))
         {
-            _leftArmStrike = true;
         }
 
         //脚の攻撃
