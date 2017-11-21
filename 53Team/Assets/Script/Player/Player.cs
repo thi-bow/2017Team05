@@ -38,6 +38,7 @@ public class Player : CharaBase
     [SerializeField]  private SphereCollider _pargeColl;
     private bool parge = false;
     [SerializeField] BoneCollide[] _boneCollide;
+    [SerializeField] PlayerStatusCheck _playerUIManager;
 
     // Use this for initialization
     protected override void Start ()
@@ -65,6 +66,10 @@ public class Player : CharaBase
                     }
 
                 });
+
+                _playerUIManager.ArmorHP();
+                _playerUIManager.PlayerHP();
+                Debug.Log("プレイヤー攻撃受けたほげほげ");
             }
         }
     }
@@ -76,9 +81,16 @@ public class Player : CharaBase
         if(Input.GetAxis("ArmShot") > 0.5f )
         {
             RightArmtShot();
+            Debug.Log("右腕で攻撃ほげほげ");
         }
         else if(Input.GetButtonDown("RightArmStrike"))
         {
+            int attack = _charaPara._rightAttack;
+            if (_charaPara._rightArm_AttackState == Weapon.Attack_State.approach)
+            {
+                attack *= 2;
+            }
+            this.GetComponent<ApproachAttack>().Approach(attack);
         }
 
         //左腕の攻撃
@@ -88,6 +100,12 @@ public class Player : CharaBase
         }
         else if (Input.GetButtonDown("LeftArmStrike"))
         {
+            int attack = _charaPara._leftAttack;
+            if (_charaPara._leftArm_AttackState == Weapon.Attack_State.approach)
+            {
+                attack *= 2;
+            }
+            this.GetComponent<ApproachAttack>().Approach(attack);
         }
 
         //脚の攻撃
@@ -99,7 +117,14 @@ public class Player : CharaBase
 
         if (Input.GetButtonDown("Parge") && _fullParge)
         {
-            FullParge(() => { _fullParge = false; PargeAttackCollide(1000, true);});
+            FullParge(() => {
+                int attackPower = 0;
+                for (int i = 0; i < _allPartsList.Count; i++)
+                {
+                     attackPower += GetPartsList(_allPartsList[i]).Count * 100;
+                }
+                PargeAttackCollide(attackPower, true);
+            });
         }
 
         base.Update();

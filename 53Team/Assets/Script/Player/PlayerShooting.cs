@@ -26,11 +26,11 @@ public class PlayerShooting : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButton(0))
-        {
-            // 射撃
-            _weapon.Shooting();
-        }
+        //if (Input.GetMouseButton(0))
+        //{
+        //    // 射撃
+        //    _weapon.Shooting();
+        //}
         // リロード
         _weapon.Reload();
 

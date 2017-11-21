@@ -99,7 +99,7 @@ public class CharaBase : MonoBehaviour
     [SerializeField] private List<Armor> _legList = new List<Armor>();
     [SerializeField] private List<Armor> _boosterList = new List<Armor>();    
     [SerializeField] protected List<Armor> _legPartsPair = new List<Armor>(); //両脚に着けるために、複製したアームを入れるリスト
-    List<Parts> _allPartsList = new List<Parts>(); 
+    [System.NonSerialized] public List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
 
@@ -190,12 +190,14 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
 
+    [SerializeField] private Camera tpsCamera = null;
+
     // Use this for initialization
     protected virtual void Start ()
     {
         _allPartsList = new List<Parts> { Parts.Body, Parts.RightArm, Parts.LeftArm, Parts.Leg, Parts.Booster };
 
-    #region 右腕を初期設定
+        #region 右腕を初期設定
         if(_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
         {
             _specialWepon_Shot[0].SetActive(false);
@@ -218,7 +220,6 @@ public class CharaBase : MonoBehaviour
             _partsLocation[1].gameObject.SetActive(false);
         }
         #endregion
-
 
         #region 左腕を初期設定
         if (_charaPara._leg_AttackState == Weapon.Attack_State.NULL)
@@ -243,7 +244,6 @@ public class CharaBase : MonoBehaviour
             _partsLocation[2].gameObject.SetActive(false);
         }
         #endregion
-
 
         #region 脚を初期設定
         if (_charaPara._leg_AttackState == Weapon.Attack_State.NULL)
@@ -820,7 +820,7 @@ public class CharaBase : MonoBehaviour
         if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
         {
             print("右腕の特殊射撃");
-            _specialWepon_Shot[0].GetComponent<Weapon>().Shooting();
+            _specialWepon_Shot[0].GetComponent<Weapon>().Shooting(tpsCamera);
             return;
         }
         for (int i = 0; i < _rightArmList.Count; i++)
@@ -834,7 +834,7 @@ public class CharaBase : MonoBehaviour
                     print("右腕の" + i + "この装備には射撃がない");
                     continue;
                 }
-                _wepon.Shooting();
+                _wepon.Shooting(tpsCamera);
             }             
         }
     }
@@ -848,7 +848,7 @@ public class CharaBase : MonoBehaviour
         if (_charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
         {
             print("左腕の特殊射撃");
-            _specialWepon_Shot[1].GetComponent<Weapon>().Shooting();
+            _specialWepon_Shot[1].GetComponent<Weapon>().Shooting(tpsCamera);
             return;
         }
         for (int i = 0; i < _leftArmList.Count; i++)
@@ -862,7 +862,7 @@ public class CharaBase : MonoBehaviour
                     print("左腕の" + i + "この装備には射撃がない");
                     continue;
                 }
-                _wepon.Shooting();
+                _wepon.Shooting(tpsCamera);
             }
         }
     }
@@ -886,8 +886,8 @@ public class CharaBase : MonoBehaviour
         if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
         {
             print("脚の特殊射撃");
-            _specialWepon_Shot[2].GetComponent<Weapon>().Shooting();
-            _specialWepon_Shot[3].GetComponent<Weapon>().Shooting();
+            _specialWepon_Shot[2].GetComponent<Weapon>().Shooting(tpsCamera);
+            _specialWepon_Shot[3].GetComponent<Weapon>().Shooting(tpsCamera);
             return;
         }
         for (int i = 0; i < _legList.Count; i++)
@@ -901,7 +901,7 @@ public class CharaBase : MonoBehaviour
                     print("脚の" + i + "この装備には射撃がない");
                     continue;
                 }
-                _wepon.Shooting();
+                _wepon.Shooting(tpsCamera);
             }
         }
     }
