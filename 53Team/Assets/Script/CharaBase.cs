@@ -815,18 +815,19 @@ public class CharaBase : MonoBehaviour
     protected void RightArmtShot()
     {
         if (_rightArmList.Count <= 0) return;
-        for(int i = 0; i < _rightArmList.Count; i++)
+
+        //特殊射撃かどうか
+        if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
+        {
+            print("右腕の特殊射撃");
+            _specialWepon_Shot[0].GetComponent<Weapon>().Shooting();
+            return;
+        }
+        for (int i = 0; i < _rightArmList.Count; i++)
         {
             Weapon _wepon = null;
             _wepon = _rightArmList[i].GetComponent<Weapon>();
-            //特殊射撃かどうか
-            if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
-            {
-                print("右腕の特殊射撃");
-                _specialWepon_Shot[0].GetComponent<Weapon>().Shooting();
-                continue;
-            }
-            else if(_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
+            if(_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
             {
                 if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
@@ -844,17 +845,17 @@ public class CharaBase : MonoBehaviour
     protected void LeftArmShot()
     {
         if (_leftArmList.Count <= 0) return;
+        if (_charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
+        {
+            print("左腕の特殊射撃");
+            _specialWepon_Shot[1].GetComponent<Weapon>().Shooting();
+            return;
+        }
         for (int i = 0; i < _leftArmList.Count; i++)
         {
             Weapon _wepon = null;
             _wepon = _leftArmList[i].GetComponent<Weapon>();
-            if (_charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
-            {
-                print("左腕の特殊射撃");
-                _specialWepon_Shot[1].GetComponent<Weapon>().Shooting();
-                continue;
-            }
-            else if(_charaPara._leftArm_AttackState == Weapon.Attack_State.NULL)
+            if(_charaPara._leftArm_AttackState == Weapon.Attack_State.NULL)
             {
                 if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
@@ -874,25 +875,26 @@ public class CharaBase : MonoBehaviour
         //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
         if(_charaPara._leg_AttackState == Weapon.Attack_State.approach)
         {
-            this.GetComponent<ApproachAttack>().Approach();
+            this.GetComponent<ApproachAttack>().Approach(_charaPara._legAttack*2);
             //ここに近接攻撃を命令するものを作成する
             return;
         }
 
         //脚の攻撃状態が近接、もしくは武器を装着していなかったら攻撃はできない
         if (_legList.Count <= 0 || _charaPara._leg_AttackState == Weapon.Attack_State.approach) return;
+
+        if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
+        {
+            print("脚の特殊射撃");
+            _specialWepon_Shot[2].GetComponent<Weapon>().Shooting();
+            _specialWepon_Shot[3].GetComponent<Weapon>().Shooting();
+            return;
+        }
         for (int i = 0; i < _legList.Count; i++)
         {
             Weapon _wepon = null;
             _wepon = _legList[i].GetComponent<Weapon>();
-            if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
-            {
-                print("脚の特殊射撃");
-                _specialWepon_Shot[2].GetComponent<Weapon>().Shooting();
-                _specialWepon_Shot[3].GetComponent<Weapon>().Shooting();
-                continue;
-            }
-            else if (_charaPara._leg_AttackState == Weapon.Attack_State.NULL)
+            if (_charaPara._leg_AttackState == Weapon.Attack_State.NULL)
             {
                 if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
