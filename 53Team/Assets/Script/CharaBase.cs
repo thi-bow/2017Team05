@@ -99,7 +99,7 @@ public class CharaBase : MonoBehaviour
     [SerializeField] private List<Armor> _legList = new List<Armor>();
     [SerializeField] private List<Armor> _boosterList = new List<Armor>();    
     [SerializeField] protected List<Armor> _legPartsPair = new List<Armor>(); //両脚に着けるために、複製したアームを入れるリスト
-    List<Parts> _allPartsList = new List<Parts>(); 
+    [System.NonSerialized] public List<Parts> _allPartsList = new List<Parts>(); 
     private int partsMax = 5;
     private Parts _parts;
 

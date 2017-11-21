@@ -38,6 +38,7 @@ public class Player : CharaBase
     [SerializeField]  private SphereCollider _pargeColl;
     private bool parge = false;
     [SerializeField] BoneCollide[] _boneCollide;
+    [SerializeField] PlayerStatusCheck _playerUIManager;
 
     // Use this for initialization
     protected override void Start ()
@@ -65,6 +66,10 @@ public class Player : CharaBase
                     }
 
                 });
+
+                _playerUIManager.ArmorHP();
+                _playerUIManager.PlayerHP();
+                Debug.Log("プレイヤー攻撃受けたほげほげ");
             }
         }
     }
@@ -112,7 +117,14 @@ public class Player : CharaBase
 
         if (Input.GetButtonDown("Parge") && _fullParge)
         {
-            FullParge(() => { _fullParge = false; PargeAttackCollide(1000, true);});
+            FullParge(() => {
+                int attackPower = 0;
+                for (int i = 0; i < _allPartsList.Count; i++)
+                {
+                     attackPower += GetPartsList(_allPartsList[i]).Count * 100;
+                }
+                PargeAttackCollide(attackPower, true);
+            });
         }
 
         base.Update();
