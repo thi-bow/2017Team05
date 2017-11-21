@@ -76,9 +76,16 @@ public class Player : CharaBase
         if(Input.GetAxis("ArmShot") > 0.5f )
         {
             RightArmtShot();
+            Debug.Log("右腕で攻撃ほげほげ");
         }
         else if(Input.GetButtonDown("RightArmStrike"))
         {
+            int attack = _charaPara._rightAttack;
+            if (_charaPara._rightArm_AttackState == Weapon.Attack_State.approach)
+            {
+                attack *= 2;
+            }
+            this.GetComponent<ApproachAttack>().Approach(attack);
         }
 
         //左腕の攻撃
@@ -88,6 +95,12 @@ public class Player : CharaBase
         }
         else if (Input.GetButtonDown("LeftArmStrike"))
         {
+            int attack = _charaPara._leftAttack;
+            if (_charaPara._leftArm_AttackState == Weapon.Attack_State.approach)
+            {
+                attack *= 2;
+            }
+            this.GetComponent<ApproachAttack>().Approach(attack);
         }
 
         //脚の攻撃

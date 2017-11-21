@@ -30,6 +30,10 @@ public class PlayerStatusCheck : MonoBehaviour
         _playerHP.fillAmount = _player._charaPara._hp * count;
     }
 
+    public void ArmorHP()
+    {
+    }
+
     //プレイヤーのスキルゲージの確認
     public float SkillCheck
     {

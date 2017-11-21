@@ -16,7 +16,7 @@ public class Weapon : MonoBehaviour {
     private GameObject nowWeapon;
 
     private WeaponChange _WeaponChange;
-    [SerializeField] private GameObject tpsCamera;
+    [SerializeField] private Camera tpsCamera;
 
     [Header("残弾数")]
     // 残弾数
@@ -98,8 +98,12 @@ public class Weapon : MonoBehaviour {
     }
 
     // 射撃
-    public void Shooting()
+    public void Shooting(Camera tpsCamera)
     {
+        if (tpsCamera != null)
+        {
+            this.tpsCamera = tpsCamera;
+        }
         if (bullets >= 0)
         {
             ShotTime += Time.deltaTime;
@@ -128,7 +132,7 @@ public class Weapon : MonoBehaviour {
     {
         yield return new WaitForSeconds(shotspeed);
         bullets--;
-        Vector3 shotPos = tpsCamera.GetComponent<Camera>().ScreenToWorldPoint(center);
+        Vector3 shotPos = tpsCamera.ScreenToWorldPoint(center);
         Ray ray;
 
         ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
@@ -152,7 +156,6 @@ public class Weapon : MonoBehaviour {
     IEnumerator ShootingInterval(Ray shotRay)
     {
         yield return new WaitForSeconds(shotspeed);
-        Vector3 shotPos = tpsCamera.GetComponent<Camera>().ScreenToWorldPoint(center);
         Ray ray;
 
         ray = shotRay;
