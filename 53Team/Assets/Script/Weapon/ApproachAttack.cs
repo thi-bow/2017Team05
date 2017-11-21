@@ -25,21 +25,21 @@ public class ApproachAttack : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.G))
         {
-            Approach();
+            Approach(hitAtk);
         }
     }
 
     // 近接攻撃
-    public void Approach()
+    public void Approach(int atk)
     {
         if (!isApproach)
         {
             isApproach = true;
-            StartCoroutine(ApproachRun());
+            StartCoroutine(ApproachRun(atk));
         }
     }
 
-    IEnumerator ApproachRun()
+    IEnumerator ApproachRun(int atk)
     {
         Debug.Log("近接");
 
@@ -47,7 +47,7 @@ public class ApproachAttack : MonoBehaviour {
 
         if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, 1.0f))
         {
-            hit.collider.gameObject.GetComponent<BoneCollide>().Damage(hitAtk);
+            hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Weapon.Attack_State.approach);
         }
 
         yield return new WaitForSeconds(atkTime);
@@ -56,4 +56,6 @@ public class ApproachAttack : MonoBehaviour {
 
         isApproach = false;
     }
+
+
 }
