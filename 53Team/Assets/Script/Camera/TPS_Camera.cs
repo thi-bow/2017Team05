@@ -116,7 +116,7 @@ public class TPS_Camera : MonoBehaviour {
                 p1 = m_defViewPoint.position;
                 v1 = (m_camPosition.position - p1).normalized;
                 p5 = m_aimViewPoint.position;
-                p6 = p1 + -v1 * m_distance;
+                p6 = p1 + -v1 * 100;
                 v2 = (p5 - p6).normalized;
                 p7 = p5 + v2 * m_distance;
 
@@ -134,7 +134,7 @@ public class TPS_Camera : MonoBehaviour {
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         if (m_camera == null || m_targetObj == null || m_defViewPoint == null) return;
 
@@ -146,7 +146,7 @@ public class TPS_Camera : MonoBehaviour {
         p3 = m_camPosition.position;
         p4 = ray ? m_hit.point : p2;
         p5 = m_aimViewPoint.position;
-        p6 = p1 + -v1 * m_distance;
+        p6 = p1 + -v1 * 100;
         v2 = (p5 - p6).normalized;
         p7 = p5 + v2 * m_distance;
         Gizmos.DrawLine(p6, p3);
