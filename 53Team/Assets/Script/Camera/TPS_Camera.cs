@@ -19,23 +19,25 @@ public class TPS_Camera : MonoBehaviour {
     public float m_distance = 5.0f;     // カメラとTargetの目標距離
 
     public GameObject m_targetObj;
-    public Transform m_offsetPoint;
+    public Transform m_camPosition;
+    public Transform m_defViewPoint;
+    public Transform m_aimViewPoint;
 
-    private Vector3     m_currentPos;
     private Vector3     m_vec1, m_vec2;
+    private Transform   m_currentViewPoint;
     private RaycastHit  m_hit;
 
     private readonly int layerMask = ~(1 << 8 | 1 << 9);
     private readonly float clamp_angle = 60;
-    private readonly Vector3 def_offset = new Vector3(0, 0.2f, 0);
-    private readonly Vector3 aim_offset = new Vector3(0.3f, 0.5f, 0);
 
 	void Start () {
         if(m_targetObj == null)
         {
             m_targetObj = GameObject.FindGameObjectWithTag("Player");
         }
-	}
+
+        m_currentViewPoint = m_defViewPoint;
+    }
 	
 	void Update ()
     {
@@ -66,18 +68,17 @@ public class TPS_Camera : MonoBehaviour {
         var angle = transform.rotation.eulerAngles;
         angle.x = angle.x > 180 ? angle.x - 360 : angle.x;
         angle.x = Mathf.Clamp(angle.x, -clamp_angle, clamp_angle);
-
+        angle.z = 0;
         transform.rotation = Quaternion.Euler(angle);
 
 
-        m_camera.transform.LookAt(m_offsetPoint.position);
+        m_camera.transform.LookAt(m_currentViewPoint);
     }
 
     private void UpdateCamMove()
     {
-        // targetの移動量分、カメラも移動する
-        m_currentPos = m_targetObj.transform.position + m_offsetPoint.localPosition + transform.localPosition;
-        m_vec1 = (m_camera.transform.position - m_currentPos).normalized;
+        var pos = m_currentViewPoint.position;
+        m_vec1 = (m_camera.transform.position - pos).normalized;
 
         if (IsRayCast())
         {
@@ -85,14 +86,14 @@ public class TPS_Camera : MonoBehaviour {
         }
         else
         {
-            var p = m_currentPos + m_vec1 * m_distance;
-            m_camera.transform.position = Vector3.Lerp(m_camera.transform.position, p, Time.deltaTime * 6);
+            m_vec2 = pos + m_vec1 * m_distance;
+            m_camera.transform.position = Vector3.Lerp(m_camera.transform.position, m_vec2, Time.deltaTime * 6);
         }
     }
 
     private bool IsRayCast()
     {
-        var hit = Physics.Raycast(m_currentPos, m_vec1, out m_hit, m_distance, layerMask);
+        var hit = Physics.Raycast(m_currentViewPoint.position, m_vec1, out m_hit, m_distance, layerMask);
         ray = hit;
         hoge = hit ? m_hit.collider.gameObject : null;
         return hit;
@@ -111,13 +112,23 @@ public class TPS_Camera : MonoBehaviour {
             m_aim = value;
             if (m_aim)
             {
-                m_offsetPoint.localPosition = aim_offset;
+                Vector3 p1, p5, p6, p7, v1, v2;
+                p1 = m_defViewPoint.position;
+                v1 = (m_camPosition.position - p1).normalized;
+                p5 = m_aimViewPoint.position;
+                p6 = p1 + -v1 * m_distance;
+                v2 = (p5 - p6).normalized;
+                p7 = p5 + v2 * m_distance;
+
+                m_camera.transform.position = p7;
+                m_currentViewPoint = m_aimViewPoint;
                 m_distance = 1;
             }
             else
             {
-                m_offsetPoint.localPosition = def_offset;
-                m_distance = 3;
+                m_camera.transform.localPosition = new Vector3(0, 0, 0);
+                m_currentViewPoint = m_defViewPoint;
+                m_distance = 2;
             }
 
         }
@@ -125,19 +136,25 @@ public class TPS_Camera : MonoBehaviour {
 
     private void OnDrawGizmos()
     {
-        if (m_camera == null || m_targetObj == null || m_offsetPoint == null) return;
+        if (m_camera == null || m_targetObj == null || m_defViewPoint == null) return;
 
         Gizmos.color = Color.red;
-        Vector3 p1, p2, p3, p4, v1, v2;
-        p1 = m_offsetPoint.position;
-        v1 = (m_camera.transform.position - p1).normalized;
+        Vector3 p1, p2, p3, p4, p5, p6, p7, v1, v2;
+        p1 = m_defViewPoint.position;
+        v1 = (m_camPosition.position - p1).normalized;
         p2 = p1 + v1 * m_distance;
-        p3 = m_camera.transform.position;
-        v2 = m_camera.transform.forward;
+        p3 = m_camPosition.position;
         p4 = ray ? m_hit.point : p2;
-        Gizmos.DrawLine(p1, p4);
-        Gizmos.DrawRay(new Ray(p3, v2));
-        Gizmos.DrawWireSphere(p1, 0.2f);
-        Gizmos.DrawWireCube(p4, new Vector3(0.6f, 0.6f, 0.6f));
+        p5 = m_aimViewPoint.position;
+        p6 = p1 + -v1 * m_distance;
+        v2 = (p5 - p6).normalized;
+        p7 = p5 + v2 * m_distance;
+        Gizmos.DrawLine(p6, p3);
+        Gizmos.DrawLine(p6, p7);
+        Gizmos.DrawWireSphere(p1, 0.1f);
+        Gizmos.DrawWireSphere(p6, 0.1f);
+        Gizmos.DrawWireSphere(p7, 0.1f);
+        Gizmos.DrawWireSphere(p5, 0.1f);
+        Gizmos.DrawWireCube(p4, new Vector3(0.4f, 0.4f, 0.4f));
     }
 }
