@@ -8,6 +8,7 @@ public class PlayerStatusCheck : MonoBehaviour
     #region プレイヤーデータ
     [SerializeField] private Player _player = null;
     [SerializeField] private Image _playerHP = null;
+    [SerializeField] private Image[] _partsHP = null;
     #endregion
 
     [SerializeField] private Image _skillGageImage = null;
