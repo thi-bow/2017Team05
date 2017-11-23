@@ -189,6 +189,7 @@ public class CharaBase : MonoBehaviour
         get { return _charaPara._speed; }
     }
     #endregion
+    [SerializeField] public List<int> _partsHP = new List<int>();
 
     [SerializeField] private Camera tpsCamera = null;
 
@@ -196,9 +197,10 @@ public class CharaBase : MonoBehaviour
     protected virtual void Start ()
     {
         _allPartsList = new List<Parts> { Parts.Body, Parts.RightArm, Parts.LeftArm, Parts.Leg, Parts.Booster };
+        _partsHP = new List<int> { _charaPara._bodyHp, _charaPara._rightArmHp, _charaPara._leftArmHp, _charaPara._legHp, _charaPara._boosterHp };
 
         #region 右腕を初期設定
-        if(_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
+        if (_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
         {
             _specialWepon_Shot[0].SetActive(false);
             _specialWepon_Approach[0].SetActive(false);
@@ -989,6 +991,7 @@ public class CharaBase : MonoBehaviour
                     _charaPara._bodyHp = 0;
                     PartsPurge(parts, action);
                 }
+                _partsHP[0] = _charaPara._bodyHp;
                 Damage(attackPower);
                 break;
             case Parts.RightArm:
@@ -1009,6 +1012,7 @@ public class CharaBase : MonoBehaviour
                     _charaPara._rightArmHp = 0;
                     PartsPurge(parts, action);
                 }
+                _partsHP[1] = _charaPara._rightArmHp;
                 break;
             case Parts.LeftArm:
                 //パーツに何もついてなければ本体にダメージが入る
@@ -1028,6 +1032,7 @@ public class CharaBase : MonoBehaviour
                     _charaPara._leftArmHp = 0;
                     PartsPurge(parts, action);
                 }
+                _partsHP[2] = _charaPara._leftArmHp;
                 break;
             case Parts.Leg:
                 //パーツに何もついてなければ本体にダメージが入る
@@ -1047,6 +1052,7 @@ public class CharaBase : MonoBehaviour
                     _charaPara._legHp = 0;
                     PartsPurge(parts, action);
                 }
+                _partsHP[3] = _charaPara._legHp;
                 break;
             case Parts.Booster:
                 //パーツに何もついてなければ本体にダメージが入る
@@ -1066,6 +1072,7 @@ public class CharaBase : MonoBehaviour
                     _charaPara._boosterHp = 0;
                     PartsPurge(parts, action);
                 }
+                _partsHP[2] = _charaPara._boosterHp;
                 break;
             default:
                 break;
