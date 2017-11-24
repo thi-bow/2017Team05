@@ -54,6 +54,8 @@ public class Weapon : MonoBehaviour {
     // 射撃時間
     private float ShotTime;
 
+    int mask = 1 << 8;
+
     // Use this for initialization
     void Start () {
         //player = GameObject.Find("Player_Sample");
@@ -141,7 +143,7 @@ public class Weapon : MonoBehaviour {
         //b.transform.position = tpsCamera.transform.forward * 10;
 
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, distance))
+        if (Physics.Raycast(ray, out hit, distance,mask))
         {
             Debug.Log(hit.collider.name);
             if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
@@ -161,7 +163,7 @@ public class Weapon : MonoBehaviour {
         ray = shotRay;
 
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, distance))
+        if (Physics.Raycast(ray, out hit, distance,mask))
         {
             if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
             {

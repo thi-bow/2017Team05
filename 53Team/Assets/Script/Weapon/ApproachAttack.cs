@@ -6,12 +6,19 @@ public class ApproachAttack : MonoBehaviour {
 
     // 近接攻撃中か
     [SerializeField] private bool isApproach = false;
-
     // 攻撃力
     [SerializeField] private int hitAtk = 10;
-
     // 攻撃時間
     [SerializeField] private float atkTime = 1.0f;
+
+    // 近接攻撃の距離
+    [SerializeField] private float distance = 1.0f;
+    // 最高コンボ数
+    [SerializeField] private int maxCombo = 3;
+    // コンボカウント
+    [SerializeField] private int comboCount = 0;
+    // コンボ中か
+    [SerializeField] private bool isCombo = false;
 
     RaycastHit hit;
 
@@ -32,30 +39,40 @@ public class ApproachAttack : MonoBehaviour {
     // 近接攻撃
     public void Approach(int atk)
     {
-        if (!isApproach)
+        // コンボカウント
+        comboCount++;
+        if ((!isApproach || isCombo == true))
         {
             isApproach = true;
             StartCoroutine(ApproachRun(atk));
+        }
+        if (comboCount > 1)
+        {
+            isCombo = true;
         }
     }
 
     IEnumerator ApproachRun(int atk)
     {
-        Debug.Log("近接");
-
-        Vector3 crePos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
-
-        if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, 1.0f))
+        if (maxCombo >= comboCount)
         {
-            hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Weapon.Attack_State.approach);
+            Debug.Log("近接" + comboCount + "発目");
+
+            Vector3 crePos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+
+            if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, distance))
+            {
+                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Weapon.Attack_State.approach);
+            }
         }
-
+        else
+        {
+            comboCount = 0;
+        }
         yield return new WaitForSeconds(atkTime);
-
         Debug.Log("終了");
+        comboCount = 0;
 
         isApproach = false;
     }
-
-
 }
