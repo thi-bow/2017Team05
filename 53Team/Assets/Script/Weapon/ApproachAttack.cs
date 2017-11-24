@@ -58,11 +58,17 @@ public class ApproachAttack : MonoBehaviour {
         {
             Debug.Log("近接" + comboCount + "発目");
 
+            
             Vector3 crePos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
 
             if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, distance))
             {
-                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Weapon.Attack_State.approach);
+
+                if (hit.collider.gameObject.tag != this.gameObject.tag)
+                {
+                    Debug.Log(hit.collider.gameObject.name);
+                    hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Weapon.Attack_State.approach);
+                }
             }
         }
         else
