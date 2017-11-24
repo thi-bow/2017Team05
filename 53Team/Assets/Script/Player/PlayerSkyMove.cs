@@ -66,13 +66,12 @@ public class PlayerSkyMove : MonoBehaviour
             }
             else if (boostVelocity.y >= 0)
             {
-                _move += new Vector3(0, _boostPower, 0) + (boostVelocity * 0.1f);
+                _move += new Vector3(0, _boostPower, 0) + (boostVelocity * 0.03f);
             }
             else
             {
                 _move += new Vector3(0, _boostPower, 0) + new Vector3(boostVelocity.x, 0.0f, boostVelocity.z) * 0.03f;
             }
-            Debug.Log(_myRigidbody.velocity * 0.9f);
             _boostGage -= 1.0f;
             if(_boostGage <= 0)
             {

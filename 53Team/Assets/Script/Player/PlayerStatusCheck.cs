@@ -38,10 +38,14 @@ public class PlayerStatusCheck : MonoBehaviour
     public void ArmorHP(int partsNumber, int hp)
     {
         if (partsNumber >= 4) return;
+
         int hpNumber = 0;
-        if (hp >= 100) hpNumber = 2;
-        else if (hp >= 50) hpNumber = 1;
+
+        if (hp >= 100) hpNumber = 3;
+        else if (hp >= 50) hpNumber = 2;
+        else if (hp > 0) hpNumber = 1;
         else hpNumber = 0;
+
         _partsHP[partsNumber].color = _hpColor[hpNumber];
 
     }
