@@ -55,10 +55,10 @@ public class TPS_Camera : MonoBehaviour {
     private void UpdateCamRotate()
     {
         float mouseInputX = Input.GetAxis("Mouse X");
-        float mouseInputY = -Input.GetAxis("Mouse Y");
+        float mouseInputY = Input.GetAxis("Mouse Y");
 
-        var x = mouseInputX * Time.deltaTime * 10f * m_value;
-        var y = mouseInputY * Time.deltaTime * 10f * m_value;
+        var x = mouseInputX * Time.deltaTime * m_value * m_value;
+        var y = mouseInputY * Time.deltaTime * m_value * m_value;
 
         // targetの位置のY軸を中心に、回転(公転)する
         transform.RotateAround(transform.position, Vector3.up, x);

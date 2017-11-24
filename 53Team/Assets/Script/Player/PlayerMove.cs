@@ -90,7 +90,7 @@ public class PlayerMove : MonoBehaviour
 
 
         //走るかどうか
-        if (Input.GetButtonDown("Run") && !_player.AttackCheck && !_jumpFlg)
+        if (Input.GetButton("Run") && !_player.AttackCheck && !_jumpFlg)
         {
             _runFlg = true;
             //スラディングをしていたら、キャンセル
@@ -167,7 +167,7 @@ public class PlayerMove : MonoBehaviour
     {
         
         //走っていないときにしゃがむボタンを押すとしゃがむ
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetButtonDown("Squat"))
         {
             print("しゃがみ反応");
             Squat();

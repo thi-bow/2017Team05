@@ -40,6 +40,9 @@ public class Player : CharaBase
     [SerializeField] BoneCollide[] _boneCollide;
     [SerializeField] PlayerStatusCheck _playerUIManager;
 
+    private GameObject _inputManager;
+    private bool _longPushButton;
+
     // Use this for initialization
     protected override void Start ()
     {
@@ -47,6 +50,8 @@ public class Player : CharaBase
         _playerMove = _playerChild.GetComponent<PlayerMove>();
         _playerSkyMove = _playerChild.GetComponent<PlayerSkyMove>();
         _status = playerState.IDLE;
+
+        _inputManager = GameObject.Find("InputManager");
 
         if (_boneCollide.Length > 0)
         {
@@ -76,8 +81,11 @@ public class Player : CharaBase
     // Update is called once per frame
     protected override void Update ()
     {
+        // コントローラー長押しフラグの取得
+        _longPushButton = _inputManager.GetComponent<InputManager>()._longPush;
+
         //右腕の攻撃
-        if(Input.GetAxis("ArmShot") > 0.5f )
+        if (Input.GetAxis("ArmShot") > 0.5f )
         {
             RightArmtShot();
             Debug.Log("右腕で攻撃ほげほげ");
@@ -113,19 +121,22 @@ public class Player : CharaBase
             LegShot();
         }
 
-
-        if (Input.GetButtonDown("Parge") && _fullParge)
+        // フルパージボタン
+        if (Input.GetAxisRaw("crossY") > 0 && _fullParge)
         {
-            FullParge(() => {
-                int attackPower = 0;
-                for (int i = 0; i < _allPartsList.Count; i++)
+            if (_longPushButton == true)
+            {
+                FullParge(() =>
                 {
-                     attackPower += GetPartsList(_allPartsList[i]).Count * 100;
-                }
-                PargeAttackCollide(attackPower, true);
-            });
+                    int attackPower = 0;
+                    for (int i = 0; i < _allPartsList.Count; i++)
+                    {
+                        attackPower += GetPartsList(_allPartsList[i]).Count * 100;
+                    }
+                    PargeAttackCollide(attackPower, true);
+                });
+            }
         }
-
         base.Update();
     }
 
@@ -216,17 +227,20 @@ public class Player : CharaBase
         //落ちている武器に当たれば、その武器を装着する
         if (other.tag == "Armor" && other.GetComponent<Armor>().GetParts != Parts.Body && other.GetComponent<Armor>().GetParts != Parts.Booster)
         {
-            if (Input.GetAxis("crossX") > 0)
+            // 右手装備
+            if (Input.GetAxis("crossX") > 0 && _longPushButton == false)
             {
                 PartsAdd(Parts.RightArm, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.RightArm, _partsHP[(int)Parts.RightArm]);
             }
-            if (Input.GetAxis("crossX") < 0)
+            // 左手装備
+            if (Input.GetAxis("crossX") < 0 && _longPushButton == false)
             {
                 PartsAdd(Parts.LeftArm, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.LeftArm, _partsHP[(int)Parts.LeftArm]);
             }
-            if (Input.GetAxis("crossY") > 0)
+            // 足装備
+            if (Input.GetAxis("crossY") < 0 && _longPushButton == false)
             {
                 PartsAdd(Parts.Leg, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.Leg, _partsHP[(int)Parts.Leg]);
