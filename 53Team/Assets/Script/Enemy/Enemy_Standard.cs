@@ -267,10 +267,8 @@ namespace Enemy
                     return;
                 }
 
-                _base.EnemyRightArmtShot(new Ray(_base.transform.position, _base.transform.forward));
-                //EffectMan.Instance.NormalBullet(_base.transform, _base.m_target, () => {
-                //    Debug.Log("ﾋｯﾄｫｫｫｫｫｫｫｫｫｫｫｫｫx");
-                //});
+                var vec = _base.m_target.position - _base.m_viewPoint.position;
+                _base.EnemyRightArmtShot(new Ray(_base.m_viewPoint.position, vec));
             }
 
             public override void OnExit()

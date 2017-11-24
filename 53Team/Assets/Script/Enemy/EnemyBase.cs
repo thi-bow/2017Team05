@@ -64,6 +64,9 @@ namespace Enemy
         [Space(10)]
         public EnemyStatus m_enemyStatus;
 
+        [Header("目となるポイント")]
+        public Transform m_viewPoint;
+
         [Space(10)]
         public Sector m_sectorAtk;
         public Sector m_sectorMain;
@@ -148,6 +151,11 @@ namespace Enemy
 
             }
 
+            if(m_viewPoint == null)
+            {
+                m_viewPoint = transform.Find("view_point").GetComponent<Transform>();
+            }
+
             if (m_PlayAwake)
             {
                 Initialize();
@@ -191,34 +199,34 @@ namespace Enemy
         // メイン視界にターゲットがいるかどうか
         public virtual bool IsMainSearch(Transform Target, bool Penetration = false)
         {
-            return Search(transform, Target, m_enemyStatus.seachMainDis, m_enemyStatus.seachMainAng, Penetration);
+            return Search(m_viewPoint, Target, m_enemyStatus.seachMainDis, m_enemyStatus.seachMainAng, Penetration);
         }
 
         public virtual bool IsMainSearch(bool Penetration = false)
         {
-            return Search(transform, m_target, m_enemyStatus.seachMainDis, m_enemyStatus.seachMainAng, Penetration);
+            return Search(m_viewPoint, m_target, m_enemyStatus.seachMainDis, m_enemyStatus.seachMainAng, Penetration);
         }
 
         // サブ視界にターゲットがいるかどうか
         public virtual bool IsSubSearch(Transform Target, bool Penetration = false)
         {
-            return Search(transform, Target, m_enemyStatus.seachSubDis, m_enemyStatus.seachSubAng, Penetration);
+            return Search(m_viewPoint, Target, m_enemyStatus.seachSubDis, m_enemyStatus.seachSubAng, Penetration);
         }
 
         public virtual bool IsSubSearch(bool Penetration = false)
         {
-            return Search(transform, m_target, m_enemyStatus.seachSubDis, m_enemyStatus.seachSubAng, Penetration);
+            return Search(m_viewPoint, m_target, m_enemyStatus.seachSubDis, m_enemyStatus.seachSubAng, Penetration);
         }
 
         // 攻撃射程内にターゲットがいるかどうか
         public virtual bool IsAttackSearch(Transform Target, bool Penetration = false)
         {
-            return Search(transform, Target, m_enemyStatus.attackDis, m_enemyStatus.attackAng, Penetration);
+            return Search(m_viewPoint, Target, m_enemyStatus.attackDis, m_enemyStatus.attackAng, Penetration);
         }
 
         public virtual bool IsAttackSearch(bool Penetration = false)
         {
-            return Search(transform, m_target, m_enemyStatus.attackDis, m_enemyStatus.attackAng, Penetration);
+            return Search(m_viewPoint, m_target, m_enemyStatus.attackDis, m_enemyStatus.attackAng, Penetration);
         }
 
         /// <summary>
