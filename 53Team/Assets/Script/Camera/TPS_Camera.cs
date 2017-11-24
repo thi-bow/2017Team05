@@ -93,7 +93,11 @@ public class TPS_Camera : MonoBehaviour {
 
     private bool IsRayCast()
     {
-        var hit = Physics.Raycast(m_currentViewPoint.position, m_vec1, out m_hit, m_distance, layerMask);
+        bool hit = false;
+        if(Physics.Raycast(m_currentViewPoint.position, m_vec1, out m_hit, m_distance, layerMask))
+        {
+            hit = m_hit.collider.gameObject.tag != "Player" ? true : false;
+        }
         ray = hit;
         hoge = hit ? m_hit.collider.gameObject : null;
         return hit;

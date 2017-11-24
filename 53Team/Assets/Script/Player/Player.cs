@@ -135,6 +135,7 @@ public class Player : CharaBase
                     }
                     PargeAttackCollide(attackPower, true);
                 });
+                _fullParge = false;
             }
         }
         base.Update();
