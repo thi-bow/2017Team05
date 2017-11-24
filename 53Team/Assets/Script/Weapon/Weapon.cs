@@ -91,7 +91,7 @@ public class Weapon : MonoBehaviour {
             // リロード完了までの時間処理
             if (reloadTime > reloadFinishTime)
             {
-                //Debug.Log("リロード");
+                Debug.Log("リロード");
                 bullets = maxBullets;
                 reloadTime = 0;
                 isReload = false;
@@ -102,6 +102,7 @@ public class Weapon : MonoBehaviour {
     // 射撃
     public void Shooting(Camera tpsCamera)
     {
+        Reload();
         if (tpsCamera != null)
         {
             this.tpsCamera = tpsCamera;
