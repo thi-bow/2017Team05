@@ -63,9 +63,15 @@ public class Player : CharaBase
                     Parts par = _boneCollide[number].m_parts;
                     if (n.type == Weapon.Attack_State.shooting)
                     {
-                        PartsDamage(n.value, par);
-                        _playerUIManager.ArmorHP((int)par, _partsHP[(int)par], _partsHP[(int)par]);
-                        Debug.Log(_partsHP[(int)par]);
+                        PartsDamage(n.value, par, () =>
+                        {
+                            for (int j = 0; j < GetPartsList(par).Count; j++)
+                            {
+                                Destroy(GetPartsList(par)[j].gameObject);
+                            }
+                        });
+
+                        _playerUIManager.ArmorHP((int)par, _partsHP[(int)par], _partsMaxHP[(int)par]);
                     }
                     else
                     {
@@ -212,7 +218,7 @@ public class Player : CharaBase
             if (other.GetComponent<Armor>().GetParts == Parts.Body || other.GetComponent<Armor>().GetParts == Parts.Booster)
             {
                 PartsAdd(other.GetComponent<Armor>().GetParts, other.GetComponent<Armor>());
-                _playerUIManager.ArmorHP((int)other.GetComponent<Armor>().GetParts, _partsHP[(int)other.GetComponent<Armor>().GetParts], _partsHP[(int)other.GetComponent<Armor>().GetParts]);
+                _playerUIManager.ArmorHP((int)other.GetComponent<Armor>().GetParts, _partsHP[(int)other.GetComponent<Armor>().GetParts], _partsMaxHP[(int)other.GetComponent<Armor>().GetParts]);
             }
         }
     }

@@ -349,7 +349,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 PartsLevelChenge(_bodyList.Count, out _charaPara._bodyLevel);
                 _partsHP[0] = _charaPara._bodyHp;
-
+                _partsMaxHP[0] = _charaPara._bodyMaxHp;
                 break;
             case Parts.RightArm:
                 _rightArmList.Add(armor);
@@ -368,6 +368,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localPosition = PartsAddPara.PlayerRightArmPosition[_rightArmList.Count - 1];
                 armor.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerRightArmRotation[_rightArmList.Count - 1]);
                 _partsHP[1] = _charaPara._rightArmHp;
+                _partsMaxHP[1] = _charaPara._rightArmMaxHp;
 
                 if (_rightArmList.Count < _charaPara._rightArm_BorderNumber)
                 {
@@ -443,6 +444,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localPosition = PartsAddPara.PlayerLeftArmPosition[_leftArmList.Count - 1];
                 armor.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerLeftArmRotation[_leftArmList.Count - 1]);
                 _partsHP[2] = _charaPara._leftArmHp;
+                _partsMaxHP[2] = _charaPara._leftArmMaxHp;
 
                 if (_leftArmList.Count < _charaPara._leftArm_BorderNumber)
                 {
@@ -516,6 +518,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localPosition = PartsAddPara.PlayerRightLegPosition[_legList.Count - 1];
                 armor.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerRightLegRotation[_legList.Count - 1]);
                 _partsHP[3] = _charaPara._legHp;
+                _partsMaxHP[3] = _charaPara._legMaxHp;
                 pair.gameObject.transform.SetParent(_partsLocation[4].transform);
                 pair.transform.localPosition = PartsAddPara.PlayerLeftLegPosition[_legList.Count - 1];
                 pair.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerLeftLegRotation[_legList.Count - 1]);
@@ -537,7 +540,6 @@ public class CharaBase : MonoBehaviour
                         _shootNumber--;
                     }
                 }
-                Debug.Log(_shootNumber);
                 if (_shootNumber >= _charaPara._leg_SwitchNumber && _charaPara._leg_AttackState != Weapon.Attack_State.shooting)
                 {
                     print("脚を遠距離攻撃に切り替えた");
@@ -594,6 +596,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
                 _partsHP[4] = _charaPara._boosterHp;
+                _partsMaxHP[4] = _charaPara._boosterMaxHp;
 
                 PartsLevelChenge(_boosterList.Count, out _charaPara._boosterLevel);
                 break;
@@ -810,7 +813,7 @@ public class CharaBase : MonoBehaviour
     #endregion
 
     #region BrowOffParge
-    public void BrowOffParge(Parts parts)
+    public void BrowOffParge(Parts parts, Action action = null)
     {
         PartsPurge(parts, () => {
             for (int i = 0; i < GetPartsList(parts).Count; i++)
@@ -834,6 +837,8 @@ public class CharaBase : MonoBehaviour
                     Destroy(_legPartsPair[i].gameObject, 2.0f);
                 }
             }
+
+            if (action != null) action();
 
         });
     }

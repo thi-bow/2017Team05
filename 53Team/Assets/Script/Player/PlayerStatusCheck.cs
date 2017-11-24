@@ -48,7 +48,7 @@ public class PlayerStatusCheck : MonoBehaviour
 
         float parcent = ((float)hp / (float)maxHp) * 100.0f;
 
-        if (parcent >= 1) hpNumber = 3;
+        if (parcent >= 100) hpNumber = 3;
         else if (parcent >= 25) hpNumber = 2;
         else if (parcent > 0) hpNumber = 1;
         else hpNumber = 0;
