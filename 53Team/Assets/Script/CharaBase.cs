@@ -103,16 +103,16 @@ public class CharaBase : MonoBehaviour
     private int partsMax = 5;
     private Parts _parts;
 
-    protected bool _fullParge = true;
-    protected bool _rightArmParge = true;
-    protected bool _leftArmParge = true;
-    protected bool _legParge = true;
+    [System.NonSerialized] public bool _fullParge = true;
+    [System.NonSerialized] public bool _rightArmParge = true;
+    [System.NonSerialized] public bool _leftArmParge = true;
+    [System.NonSerialized] public bool _legParge = true;
 
 
     [Space(10)]
     [SerializeField] private GameObject[] _partsLocation;
-    [SerializeField] private GameObject[] _specialWepon_Shot;
-    [SerializeField] private GameObject[] _specialWepon_Approach;
+    [SerializeField] public GameObject[] _specialWepon_Shot;
+    [SerializeField] public GameObject[] _specialWepon_Approach;
     
     #endregion
 
@@ -191,7 +191,7 @@ public class CharaBase : MonoBehaviour
     #endregion
     [SerializeField] public List<int> _partsHP = new List<int>();
 
-    [SerializeField] private Camera tpsCamera = null;
+    [SerializeField] public Camera tpsCamera = null;
 
     // Use this for initialization
     protected virtual void Start ()
