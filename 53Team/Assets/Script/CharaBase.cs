@@ -707,6 +707,8 @@ public class CharaBase : MonoBehaviour
                 {
                     _specialWepon_Shot[2].SetActive(false);
                     _specialWepon_Approach[2].SetActive(false);
+                    _specialWepon_Shot[3].SetActive(false);
+                    _specialWepon_Approach[3].SetActive(false);
                     _partsLocation[3].SetActive(true);
                     _partsLocation[4].SetActive(true);
                     _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
