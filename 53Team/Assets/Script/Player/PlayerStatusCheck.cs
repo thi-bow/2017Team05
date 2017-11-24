@@ -20,7 +20,7 @@ public class PlayerStatusCheck : MonoBehaviour
         PlayerHP();
         for (int i = 0; i < _player._partsHP.Count; i++)
         {
-            ArmorHP(i, _player._partsHP[i]);
+            ArmorHP(i, _player._partsHP[i], _player._partsMaxHP[i]);
         }
     }
 	
@@ -35,19 +35,25 @@ public class PlayerStatusCheck : MonoBehaviour
         _playerHP.fillAmount = _player._charaPara._hp * count;
     }
 
-    public void ArmorHP(int partsNumber, int hp)
+    public void ArmorHP(int partsNumber, int hp, int maxHp)
     {
         if (partsNumber >= 4) return;
+        if(maxHp <= 0)
+        {
+            _partsHP[partsNumber].color = _hpColor[0];
+            return;
+        }
 
         int hpNumber = 0;
 
-        if (hp >= 100) hpNumber = 3;
-        else if (hp >= 50) hpNumber = 2;
-        else if (hp > 0) hpNumber = 1;
+        float parcent = ((float)hp / (float)maxHp) * 100.0f;
+
+        if (parcent >= 1) hpNumber = 3;
+        else if (parcent >= 25) hpNumber = 2;
+        else if (parcent > 0) hpNumber = 1;
         else hpNumber = 0;
 
         _partsHP[partsNumber].color = _hpColor[hpNumber];
-
     }
 
     //プレイヤーのスキルゲージの確認

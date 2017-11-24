@@ -64,7 +64,7 @@ public class Player : CharaBase
                     if (n.type == Weapon.Attack_State.shooting)
                     {
                         PartsDamage(n.value, par);
-                        _playerUIManager.ArmorHP((int)par, _partsHP[(int)par]);
+                        _playerUIManager.ArmorHP((int)par, _partsHP[(int)par], _partsHP[(int)par]);
                         Debug.Log(_partsHP[(int)par]);
                     }
                     else
@@ -88,7 +88,6 @@ public class Player : CharaBase
         if (Input.GetAxis("ArmShot") > 0.5f )
         {
             RightArmtShot();
-            Debug.Log("右腕で攻撃ほげほげ");
         }
         else if(Input.GetButtonDown("RightArmStrike"))
         {
@@ -128,12 +127,7 @@ public class Player : CharaBase
             {
                 FullParge(() =>
                 {
-                    int attackPower = 0;
-                    for (int i = 0; i < _allPartsList.Count; i++)
-                    {
-                        attackPower += GetPartsList(_allPartsList[i]).Count * 100;
-                    }
-                    PargeAttackCollide(attackPower, true);
+                    PargeAttackCollide();
                 });
                 _fullParge = false;
             }
@@ -218,7 +212,7 @@ public class Player : CharaBase
             if (other.GetComponent<Armor>().GetParts == Parts.Body || other.GetComponent<Armor>().GetParts == Parts.Booster)
             {
                 PartsAdd(other.GetComponent<Armor>().GetParts, other.GetComponent<Armor>());
-                _playerUIManager.ArmorHP((int)other.GetComponent<Armor>().GetParts, _partsHP[(int)other.GetComponent<Armor>().GetParts]);
+                _playerUIManager.ArmorHP((int)other.GetComponent<Armor>().GetParts, _partsHP[(int)other.GetComponent<Armor>().GetParts], _partsHP[(int)other.GetComponent<Armor>().GetParts]);
             }
         }
     }
@@ -232,19 +226,19 @@ public class Player : CharaBase
             if (Input.GetAxis("crossX") > 0 && _longPushButton == false)
             {
                 PartsAdd(Parts.RightArm, other.GetComponent<Armor>());
-                _playerUIManager.ArmorHP((int)Parts.RightArm, _partsHP[(int)Parts.RightArm]);
+                _playerUIManager.ArmorHP((int)Parts.RightArm, _partsHP[(int)Parts.RightArm], _partsMaxHP[(int)Parts.RightArm]);
             }
             // 左手装備
             if (Input.GetAxis("crossX") < 0 && _longPushButton == false)
             {
                 PartsAdd(Parts.LeftArm, other.GetComponent<Armor>());
-                _playerUIManager.ArmorHP((int)Parts.LeftArm, _partsHP[(int)Parts.LeftArm]);
+                _playerUIManager.ArmorHP((int)Parts.LeftArm, _partsHP[(int)Parts.LeftArm], _partsMaxHP[(int)Parts.LeftArm]);
             }
             // 足装備
             if (Input.GetAxis("crossY") < 0 && _longPushButton == false)
             {
                 PartsAdd(Parts.Leg, other.GetComponent<Armor>());
-                _playerUIManager.ArmorHP((int)Parts.Leg, _partsHP[(int)Parts.Leg]);
+                _playerUIManager.ArmorHP((int)Parts.Leg, _partsHP[(int)Parts.Leg], _partsMaxHP[(int)Parts.Leg]);
             }
         }
     }
@@ -259,11 +253,24 @@ public class Player : CharaBase
         BrowOffParge(parts);
     }
 
-    public void PargeAttackCollide(int attackPower, bool fullParge = false)
+    public void PargeAttackCollide(bool fullParge = true, Parts par = Parts.Body)
     {
         float maxSize = 2.0f;
+        int attackPower = 0;
         _pargeColl.gameObject.SetActive(true);
-        if (fullParge) maxSize = 5.0f;
+        if (fullParge)
+        {
+            for (int i = 0; i < _allPartsList.Count; i++)
+            {
+                attackPower += GetPartsList(_allPartsList[i]).Count * 100;
+            }
+            maxSize = 5.0f;
+        }
+        if (!fullParge)
+        {
+            BrowOffParge(par);
+            attackPower = GetPartsList(par).Count * 100;
+        }
         _pargeColl.GetComponent<PargeAttackCollider>().PargeStart(attackPower, maxSize);
 
     }

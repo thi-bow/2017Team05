@@ -16,6 +16,12 @@ public class CharaParameter
     public int _leftArmHp = 0;
     public int _legHp = 0;
     public int _boosterHp = 0;
+
+    public int _bodyMaxHp = 0;
+    public int _rightArmMaxHp = 0;
+    public int _leftArmMaxHp = 0;
+    public int _legMaxHp = 0;
+    public int _boosterMaxHp = 0;
     #endregion
 
     [Header("キャラクターのDefense")]
@@ -190,6 +196,7 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
     [SerializeField] public List<int> _partsHP = new List<int>();
+    [SerializeField] public List<int> _partsMaxHP = new List<int>();
 
     [SerializeField] public Camera tpsCamera = null;
 
@@ -198,7 +205,8 @@ public class CharaBase : MonoBehaviour
     {
         _allPartsList = new List<Parts> { Parts.Body, Parts.RightArm, Parts.LeftArm, Parts.Leg, Parts.Booster };
         _partsHP = new List<int> { _charaPara._bodyHp, _charaPara._rightArmHp, _charaPara._leftArmHp, _charaPara._legHp, _charaPara._boosterHp };
-
+        _partsMaxHP = new List<int> { _charaPara._bodyMaxHp, _charaPara._rightArmMaxHp, _charaPara._leftArmMaxHp, _charaPara._legMaxHp, _charaPara._boosterMaxHp };
+        
         #region 右腕を初期設定
         if (_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
         {
@@ -332,6 +340,7 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._bodyDefense += armor.ArmorDefPara;
                 _charaPara._bodyHp += armor.ArmorHpPara;
+                _charaPara._bodyMaxHp += armor.ArmorHpPara;
                 _charaPara._bodyWeight += armor.ArmorWeightPara;
                 armor.gameObject.GetComponent<BoxCollider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
@@ -347,6 +356,7 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._rightArmDefense += armor.ArmorDefPara;
                 _charaPara._rightArmHp += armor.ArmorHpPara;
+                _charaPara._rightArmMaxHp += armor.ArmorHpPara;
                 _charaPara._rightArmWeight += armor.ArmorWeightPara;
                 armor.gameObject.GetComponent<BoxCollider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
@@ -421,6 +431,7 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._leftArmDefense += armor.ArmorDefPara;
                 _charaPara._leftArmHp += armor.ArmorHpPara;
+                _charaPara._leftArmMaxHp += armor.ArmorHpPara;
                 _charaPara._leftArmWeight += armor.ArmorWeightPara;
                 armor.gameObject.GetComponent<BoxCollider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
@@ -490,6 +501,7 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._legDefense += armor.ArmorDefPara;
                 _charaPara._legHp += armor.ArmorHpPara;
+                _charaPara._legMaxHp += armor.ArmorHpPara;
                 _charaPara._legWeight += armor.ArmorWeightPara;
                 armor.gameObject.GetComponent<BoxCollider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
@@ -576,6 +588,7 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._boosterDefense += armor.ArmorDefPara;
                 _charaPara._boosterHp += armor.ArmorHpPara;
+                _charaPara._boosterMaxHp += armor.ArmorHpPara;
                 _charaPara._boosterWeight += armor.ArmorWeightPara;
                 armor.gameObject.transform.SetParent(_partsLocation[5].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
@@ -630,6 +643,10 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _bodyList.Clear();
+                _charaPara._bodyHp = 0;
+                _charaPara._bodyMaxHp = 0;
+                _partsHP[0] = 0;
+                _partsMaxHP[0] = 0;
                 _charaPara._bodyDefense = 0;
                 _charaPara._totalWeight -= _charaPara._bodyWeight;
                 _charaPara._bodyWeight = 0;
@@ -645,6 +662,10 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _rightArmList.Clear();
+                _charaPara._rightArmHp = 0;
+                _charaPara._rightArmMaxHp = 0;
+                _partsHP[1] = 0;
+                _partsMaxHP[1] = 0;
                 _charaPara._rightArmDefense = 0;
                 _charaPara._rightAttack = 0;
                 _charaPara._totalWeight -= _charaPara._rightArmWeight;
@@ -669,6 +690,10 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _leftArmList.Clear();
+                _charaPara._leftArmHp = 0;
+                _charaPara._leftArmMaxHp = 0;
+                _partsHP[2] = 0;
+                _partsMaxHP[2] = 0;
                 _charaPara._leftArmDefense = 0;
                 _charaPara._leftAttack = 0;
                 _charaPara._totalWeight -= _charaPara._leftArmWeight;
@@ -693,6 +718,10 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _legList.Clear();
+                _charaPara._legHp = 0;
+                _charaPara._legMaxHp = 0;
+                _partsHP[3] = 0;
+                _partsMaxHP[3] = 0;
                 _charaPara._legDefense = 0;
                 _charaPara._legAttack = 0;
                 _charaPara._totalWeight -= _charaPara._legWeight;
@@ -725,6 +754,10 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _boosterList.Clear();
+                _charaPara._boosterHp = 0;
+                _charaPara._boosterMaxHp = 0;
+                _partsHP[4] = 0;
+                _partsMaxHP[4] = 0;
                 _charaPara._boosterDefense = 0;
                 _charaPara._totalWeight -= _charaPara._boosterWeight;
                 _charaPara._boosterWeight = 0;
