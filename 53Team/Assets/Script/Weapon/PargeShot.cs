@@ -108,8 +108,6 @@ public class PargeShot : MonoBehaviour {
             }
             ShotTime = 0;
         }
-
-        yield return new WaitForSeconds(10.0f);
     }
 
 }
