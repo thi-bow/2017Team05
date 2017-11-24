@@ -59,19 +59,18 @@ public class Player : CharaBase
                     if (n.type == Weapon.Attack_State.shooting)
                     {
                         PartsDamage(n.value, par);
+                        _playerUIManager.ArmorHP((int)par, _partsHP[(int)par]);
+                        Debug.Log(_partsHP[(int)par]);
                     }
                     else
                     {
                         Damage(n.value);
                     }
-
+                    _playerUIManager.PlayerHP();
                 });
-
-                _playerUIManager.ArmorHP();
-                _playerUIManager.PlayerHP();
-                Debug.Log("プレイヤー攻撃受けたほげほげ");
             }
         }
+        _deadAction = DeadAction;
     }
 
     // Update is called once per frame
@@ -207,6 +206,7 @@ public class Player : CharaBase
             if (other.GetComponent<Armor>().GetParts == Parts.Body || other.GetComponent<Armor>().GetParts == Parts.Booster)
             {
                 PartsAdd(other.GetComponent<Armor>().GetParts, other.GetComponent<Armor>());
+                _playerUIManager.ArmorHP((int)other.GetComponent<Armor>().GetParts, _partsHP[(int)other.GetComponent<Armor>().GetParts]);
             }
         }
     }
@@ -219,14 +219,17 @@ public class Player : CharaBase
             if (Input.GetAxis("crossX") > 0)
             {
                 PartsAdd(Parts.RightArm, other.GetComponent<Armor>());
+                _playerUIManager.ArmorHP((int)Parts.RightArm, _partsHP[(int)Parts.RightArm]);
             }
             if (Input.GetAxis("crossX") < 0)
             {
                 PartsAdd(Parts.LeftArm, other.GetComponent<Armor>());
+                _playerUIManager.ArmorHP((int)Parts.LeftArm, _partsHP[(int)Parts.LeftArm]);
             }
             if (Input.GetAxis("crossY") > 0)
             {
                 PartsAdd(Parts.Leg, other.GetComponent<Armor>());
+                _playerUIManager.ArmorHP((int)Parts.Leg, _partsHP[(int)Parts.Leg]);
             }
         }
     }
@@ -248,5 +251,10 @@ public class Player : CharaBase
         if (fullParge) maxSize = 5.0f;
         _pargeColl.GetComponent<PargeAttackCollider>().PargeStart(attackPower, maxSize);
 
+    }
+
+    void DeadAction()
+    {
+        SceneManagerScript.sceneManager.SceneOut("CheckScene");
     }
 }

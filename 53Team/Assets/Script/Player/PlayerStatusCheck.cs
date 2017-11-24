@@ -9,6 +9,7 @@ public class PlayerStatusCheck : MonoBehaviour
     [SerializeField] private Player _player = null;
     [SerializeField] private Image _playerHP = null;
     [SerializeField] private Image[] _partsHP = null;
+    [SerializeField] private Color[] _hpColor = null;
     #endregion
 
     [SerializeField] private Image _skillGageImage = null;
@@ -17,7 +18,10 @@ public class PlayerStatusCheck : MonoBehaviour
     // Use this for initialization
     void Start () {
         PlayerHP();
-
+        for (int i = 0; i < _player._partsHP.Count; i++)
+        {
+            ArmorHP(i, _player._partsHP[i]);
+        }
     }
 	
 	// Update is called once per frame
@@ -31,8 +35,15 @@ public class PlayerStatusCheck : MonoBehaviour
         _playerHP.fillAmount = _player._charaPara._hp * count;
     }
 
-    public void ArmorHP()
+    public void ArmorHP(int partsNumber, int hp)
     {
+        if (partsNumber >= 4) return;
+        int hpNumber = 0;
+        if (hp >= 100) hpNumber = 2;
+        else if (hp >= 50) hpNumber = 1;
+        else hpNumber = 0;
+        _partsHP[partsNumber].color = _hpColor[hpNumber];
+
     }
 
     //プレイヤーのスキルゲージの確認
