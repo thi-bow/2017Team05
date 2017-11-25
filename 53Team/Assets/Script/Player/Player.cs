@@ -134,6 +134,12 @@ public class Player : CharaBase
                 FullParge(() =>
                 {
                     PargeAttackCollide();
+                },() =>
+                {
+                    for (int i = 0; i < _partsHP.Count; i++)
+                    {
+                        _playerUIManager.ArmorHP(i, _partsHP[i], _partsMaxHP[i]);
+                    }
                 });
                 _fullParge = false;
             }
@@ -271,6 +277,7 @@ public class Player : CharaBase
                 attackPower += GetPartsList(_allPartsList[i]).Count * 100;
             }
             maxSize = 5.0f;
+
         }
         if (!fullParge)
         {

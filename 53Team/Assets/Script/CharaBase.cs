@@ -631,7 +631,7 @@ public class CharaBase : MonoBehaviour
 
     //部位ごとにパージする
     #region PartsPurge
-    public void PartsPurge(Parts parts, Action action = null)
+    public void PartsPurge(Parts parts, Action action = null, Action endAction = null)
     {
         switch (parts)
         {
@@ -768,12 +768,13 @@ public class CharaBase : MonoBehaviour
             default:
                 break;
         }
+        if (endAction != null) endAction();
     }
     #endregion
 
     //全ての装備をパージする
     #region FullParge
-    public void FullParge(Action action = null)
+    public void FullParge(Action action = null, Action endAction = null)
     {
         //何も装備していなかったら何もしない
         if(_bodyList.Count + _rightArmList.Count + _leftArmList.Count + _legList.Count + _boosterList.Count <= 0)
@@ -792,6 +793,7 @@ public class CharaBase : MonoBehaviour
 
         //デバッグ中は、フルパージが終了したらいつでもフルパージできるようにする(パージ処理が全て慣性したらこの処理を消す)
         _fullParge = false;
+        if (endAction != null) endAction();
     }
     #endregion
 
