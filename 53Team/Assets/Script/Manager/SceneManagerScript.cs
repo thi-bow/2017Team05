@@ -89,7 +89,10 @@ public class SceneManagerScript : MonoBehaviour
         //カーソル非表示
         //Cursor.visible = false;
         _eventSystem = GameObject.FindObjectOfType<EventSystem>();
-        _fade = _fade_Object.GetComponent<RectTransform>();
+        if (_fade_Object != null)
+        {
+            _fade = _fade_Object.GetComponent<RectTransform>();
+        }
         if (_lord != null)
         {
             _lord.SetActive(false);
