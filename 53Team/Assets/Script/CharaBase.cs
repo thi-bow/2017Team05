@@ -81,6 +81,8 @@ public class CharaParameter
     public Weapon.Attack_State _rightArm_AttackState = Weapon.Attack_State.NULL;
     public Weapon.Attack_State _leftArm_AttackState = Weapon.Attack_State.NULL;
     public Weapon.Attack_State _leg_AttackState = Weapon.Attack_State.NULL;
+
+    public bool isDead = false;
 }
 
 public class CharaBase : MonoBehaviour
@@ -1130,8 +1132,9 @@ public class CharaBase : MonoBehaviour
         }
 
         _charaPara._hp -= attackPower;
-        if(_charaPara._hp <= 0)
+        if(_charaPara._hp <= 0 && !_charaPara.isDead)
         {
+            _charaPara.isDead = true;
             Dead();
         }
     }

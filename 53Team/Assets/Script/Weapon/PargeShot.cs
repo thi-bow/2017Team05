@@ -46,6 +46,8 @@ public class PargeShot : MonoBehaviour {
 
     int mask = 1 << 8;
 
+    Action pargeAction = null;
+
     // Use this for initialization
     void Start () {
         tpsCamera = Camera.main;
@@ -64,6 +66,7 @@ public class PargeShot : MonoBehaviour {
         if (bullets <= 0)
         {
             isParge = false;
+            pargeAction();
             bullets = maxBullets;
         }
     }
@@ -78,7 +81,7 @@ public class PargeShot : MonoBehaviour {
 
         if (action != null)
         {
-            action();
+            pargeAction = action;
         }
     }
 
