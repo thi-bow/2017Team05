@@ -112,7 +112,8 @@ namespace Enemy
                             for (int j = 0; j < list.Count; j++)
                             {
                                 list[j].gameObject.GetComponent<Collider>().enabled = true;
-                                list[j].gameObject.AddComponent<Rigidbody>();
+                                var rd = list[j].gameObject.AddComponent<Rigidbody>();
+                                rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                             }
                         });
 
