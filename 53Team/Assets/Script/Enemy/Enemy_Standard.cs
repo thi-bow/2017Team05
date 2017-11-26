@@ -73,7 +73,7 @@ namespace Enemy
                 if(transform == transforms[i]) { continue; }
 
                 transforms[i].transform.SetParent(transform);
-                var rd = transform.GetComponent<Rigidbody>();
+                var rd = transform.gameObject.GetComponent<Rigidbody>();
                 rd = rd != null ? rd : transforms[i].gameObject.AddComponent<Rigidbody>();
                 if (rd != null) {
                     rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
