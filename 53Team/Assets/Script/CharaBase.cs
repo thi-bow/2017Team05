@@ -202,6 +202,10 @@ public class CharaBase : MonoBehaviour
 
     [SerializeField] public Camera tpsCamera = null;
 
+    #region エフェクト
+    [SerializeField] private GameObject _pargeEffe = null;
+    #endregion
+
     // Use this for initialization
     protected virtual void Start ()
     {
@@ -635,6 +639,11 @@ public class CharaBase : MonoBehaviour
     #region PartsPurge
     public void PartsPurge(Parts parts, Action action = null, Action endAction = null)
     {
+        GameObject pargeEffe = null;
+        if (_pargeEffe != null)
+        {
+            pargeEffe = Instantiate(_pargeEffe);
+        }
         switch (parts)
         {
             case Parts.Body:
@@ -655,6 +664,12 @@ public class CharaBase : MonoBehaviour
                 _charaPara._bodyDefense = 0;
                 _charaPara._totalWeight -= _charaPara._bodyWeight;
                 _charaPara._bodyWeight = 0;
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[0].transform);
+                }
+
                 break;
             case Parts.RightArm:
                 if (_rightArmList.Count <= 0) return;
@@ -683,6 +698,11 @@ public class CharaBase : MonoBehaviour
                     _partsLocation[1].SetActive(true);
                     _charaPara._rightArm_AttackState = Weapon.Attack_State.NULL;
                 }
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[1].transform);
+                }
                 break;
             case Parts.LeftArm:
                 if (_leftArmList.Count <= 0) return;
@@ -710,6 +730,11 @@ public class CharaBase : MonoBehaviour
                     _specialWepon_Approach[1].SetActive(false);
                     _partsLocation[2].SetActive(true);
                     _charaPara._leftArm_AttackState = Weapon.Attack_State.NULL;
+                }
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[2].transform);
                 }
                 break;
             case Parts.Leg:
@@ -747,6 +772,20 @@ public class CharaBase : MonoBehaviour
                     _partsLocation[4].SetActive(true);
                     _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
                 }
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[3].transform);
+                }
+
+                if (_pargeEffe)
+                {
+                    GameObject leftLegPargeEffe = null;
+                    leftLegPargeEffe = Instantiate(_pargeEffe);
+                    leftLegPargeEffe.transform.SetParent(_partsLocation[4].transform);
+                    leftLegPargeEffe.transform.localPosition = Vector3.zero;
+                    Destroy(leftLegPargeEffe, 1.0f);
+                }
                 break;
             case Parts.Booster:
                 if (_boosterList.Count <= 0) return;
@@ -766,10 +805,17 @@ public class CharaBase : MonoBehaviour
                 _charaPara._boosterDefense = 0;
                 _charaPara._totalWeight -= _charaPara._boosterWeight;
                 _charaPara._boosterWeight = 0;
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[5].transform);
+                }
                 break;
             default:
                 break;
         }
+        pargeEffe.transform.localPosition = Vector3.zero;
+        Destroy(pargeEffe, 1.0f);
         if (endAction != null) endAction();
     }
     #endregion
