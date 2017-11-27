@@ -46,6 +46,8 @@ public class PargeShot : MonoBehaviour {
 
     int mask = 1 << 8;
 
+    Action pargeAction = null;
+
     // Use this for initialization
     void Start () {
         tpsCamera = Camera.main;
@@ -57,8 +59,17 @@ public class PargeShot : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        if (isParge)
+        {
+            StartCoroutine(ShootingInterval());
+        }
+        if (bullets <= 0)
+        {
+            isParge = false;
+            pargeAction();
+            bullets = maxBullets;
+        }
+    }
 
     public void PargeAttack(Camera tpsCamera, Action action = null)
     {
@@ -66,31 +77,22 @@ public class PargeShot : MonoBehaviour {
         {
             this.tpsCamera = tpsCamera;
         }
-        if (bullets > 0)
-        {
-            isParge = true;
-            StartCoroutine(ShootingInterval());
-        }
-        else
-        {
-            bullets = 0;
-            isParge = false;
-        }
+        isParge = true;
 
         if (action != null)
         {
-            action();
+            pargeAction = action;
         }
     }
 
     IEnumerator ShootingInterval()
     {
         yield return new WaitForSeconds(shotspeed);
-        bullets--;
+
         ShotTime += Time.deltaTime;
         if (ShotTime >= 60.0f / minuteShot)
         {
-
+            bullets--;
             Vector3 shotPos = tpsCamera.GetComponent<Camera>().ScreenToWorldPoint(center);
             Ray ray;
 
@@ -109,5 +111,4 @@ public class PargeShot : MonoBehaviour {
             ShotTime = 0;
         }
     }
-
 }

@@ -16,6 +16,12 @@ public class CharaParameter
     public int _leftArmHp = 0;
     public int _legHp = 0;
     public int _boosterHp = 0;
+
+    public int _bodyMaxHp = 0;
+    public int _rightArmMaxHp = 0;
+    public int _leftArmMaxHp = 0;
+    public int _legMaxHp = 0;
+    public int _boosterMaxHp = 0;
     #endregion
 
     [Header("キャラクターのDefense")]
@@ -75,6 +81,8 @@ public class CharaParameter
     public Weapon.Attack_State _rightArm_AttackState = Weapon.Attack_State.NULL;
     public Weapon.Attack_State _leftArm_AttackState = Weapon.Attack_State.NULL;
     public Weapon.Attack_State _leg_AttackState = Weapon.Attack_State.NULL;
+
+    public bool isDead = false;
 }
 
 public class CharaBase : MonoBehaviour
@@ -190,15 +198,21 @@ public class CharaBase : MonoBehaviour
     }
     #endregion
     [SerializeField] public List<int> _partsHP = new List<int>();
+    [SerializeField] public List<int> _partsMaxHP = new List<int>();
 
     [SerializeField] public Camera tpsCamera = null;
+
+    #region エフェクト
+    [SerializeField] private GameObject _pargeEffe = null;
+    #endregion
 
     // Use this for initialization
     protected virtual void Start ()
     {
         _allPartsList = new List<Parts> { Parts.Body, Parts.RightArm, Parts.LeftArm, Parts.Leg, Parts.Booster };
         _partsHP = new List<int> { _charaPara._bodyHp, _charaPara._rightArmHp, _charaPara._leftArmHp, _charaPara._legHp, _charaPara._boosterHp };
-
+        _partsMaxHP = new List<int> { _charaPara._bodyMaxHp, _charaPara._rightArmMaxHp, _charaPara._leftArmMaxHp, _charaPara._legMaxHp, _charaPara._boosterMaxHp };
+        
         #region 右腕を初期設定
         if (_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
         {
@@ -332,6 +346,7 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._bodyDefense += armor.ArmorDefPara;
                 _charaPara._bodyHp += armor.ArmorHpPara;
+                _charaPara._bodyMaxHp += armor.ArmorHpPara;
                 _charaPara._bodyWeight += armor.ArmorWeightPara;
                 armor.gameObject.GetComponent<BoxCollider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
@@ -340,13 +355,14 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 PartsLevelChenge(_bodyList.Count, out _charaPara._bodyLevel);
                 _partsHP[0] = _charaPara._bodyHp;
-
+                _partsMaxHP[0] = _charaPara._bodyMaxHp;
                 break;
             case Parts.RightArm:
                 _rightArmList.Add(armor);
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._rightArmDefense += armor.ArmorDefPara;
                 _charaPara._rightArmHp += armor.ArmorHpPara;
+                _charaPara._rightArmMaxHp += armor.ArmorHpPara;
                 _charaPara._rightArmWeight += armor.ArmorWeightPara;
                 armor.gameObject.GetComponent<BoxCollider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
@@ -358,6 +374,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localPosition = PartsAddPara.PlayerRightArmPosition[_rightArmList.Count - 1];
                 armor.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerRightArmRotation[_rightArmList.Count - 1]);
                 _partsHP[1] = _charaPara._rightArmHp;
+                _partsMaxHP[1] = _charaPara._rightArmMaxHp;
 
                 if (_rightArmList.Count < _charaPara._rightArm_BorderNumber)
                 {
@@ -421,6 +438,7 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._leftArmDefense += armor.ArmorDefPara;
                 _charaPara._leftArmHp += armor.ArmorHpPara;
+                _charaPara._leftArmMaxHp += armor.ArmorHpPara;
                 _charaPara._leftArmWeight += armor.ArmorWeightPara;
                 armor.gameObject.GetComponent<BoxCollider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
@@ -432,6 +450,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localPosition = PartsAddPara.PlayerLeftArmPosition[_leftArmList.Count - 1];
                 armor.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerLeftArmRotation[_leftArmList.Count - 1]);
                 _partsHP[2] = _charaPara._leftArmHp;
+                _partsMaxHP[2] = _charaPara._leftArmMaxHp;
 
                 if (_leftArmList.Count < _charaPara._leftArm_BorderNumber)
                 {
@@ -490,6 +509,7 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._legDefense += armor.ArmorDefPara;
                 _charaPara._legHp += armor.ArmorHpPara;
+                _charaPara._legMaxHp += armor.ArmorHpPara;
                 _charaPara._legWeight += armor.ArmorWeightPara;
                 armor.gameObject.GetComponent<BoxCollider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
@@ -504,6 +524,7 @@ public class CharaBase : MonoBehaviour
                 armor.transform.localPosition = PartsAddPara.PlayerRightLegPosition[_legList.Count - 1];
                 armor.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerRightLegRotation[_legList.Count - 1]);
                 _partsHP[3] = _charaPara._legHp;
+                _partsMaxHP[3] = _charaPara._legMaxHp;
                 pair.gameObject.transform.SetParent(_partsLocation[4].transform);
                 pair.transform.localPosition = PartsAddPara.PlayerLeftLegPosition[_legList.Count - 1];
                 pair.transform.localRotation = Quaternion.Euler(PartsAddPara.PlayerLeftLegRotation[_legList.Count - 1]);
@@ -525,7 +546,6 @@ public class CharaBase : MonoBehaviour
                         _shootNumber--;
                     }
                 }
-                Debug.Log(_shootNumber);
                 if (_shootNumber >= _charaPara._leg_SwitchNumber && _charaPara._leg_AttackState != Weapon.Attack_State.shooting)
                 {
                     print("脚を遠距離攻撃に切り替えた");
@@ -576,11 +596,13 @@ public class CharaBase : MonoBehaviour
                 //装備のパラメータをプレイヤーに上乗せする
                 _charaPara._boosterDefense += armor.ArmorDefPara;
                 _charaPara._boosterHp += armor.ArmorHpPara;
+                _charaPara._boosterMaxHp += armor.ArmorHpPara;
                 _charaPara._boosterWeight += armor.ArmorWeightPara;
                 armor.gameObject.transform.SetParent(_partsLocation[5].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 armor.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
                 _partsHP[4] = _charaPara._boosterHp;
+                _partsMaxHP[4] = _charaPara._boosterMaxHp;
 
                 PartsLevelChenge(_boosterList.Count, out _charaPara._boosterLevel);
                 break;
@@ -615,8 +637,13 @@ public class CharaBase : MonoBehaviour
 
     //部位ごとにパージする
     #region PartsPurge
-    public void PartsPurge(Parts parts, Action action = null)
+    public void PartsPurge(Parts parts, Action action = null, Action endAction = null)
     {
+        GameObject pargeEffe = null;
+        if (_pargeEffe != null)
+        {
+            pargeEffe = Instantiate(_pargeEffe);
+        }
         switch (parts)
         {
             case Parts.Body:
@@ -630,9 +657,19 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _bodyList.Clear();
+                _charaPara._bodyHp = 0;
+                _charaPara._bodyMaxHp = 0;
+                _partsHP[0] = 0;
+                _partsMaxHP[0] = 0;
                 _charaPara._bodyDefense = 0;
                 _charaPara._totalWeight -= _charaPara._bodyWeight;
                 _charaPara._bodyWeight = 0;
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[0].transform);
+                }
+
                 break;
             case Parts.RightArm:
                 if (_rightArmList.Count <= 0) return;
@@ -645,6 +682,10 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _rightArmList.Clear();
+                _charaPara._rightArmHp = 0;
+                _charaPara._rightArmMaxHp = 0;
+                _partsHP[1] = 0;
+                _partsMaxHP[1] = 0;
                 _charaPara._rightArmDefense = 0;
                 _charaPara._rightAttack = 0;
                 _charaPara._totalWeight -= _charaPara._rightArmWeight;
@@ -656,6 +697,11 @@ public class CharaBase : MonoBehaviour
                     _specialWepon_Approach[0].SetActive(false);
                     _partsLocation[1].SetActive(true);
                     _charaPara._rightArm_AttackState = Weapon.Attack_State.NULL;
+                }
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[1].transform);
                 }
                 break;
             case Parts.LeftArm:
@@ -669,6 +715,10 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _leftArmList.Clear();
+                _charaPara._leftArmHp = 0;
+                _charaPara._leftArmMaxHp = 0;
+                _partsHP[2] = 0;
+                _partsMaxHP[2] = 0;
                 _charaPara._leftArmDefense = 0;
                 _charaPara._leftAttack = 0;
                 _charaPara._totalWeight -= _charaPara._leftArmWeight;
@@ -680,6 +730,11 @@ public class CharaBase : MonoBehaviour
                     _specialWepon_Approach[1].SetActive(false);
                     _partsLocation[2].SetActive(true);
                     _charaPara._leftArm_AttackState = Weapon.Attack_State.NULL;
+                }
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[2].transform);
                 }
                 break;
             case Parts.Leg:
@@ -693,6 +748,10 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _legList.Clear();
+                _charaPara._legHp = 0;
+                _charaPara._legMaxHp = 0;
+                _partsHP[3] = 0;
+                _partsMaxHP[3] = 0;
                 _charaPara._legDefense = 0;
                 _charaPara._legAttack = 0;
                 _charaPara._totalWeight -= _charaPara._legWeight;
@@ -713,6 +772,20 @@ public class CharaBase : MonoBehaviour
                     _partsLocation[4].SetActive(true);
                     _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
                 }
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[3].transform);
+                }
+
+                if (_pargeEffe)
+                {
+                    GameObject leftLegPargeEffe = null;
+                    leftLegPargeEffe = Instantiate(_pargeEffe);
+                    leftLegPargeEffe.transform.SetParent(_partsLocation[4].transform);
+                    leftLegPargeEffe.transform.localPosition = Vector3.zero;
+                    Destroy(leftLegPargeEffe, 1.0f);
+                }
                 break;
             case Parts.Booster:
                 if (_boosterList.Count <= 0) return;
@@ -725,19 +798,31 @@ public class CharaBase : MonoBehaviour
                     action();
                 }
                 _boosterList.Clear();
+                _charaPara._boosterHp = 0;
+                _charaPara._boosterMaxHp = 0;
+                _partsHP[4] = 0;
+                _partsMaxHP[4] = 0;
                 _charaPara._boosterDefense = 0;
                 _charaPara._totalWeight -= _charaPara._boosterWeight;
                 _charaPara._boosterWeight = 0;
+
+                if (pargeEffe != null)
+                {
+                    pargeEffe.transform.SetParent(_partsLocation[5].transform);
+                }
                 break;
             default:
                 break;
         }
+        pargeEffe.transform.localPosition = Vector3.zero;
+        Destroy(pargeEffe, 1.0f);
+        if (endAction != null) endAction();
     }
     #endregion
 
     //全ての装備をパージする
     #region FullParge
-    public void FullParge(Action action = null)
+    public void FullParge(Action action = null, Action endAction = null)
     {
         //何も装備していなかったら何もしない
         if(_bodyList.Count + _rightArmList.Count + _leftArmList.Count + _legList.Count + _boosterList.Count <= 0)
@@ -756,6 +841,7 @@ public class CharaBase : MonoBehaviour
 
         //デバッグ中は、フルパージが終了したらいつでもフルパージできるようにする(パージ処理が全て慣性したらこの処理を消す)
         _fullParge = false;
+        if (endAction != null) endAction();
     }
     #endregion
 
@@ -777,7 +863,7 @@ public class CharaBase : MonoBehaviour
     #endregion
 
     #region BrowOffParge
-    public void BrowOffParge(Parts parts)
+    public void BrowOffParge(Parts parts, Action action = null)
     {
         PartsPurge(parts, () => {
             for (int i = 0; i < GetPartsList(parts).Count; i++)
@@ -801,6 +887,8 @@ public class CharaBase : MonoBehaviour
                     Destroy(_legPartsPair[i].gameObject, 2.0f);
                 }
             }
+
+            if (action != null) action();
 
         });
     }
@@ -1090,8 +1178,9 @@ public class CharaBase : MonoBehaviour
         }
 
         _charaPara._hp -= attackPower;
-        if(_charaPara._hp <= 0)
+        if(_charaPara._hp <= 0 && !_charaPara.isDead)
         {
+            _charaPara.isDead = true;
             Dead();
         }
     }

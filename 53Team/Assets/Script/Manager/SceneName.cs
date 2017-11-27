@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SceneName : MonoBehaviour {
 
-    enum sceneName
+    public enum sceneName
     {
         Title,
         Game,
