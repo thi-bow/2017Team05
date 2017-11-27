@@ -146,7 +146,7 @@ public class Weapon : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, distance,mask))
         {
-            if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
+            if (hit.collider.gameObject.GetComponent<BoneCollide>() != null && hit.collider.tag != "Player")
             {
                 hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Attack_State.shooting);
             }

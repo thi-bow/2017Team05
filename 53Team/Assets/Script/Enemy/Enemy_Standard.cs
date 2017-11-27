@@ -58,13 +58,11 @@ namespace Enemy
 
         public override void Damage(int damage)
         {
-            Debug.LogFormat("{0}に{1}ダメージ!!", m_enemyStatus.name, damage);
             base.Damage(damage);
         }
 
         public override void Dead()
         {
-            Debug.Log("死んだぁ！！");
             var transforms = GetComponentsInChildren<Transform>();
             Vector3 pos = transform.position + transform.forward * 2;
 
@@ -79,7 +77,10 @@ namespace Enemy
                     rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
                     Observable.Timer(System.TimeSpan.FromSeconds(Random.Range(5.0f, 6.0f))).Subscribe(_ => 
                     {
-                        Destroy(rd.gameObject);
+                        if (rd != null)
+                        {
+                            Destroy(rd.gameObject);
+                        }
                     });
                 }
             }

@@ -98,7 +98,6 @@ namespace Enemy
                 m_boneCollides[n].OnDamage.Subscribe(dmg =>
                 {
                     Parts parts = m_boneCollides[n].m_parts;
-                    Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", parts.ToString(), dmg.value);
                     if(parts == Parts.WeakPoint || dmg.type == Weapon.Attack_State.approach)
                     {
                         Damage(dmg.value);
@@ -180,7 +179,6 @@ namespace Enemy
 
         public virtual void OnChangeState(TEnum state)
         {
-            Debug.Log("OnChangeState!! " + state);
         }
 
         // 現在のステートと指定したステートが等しいかを返す
