@@ -128,14 +128,12 @@ namespace Enemy
                 // メイン視界に敵を発見
                 if (_base.IsMainSearch())
                 {
-                    Debug.Log("<< 発見 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
                 // サブ視界に敵、又は何かを発見
                 if (_base.IsSubSearch())
                 {
-                    Debug.Log("<< 警戒 >>");
                     _base.ChangeState(standard_State.warning);
                     return;
                 }
@@ -185,7 +183,6 @@ namespace Enemy
                 // メイン視界に敵を発見
                 if (_base.IsMainSearch() || _base.IsSubSearch())
                 {
-                    Debug.Log("<< 発見 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
@@ -216,7 +213,6 @@ namespace Enemy
                     m_timer++;
                     if(m_timer >= (_base.m_time / Time.deltaTime))
                     {
-                        Debug.Log("<< ロスト >>");
                         _base.m_lastPosition = _base.m_target.position;
                         _base.ChangeState(standard_State.move);
                         return;
@@ -234,7 +230,6 @@ namespace Enemy
 
                 if(_base.IsAttackSearch())
                 {
-                    Debug.Log("<< 攻撃 >>");
                     _base.ChangeState(standard_State.attack);
                     return;
                 }
@@ -263,7 +258,6 @@ namespace Enemy
             {
                 if (!_base.IsAttackSearch())
                 {
-                    Debug.Log("<< 射程外 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
