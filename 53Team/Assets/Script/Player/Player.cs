@@ -283,6 +283,7 @@ public class Player : CharaBase
         {
             BrowOffParge(par);
             attackPower = GetPartsList(par).Count * 100;
+            maxSize = 5.0f;
         }
         _pargeColl.GetComponent<PargeAttackCollider>().PargeStart(attackPower, maxSize);
 

@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
 
     private float _pushTime;
     [System.NonSerialized] public  bool _longPush = false;
+    [SerializeField] PlayerStatusCheck _playerUIManager;
 
 
     // Use this for initialization
@@ -23,43 +24,73 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         // 部分パージのInput    
-        // 左パージ 
+        // 右パージ 
         if(Input.GetAxisRaw("crossX") > 0)
         {
             _pushTime += Time.deltaTime;
-            if (_longPush == true && _player.GetComponent<Player>()._rightArmParge == true)
+            if (_longPush == true && _partsPurge._rightArmParge == true)
             {
-                _player.GetComponent<Player>()._leftArmParge = false;
-                _partsPurge._specialWepon_Shot[1].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera,()=> 
+                _partsPurge._rightArmParge = false;
+
+                if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
                 {
-                    _partsPurge.PargeAttackCollide(false, Player.Parts.RightArm);
-                });
+                    _partsPurge._specialWepon_Shot[0].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
+                 {
+                     _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
+                     PartsHPUIReset(CharaBase.Parts.RightArm);
+                 });
+                }
+
+                else
+                {
+                    _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
+                    PartsHPUIReset(CharaBase.Parts.RightArm);
+                }
+                
             }
         }
-        // 右パージ
+        // 左パージ
         if (Input.GetAxisRaw("crossX") < 0)
         {
             _pushTime += Time.deltaTime;
-            if (_longPush == true && _player.GetComponent<Player>()._leftArmParge == true)
+            if (_longPush == true && _partsPurge._leftArmParge == true)
             {
-                _player.GetComponent<Player>()._leftArmParge = false;
-                _partsPurge._specialWepon_Shot[0].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
+                _partsPurge._leftArmParge = false;
+                if (_partsPurge._charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
                 {
-                    _partsPurge.PargeAttackCollide(false, Player.Parts.LeftArm);
-                });
+                    _partsPurge._specialWepon_Shot[1].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
+                    {
+                        _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
+                        PartsHPUIReset(CharaBase.Parts.LeftArm);
+                    });
+                }
+                else
+                {
+                    _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
+                    PartsHPUIReset(CharaBase.Parts.LeftArm);
+                }
             }
         }
         // 足パージ
         if (Input.GetAxisRaw("crossY") < 0)
         {
             _pushTime += Time.deltaTime;
-            if (_longPush == true && _player.GetComponent<Player>()._legParge == true)
+            if (_longPush == true && _partsPurge._legParge == true)
             {
-                _player.GetComponent<Player>()._legParge = false;
-                _partsPurge._specialWepon_Shot[2].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
+                _partsPurge._legParge = false;
+                if (_partsPurge._charaPara._leg_AttackState == Weapon.Attack_State.shooting)
                 {
-                    _partsPurge.PargeAttackCollide(false, Player.Parts.Leg);
-                });
+                    _partsPurge._specialWepon_Shot[2].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
+                    {
+                        _partsPurge.PargeAttackCollide(false, CharaBase.Parts.Leg);
+                        PartsHPUIReset(CharaBase.Parts.Leg);
+                    });
+                }
+                else
+                {
+                    _partsPurge.PargeAttackCollide(false, CharaBase.Parts.Leg);
+                    PartsHPUIReset(CharaBase.Parts.Leg);
+                }
             }
         }
         // フルパージボタン
@@ -68,6 +99,7 @@ public class InputManager : MonoBehaviour
            _pushTime += Time.deltaTime;
             Debug.Log(_longPush);
         }
+
 
         // タイマーのリセット
         if (Input.GetAxisRaw("crossX") == 0 && Input.GetAxisRaw("crossY") == 0)
@@ -152,5 +184,10 @@ public class InputManager : MonoBehaviour
         //{
         //    Debug.Log("crossY-01");
         //}
+    }
+
+    private void PartsHPUIReset(Player.Parts parts)
+    {
+        _playerUIManager.ArmorHP((int)parts, _partsPurge._partsHP[(int)parts], _partsPurge._partsMaxHP[(int)parts]);
     }
 }

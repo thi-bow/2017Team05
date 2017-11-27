@@ -32,7 +32,7 @@ public class PargeAttackCollider : MonoBehaviour {
         _parge = true;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
 
         if (other.gameObject.GetComponent<BoneCollide>() != null && other.tag != this.tag)
