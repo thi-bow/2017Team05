@@ -6,7 +6,7 @@ public class InputManager : MonoBehaviour
 {
 
     private GameObject _player;
-    private CharaBase _partsPurge;
+    private Player _partsPurge;
 
     private float _pushTime;
     [System.NonSerialized] public  bool _longPush = false;
@@ -16,7 +16,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         _player = GameObject.Find("PlayerParent");
-        _partsPurge = _player.GetComponent<CharaBase>();
+        _partsPurge = _player.GetComponent<Player>();
     }
 
     // Update is called once per frame
@@ -32,7 +32,7 @@ public class InputManager : MonoBehaviour
                 _player.GetComponent<Player>()._leftArmParge = false;
                 _partsPurge._specialWepon_Shot[1].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera,()=> 
                 {
-                    _partsPurge.BrowOffParge(CharaBase.Parts.RightArm);
+                    _partsPurge.PargeAttackCollide(false, Player.Parts.RightArm);
                 });
             }
         }
@@ -45,7 +45,7 @@ public class InputManager : MonoBehaviour
                 _player.GetComponent<Player>()._leftArmParge = false;
                 _partsPurge._specialWepon_Shot[0].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
                 {
-                    _partsPurge.BrowOffParge(CharaBase.Parts.LeftArm);
+                    _partsPurge.PargeAttackCollide(false, Player.Parts.LeftArm);
                 });
             }
         }
@@ -58,7 +58,7 @@ public class InputManager : MonoBehaviour
                 _player.GetComponent<Player>()._legParge = false;
                 _partsPurge._specialWepon_Shot[2].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
                 {
-                    _partsPurge.BrowOffParge(CharaBase.Parts.Leg);
+                    _partsPurge.PargeAttackCollide(false, Player.Parts.Leg);
                 });
             }
         }
