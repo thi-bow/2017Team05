@@ -87,6 +87,7 @@ namespace Enemy
         
         protected override void Start()
         {
+            base.Start();
             m_agent = GetComponent<NavMeshAgent>();
 
             m_agent.angularSpeed = 360 * m_enemyStatus.rotateSpd;

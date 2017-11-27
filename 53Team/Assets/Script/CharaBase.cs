@@ -207,14 +207,18 @@ public class CharaBase : MonoBehaviour
     #endregion
 
     // Use this for initialization
-    protected virtual void Start ()
+    protected virtual void Start()
     {
         _allPartsList = new List<Parts> { Parts.Body, Parts.RightArm, Parts.LeftArm, Parts.Leg, Parts.Booster };
         _partsHP = new List<int> { _charaPara._bodyHp, _charaPara._rightArmHp, _charaPara._leftArmHp, _charaPara._legHp, _charaPara._boosterHp };
         _partsMaxHP = new List<int> { _charaPara._bodyMaxHp, _charaPara._rightArmMaxHp, _charaPara._leftArmMaxHp, _charaPara._legMaxHp, _charaPara._boosterMaxHp };
-        
+
         #region 右腕を初期設定
-        if (_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
+        if (_specialWepon_Shot.Length <= 0 || _specialWepon_Approach.Length <= 0)
+        {
+            return;
+        }
+            if (_charaPara._rightArm_AttackState == Weapon.Attack_State.NULL)
         {
             _specialWepon_Shot[0].SetActive(false);
             _specialWepon_Approach[0].SetActive(false);
@@ -687,14 +691,20 @@ public class CharaBase : MonoBehaviour
                 _partsHP[1] = 0;
                 _partsMaxHP[1] = 0;
                 _charaPara._rightArmDefense = 0;
-                _charaPara._rightAttack = 0;
+                _charaPara._rightAttack = 10;
                 _charaPara._totalWeight -= _charaPara._rightArmWeight;
                 _charaPara._rightArmWeight = 0;
                 _rightArmParge = false;
                 if (_charaPara._rightArm_AttackState != Weapon.Attack_State.NULL)
                 {
-                    _specialWepon_Shot[0].SetActive(false);
-                    _specialWepon_Approach[0].SetActive(false);
+                    if (_specialWepon_Shot.Length > 0)
+                    {
+                        _specialWepon_Shot[0].SetActive(false);
+                    }
+                    if (_specialWepon_Approach.Length > 0)
+                    {
+                        _specialWepon_Approach[0].SetActive(false);
+                    }
                     _partsLocation[1].SetActive(true);
                     _charaPara._rightArm_AttackState = Weapon.Attack_State.NULL;
                 }
@@ -720,14 +730,20 @@ public class CharaBase : MonoBehaviour
                 _partsHP[2] = 0;
                 _partsMaxHP[2] = 0;
                 _charaPara._leftArmDefense = 0;
-                _charaPara._leftAttack = 0;
+                _charaPara._leftAttack = 10;
                 _charaPara._totalWeight -= _charaPara._leftArmWeight;
                 _charaPara._leftArmWeight = 0;
                 _leftArmParge = false;
                 if (_charaPara._leftArm_AttackState != Weapon.Attack_State.NULL)
                 {
-                    _specialWepon_Shot[1].SetActive(false);
-                    _specialWepon_Approach[1].SetActive(false);
+                    if (_specialWepon_Shot.Length > 1)
+                    {
+                        _specialWepon_Shot[1].SetActive(false);
+                    }
+                    if (_specialWepon_Approach.Length > 1)
+                    {
+                        _specialWepon_Approach[1].SetActive(false);
+                    }
                     _partsLocation[2].SetActive(true);
                     _charaPara._leftArm_AttackState = Weapon.Attack_State.NULL;
                 }
@@ -753,7 +769,7 @@ public class CharaBase : MonoBehaviour
                 _partsHP[3] = 0;
                 _partsMaxHP[3] = 0;
                 _charaPara._legDefense = 0;
-                _charaPara._legAttack = 0;
+                _charaPara._legAttack = 10;
                 _charaPara._totalWeight -= _charaPara._legWeight;
                 _charaPara._legWeight = 0;
                 for(int i = 0; i < _legPartsPair.Count; i++)
@@ -764,10 +780,17 @@ public class CharaBase : MonoBehaviour
                 _legParge = false;
                 if (_charaPara._leg_AttackState != Weapon.Attack_State.NULL)
                 {
-                    _specialWepon_Shot[2].SetActive(false);
-                    _specialWepon_Approach[2].SetActive(false);
-                    _specialWepon_Shot[3].SetActive(false);
-                    _specialWepon_Approach[3].SetActive(false);
+                    if (_specialWepon_Shot.Length > 2)
+                    {
+                        _specialWepon_Shot[2].SetActive(false);
+                        _specialWepon_Shot[3].SetActive(false);
+                    }
+
+                    if (_specialWepon_Approach.Length > 2)
+                    {
+                        _specialWepon_Approach[2].SetActive(false);
+                        _specialWepon_Approach[3].SetActive(false);
+                    }
                     _partsLocation[3].SetActive(true);
                     _partsLocation[4].SetActive(true);
                     _charaPara._leg_AttackState = Weapon.Attack_State.NULL;
@@ -814,8 +837,11 @@ public class CharaBase : MonoBehaviour
             default:
                 break;
         }
-        pargeEffe.transform.localPosition = Vector3.zero;
-        Destroy(pargeEffe, 1.0f);
+        if (pargeEffe != null)
+        {
+            pargeEffe.transform.localPosition = Vector3.zero;
+            Destroy(pargeEffe, 1.0f);
+        }
         if (endAction != null) endAction();
     }
     #endregion
