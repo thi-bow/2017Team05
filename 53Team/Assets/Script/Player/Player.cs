@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using UniRx;
+using UniRx.Triggers;
 
 public class Player : CharaBase
 {
@@ -82,6 +83,21 @@ public class Player : CharaBase
             }
         }
         _deadAction = DeadAction;
+
+
+        var c = GetComponent<CapsuleCollider>();
+        c.OnTriggerEnterAsObservable().Subscribe(x =>
+        {
+            //落ちている武器に当たれば、その武器を装着する
+            if (x.tag == "Armor")
+            {
+                if (x.GetComponent<Armor>().GetParts == Parts.Body || x.GetComponent<Armor>().GetParts == Parts.Booster)
+                {
+                    PartsAdd(x.GetComponent<Armor>().GetParts, x.GetComponent<Armor>());
+                    _playerUIManager.ArmorHP((int)x.GetComponent<Armor>().GetParts, _partsHP[(int)x.GetComponent<Armor>().GetParts], _partsMaxHP[(int)x.GetComponent<Armor>().GetParts]);
+                }
+            }
+        });
     }
 
     // Update is called once per frame
@@ -103,6 +119,7 @@ public class Player : CharaBase
                 attack *= 2;
             }
             this.GetComponent<ApproachAttack>().Approach(attack);
+
         }
 
         //左腕の攻撃
@@ -216,15 +233,6 @@ public class Player : CharaBase
             {
                 _status = playerState.MOVE;
                 _playerSkyMove.UseBoost = false;
-            }
-        }
-        //落ちている武器に当たれば、その武器を装着する
-        if (other.tag == "Armor")
-        {
-            if (other.GetComponent<Armor>().GetParts == Parts.Body || other.GetComponent<Armor>().GetParts == Parts.Booster)
-            {
-                PartsAdd(other.GetComponent<Armor>().GetParts, other.GetComponent<Armor>());
-                _playerUIManager.ArmorHP((int)other.GetComponent<Armor>().GetParts, _partsHP[(int)other.GetComponent<Armor>().GetParts], _partsMaxHP[(int)other.GetComponent<Armor>().GetParts]);
             }
         }
     }

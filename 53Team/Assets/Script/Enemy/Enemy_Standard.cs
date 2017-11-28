@@ -9,7 +9,6 @@ namespace Enemy
 {
     public enum standard_State
     {
-        none,
         move,
         warning,
         chase,
@@ -20,6 +19,9 @@ namespace Enemy
     [RequireComponent(typeof(NavMeshAgent))]
     public class Enemy_Standard : EnemyBase<Enemy_Standard, standard_State>, IEnemy
     {
+
+        [Header("現在のステート")]
+        public standard_State state;
 
         public float m_time = 2.0f;
         public Vector3 m_lastPosition;
@@ -53,11 +55,11 @@ namespace Enemy
         public override void ChangeState(standard_State state)
         {
             base.ChangeState(state);
+            this.state = state;
         }
 
         public override void Damage(int damage)
         {
-            Debug.LogFormat("{0}に{1}ダメージ!!", m_enemyStatus.name, damage);
             base.Damage(damage);
         }
 
@@ -108,14 +110,12 @@ namespace Enemy
                 // メイン視界に敵を発見
                 if (_base.IsMainSearch())
                 {
-                    Debug.Log("<< 発見 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
                 // サブ視界に敵、又は何かを発見
                 if (_base.IsSubSearch())
                 {
-                    Debug.Log("<< 警戒 >>");
                     _base.ChangeState(standard_State.warning);
                     return;
                 }
@@ -165,7 +165,6 @@ namespace Enemy
                 // メイン視界に敵を発見
                 if (_base.IsMainSearch() || _base.IsSubSearch())
                 {
-                    Debug.Log("<< 発見 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
@@ -196,7 +195,6 @@ namespace Enemy
                     m_timer++;
                     if(m_timer >= (_base.m_time / Time.deltaTime))
                     {
-                        Debug.Log("<< ロスト >>");
                         _base.m_lastPosition = _base.m_target.position;
                         _base.ChangeState(standard_State.move);
                         return;
@@ -214,7 +212,6 @@ namespace Enemy
 
                 if(_base.IsAttackSearch())
                 {
-                    Debug.Log("<< 攻撃 >>");
                     _base.ChangeState(standard_State.attack);
                     return;
                 }
@@ -243,7 +240,6 @@ namespace Enemy
             {
                 if (!_base.IsAttackSearch())
                 {
-                    Debug.Log("<< 射程外 >>");
                     _base.ChangeState(standard_State.chase);
                     return;
                 }

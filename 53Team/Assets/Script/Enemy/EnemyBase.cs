@@ -54,9 +54,6 @@ namespace Enemy
         // 開始のタイミングを制御するかどうか
         public bool m_PlayAwake = true;
 
-        [Header("現在のステート")]
-        public TEnum state;
-
         [Header("ターゲット")]
         public Transform m_target;
 
@@ -105,7 +102,6 @@ namespace Enemy
                 m_boneCollides[n].OnDamage.Subscribe(dmg =>
                 {
                     Parts parts = m_boneCollides[n].m_parts;
-                    Debug.LogFormat("Hit!!!!!!  Parts.{0} {1}damage", parts.ToString(), dmg.value);
                     if(parts == Parts.WeakPoint || dmg.type == Weapon.Attack_State.approach)
                     {
                         Damage(dmg.value);
@@ -116,12 +112,7 @@ namespace Enemy
                             Debug.Log(parts + "パージ!!");
 
                             var list = GetPartsList(parts);
-                            for (int j = 0; j < list.Count; j++)
-                            {
-                                list[j].gameObject.GetComponent<Collider>().enabled = true;
-                                var rd = list[j].gameObject.AddComponent<Rigidbody>();
-                                rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                            }
+                            DropWeapon(list);
                         });
 
                     }
@@ -181,14 +172,12 @@ namespace Enemy
                 return;
             }
 
-            this.state = state;
             m_stateMachine.ChengeState(m_stateList[state.ToInt32(null)]);
             OnChangeState(state);
         }
 
         public virtual void OnChangeState(TEnum state)
         {
-            Debug.Log("OnChangeState!! " + state);
         }
 
         // 現在のステートと指定したステートが等しいかを返す
@@ -199,6 +188,8 @@ namespace Enemy
 
         public override void Dead()
         {
+            var list = GetLotteryWeapon();
+            DropWeapon(list);
 
             var transforms = GetComponentsInChildren<Transform>();
             Vector3 pos = transform.position + transform.forward * 2;
@@ -213,14 +204,15 @@ namespace Enemy
                 if (rd != null)
                 {
                     rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
-                    Observable.Timer(System.TimeSpan.FromSeconds(UnityEngine.Random.Range(5.0f, 6.0f))).Subscribe(_ =>
+                    Observable.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(5.0f, 6.0f))).Subscribe(_ =>
                     {
-                        Destroy(rd.gameObject);
+                        if (rd != null)
+                        {
+                            Destroy(rd.gameObject);
+                        }
                     });
                 }
             }
-
-            // base.Dead();
         }
 
         protected override void Update()
@@ -318,9 +310,19 @@ namespace Enemy
             return run;
         }
 
-        public virtual void DropWeapon()
+        public virtual void DropWeapon(List<Armor> list)
         {
-            var items = GetLotteryWeapon();
+            for (int j = 0; j < list.Count; j++)
+            {
+                list[j].gameObject.GetComponent<Collider>().enabled = true;
+                var rd = list[j].gameObject.AddComponent<Rigidbody>();
+                rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Subscribe(_ =>
+                {
+                    rd.gameObject.GetComponent<Collider>().isTrigger = true;
+                    rd.isKinematic = true;
+                }).AddTo(this);
+            }
         }
 
         private List<Armor> GetLotteryWeapon()

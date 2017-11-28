@@ -35,8 +35,7 @@ public class BoneCollide : MonoBehaviour {
         Damageble dmg;
         dmg.value = aDmg;
         dmg.type = aType;
-
-        Debug.LogFormat("{0}パーツに{1}だめーじ", m_parts, aDmg);
+        
         OnDamage.OnNext(dmg);
     }
 }
