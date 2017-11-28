@@ -188,6 +188,8 @@ namespace Enemy
 
         public override void Dead()
         {
+            ResultScore.KillCount++;
+
             var list = GetLotteryWeapon();
             DropWeapon(list);
 
@@ -196,11 +198,12 @@ namespace Enemy
 
             for (int i = 0; i < transforms.Length; i++)
             {
+                int n = i;
                 if (transform == transforms[i]) { continue; }
 
-                transforms[i].transform.SetParent(transform);
-                var rd = transforms[i].gameObject.GetComponent<Rigidbody>();
-                rd = rd != null ? rd : transforms[i].gameObject.AddComponent<Rigidbody>();
+                transforms[n].transform.SetParent(null);
+                var rd = transforms[n].gameObject.GetComponent<Rigidbody>();
+                rd = rd != null ? rd : transforms[n].gameObject.AddComponent<Rigidbody>();
                 if (rd != null)
                 {
                     rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
@@ -213,6 +216,7 @@ namespace Enemy
                     });
                 }
             }
+            Destroy(gameObject);
         }
 
         protected override void Update()
@@ -314,14 +318,23 @@ namespace Enemy
         {
             for (int j = 0; j < list.Count; j++)
             {
+                list[j].transform.SetParent(null);
                 list[j].gameObject.GetComponent<Collider>().enabled = true;
-                var rd = list[j].gameObject.AddComponent<Rigidbody>();
-                rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Subscribe(_ =>
+                var rd = list[j].gameObject.GetComponent<Rigidbody>();
+                rd = rd ? rd : list[j].gameObject.AddComponent<Rigidbody>();
+                try
                 {
-                    rd.gameObject.GetComponent<Collider>().isTrigger = true;
-                    rd.isKinematic = true;
-                }).AddTo(this);
+                    rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Subscribe(_ =>
+                    {
+                        rd.gameObject.GetComponent<Collider>().isTrigger = true;
+                        rd.isKinematic = true;
+                    }).AddTo(this);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning(e);
+                }
             }
         }
 

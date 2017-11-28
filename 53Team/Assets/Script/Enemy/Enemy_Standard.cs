@@ -156,10 +156,6 @@ namespace Enemy
         {
             public StateWarning(Enemy_Standard dev) : base(dev) { }
 
-            public override void OnEnter()
-            {
-            }
-
             public override void OnExecute()
             {
                 // メイン視界に敵を発見
@@ -168,10 +164,6 @@ namespace Enemy
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
-            }
-
-            public override void OnExit()
-            {
             }
         }
 
