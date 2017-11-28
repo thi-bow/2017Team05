@@ -9,10 +9,7 @@ namespace Enemy
 {
     public enum boss_State
     {
-        none,
         move,
-        warning,
-        chase,
         attack,
         dead
     }
@@ -23,7 +20,7 @@ namespace Enemy
 
         protected override void Start()
         {
-            //m_stateList.Add();
+            // m_stateList.Add();
 
             m_stateMachine = new StateMachine<Enemy_Boss>();
 
@@ -62,7 +59,22 @@ namespace Enemy
 
         #region ---------------  State処理  ---------------
 
+        public class StateMove : State<Enemy_Boss>
+        {
+            public StateMove(Enemy_Boss dev) : base(dev) { }
 
+            public override void OnEnter()
+            {
+            }
+
+            public override void OnExecute()
+            {
+            }
+
+            public override void OnExit()
+            {
+            }
+        }
 
         #endregion
     }
