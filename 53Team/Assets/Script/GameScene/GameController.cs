@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     public EnemyMgr m_enemyMgr;
 
     [Space(10)]
-    public readonly int m_killBorder = 10;
+    public readonly int m_killBorder = 7;
 
     private IEnumerator Start()
     {
@@ -29,16 +29,16 @@ public class GameController : MonoBehaviour
         yield return new WaitWhile(() => ResultScore.KillCount < m_killBorder);
 
         // ボス出現処理
-        m_enemyMgr.PopBossEnemy();
-        // ボスが倒されるまで待つ
-        yield return new WaitWhile(() => !m_enemyMgr.IsBossDead());
+        //m_enemyMgr.PopBossEnemy();
+        //// ボスが倒されるまで待つ
+        //yield return new WaitWhile(() => !m_enemyMgr.IsBossDead());
 
         // ゲームクリア演出
 
         yield return Clear();
 
         // 次のシーンへ
-        SceneManagerScript.sceneManager.SceneOut("NambaTes");
+        SceneManagerScript.sceneManager.SceneOut(SceneName.sceneName.Result.ToString());
     }
 
     private IEnumerator Clear()
