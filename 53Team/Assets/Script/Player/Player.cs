@@ -299,6 +299,7 @@ public class Player : CharaBase
 
     void DeadAction()
     {
-        SceneManagerScript.sceneManager.SceneOut("CheckScene");
+        ResultManager.IsClear = false;
+        SceneManagerScript.sceneManager.SceneOut(SceneName.sceneName.Result.ToString());
     }
 }
