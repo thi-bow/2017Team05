@@ -9,17 +9,17 @@ namespace Enemy
 {
     public enum standard_State
     {
+        none,
         move,
         warning,
         chase,
-        attack
+        attack,
+        dead
     }
 
     [RequireComponent(typeof(NavMeshAgent))]
     public class Enemy_Standard : EnemyBase<Enemy_Standard, standard_State>, IEnemy
     {
-        [Header("現在のステート")]
-        public standard_State state;
 
         public float m_time = 2.0f;
         public Vector3 m_lastPosition;
@@ -53,7 +53,6 @@ namespace Enemy
         public override void ChangeState(standard_State state)
         {
             base.ChangeState(state);
-            this.state = state;
         }
 
         public override void Damage(int damage)
@@ -65,25 +64,7 @@ namespace Enemy
         public override void Dead()
         {
             Debug.Log("死んだぁ！！");
-            var transforms = GetComponentsInChildren<Transform>();
-            Vector3 pos = transform.position + transform.forward * 2;
-
-            for (int i = 0; i < transforms.Length; i++)
-            {
-                if(transform == transforms[i]) { continue; }
-
-                transforms[i].transform.SetParent(transform);
-                var rd = transforms[i].gameObject.GetComponent<Rigidbody>();
-                rd = rd != null ? rd : transforms[i].gameObject.AddComponent<Rigidbody>();
-                if (rd != null) {
-                    rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
-                    Observable.Timer(System.TimeSpan.FromSeconds(Random.Range(5.0f, 6.0f))).Subscribe(_ => 
-                    {
-                        Destroy(rd.gameObject);
-                    });
-                }
-            }
-            // base.Dead();
+            base.Dead();
         }
 
         public Transform[] LootPosition

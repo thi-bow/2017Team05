@@ -54,6 +54,9 @@ namespace Enemy
         // 開始のタイミングを制御するかどうか
         public bool m_PlayAwake = true;
 
+        [Header("現在のステート")]
+        public TEnum state;
+
         [Header("ターゲット")]
         public Transform m_target;
 
@@ -72,6 +75,9 @@ namespace Enemy
         public Sector m_sectorMain;
         public Sector m_sectorSub;
         public bool m_seachAreaDraw;
+
+        [Header("ドロップ率")]
+        float probability = 50.0f;
 
         // RaycastHit
         protected RaycastHit m_raycastHit;
@@ -175,6 +181,7 @@ namespace Enemy
                 return;
             }
 
+            this.state = state;
             m_stateMachine.ChengeState(m_stateList[state.ToInt32(null)]);
             OnChangeState(state);
         }
@@ -188,6 +195,32 @@ namespace Enemy
         public virtual bool IsCurrentState(TEnum state)
         {
             return m_stateMachine.GetCurrentState() == m_stateList[state.ToInt32(null)];
+        }
+
+        public override void Dead()
+        {
+
+            var transforms = GetComponentsInChildren<Transform>();
+            Vector3 pos = transform.position + transform.forward * 2;
+
+            for (int i = 0; i < transforms.Length; i++)
+            {
+                if (transform == transforms[i]) { continue; }
+
+                transforms[i].transform.SetParent(transform);
+                var rd = transforms[i].gameObject.GetComponent<Rigidbody>();
+                rd = rd != null ? rd : transforms[i].gameObject.AddComponent<Rigidbody>();
+                if (rd != null)
+                {
+                    rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
+                    Observable.Timer(System.TimeSpan.FromSeconds(UnityEngine.Random.Range(5.0f, 6.0f))).Subscribe(_ =>
+                    {
+                        Destroy(rd.gameObject);
+                    });
+                }
+            }
+
+            // base.Dead();
         }
 
         protected override void Update()
@@ -283,6 +316,29 @@ namespace Enemy
             }
 
             return run;
+        }
+
+        public virtual void DropWeapon()
+        {
+            var items = GetLotteryWeapon();
+        }
+
+        private List<Armor> GetLotteryWeapon()
+        {
+            List<Armor> list = new List<Armor>();
+
+            var count = Enum.GetValues(typeof(Parts)).Length;
+            for (int i = 0; i < count; i++)
+            {
+                var rand = UnityEngine.Random.Range(0.0f, 100.0f);
+                if(probability <= rand)
+                {
+                    list.AddRange(GetPartsList((Parts)i));
+                }
+
+            }
+
+            return list;
         }
 
         // 周りを見渡す動作をする
