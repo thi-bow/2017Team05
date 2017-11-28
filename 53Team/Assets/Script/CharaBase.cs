@@ -929,7 +929,6 @@ public class CharaBase : MonoBehaviour
         //特殊射撃かどうか
         if (_charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
         {
-            print("右腕の特殊射撃");
             _specialWepon_Shot[0].GetComponent<Weapon>().Shooting(tpsCamera);
             return;
         }
@@ -941,7 +940,6 @@ public class CharaBase : MonoBehaviour
             {
                 if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
-                    print("右腕の" + i + "この装備には射撃がない");
                     continue;
                 }
                 _wepon.Shooting(tpsCamera);
@@ -957,7 +955,6 @@ public class CharaBase : MonoBehaviour
         if (_leftArmList.Count <= 0) return;
         if (_charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
         {
-            print("左腕の特殊射撃");
             _specialWepon_Shot[1].GetComponent<Weapon>().Shooting(tpsCamera);
             return;
         }
@@ -969,7 +966,6 @@ public class CharaBase : MonoBehaviour
             {
                 if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
-                    print("左腕の" + i + "この装備には射撃がない");
                     continue;
                 }
                 _wepon.Shooting(tpsCamera);
@@ -995,7 +991,6 @@ public class CharaBase : MonoBehaviour
 
         if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
         {
-            print("脚の特殊射撃");
             _specialWepon_Shot[2].GetComponent<Weapon>().Shooting(tpsCamera);
             _specialWepon_Shot[3].GetComponent<Weapon>().Shooting(tpsCamera);
             return;
@@ -1008,7 +1003,6 @@ public class CharaBase : MonoBehaviour
             {
                 if (_wepon == null || _wepon.state != Weapon.Attack_State.shooting)
                 {
-                    print("脚の" + i + "この装備には射撃がない");
                     continue;
                 }
                 _wepon.Shooting(tpsCamera);

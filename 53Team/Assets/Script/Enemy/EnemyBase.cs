@@ -114,6 +114,11 @@ namespace Enemy
                                 list[j].gameObject.GetComponent<Collider>().enabled = true;
                                 var rd = list[j].gameObject.AddComponent<Rigidbody>();
                                 rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                                rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Subscribe(_ => 
+                                {
+                                    rd.gameObject.GetComponent<Collider>().isTrigger = true;
+                                    rd.isKinematic = true;
+                                }).AddTo(this);
                             }
                         });
 
