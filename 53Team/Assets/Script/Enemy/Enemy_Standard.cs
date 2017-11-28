@@ -60,6 +60,7 @@ namespace Enemy
 
         public override void Damage(int damage)
         {
+            EnemyMgr.i.GetWarningEnemys(transform.position);
             base.Damage(damage);
         }
 
@@ -120,21 +121,6 @@ namespace Enemy
                     return;
                 }
 
-
-                // ターゲットの最終発見ポイントがあればそこまで移動
-                if(_base.m_lastPosition != _base.m_vectorZero)
-                {
-                    _base.m_agent.SetDestination(_base.m_lastPosition);
-                    
-                    if (_base.m_agent.remainingDistance < 2.0f && _base.m_agent.hasPath)
-                    {
-                        _base.m_lastPosition = _base.m_vectorZero;
-                        _base.m_agent.SetDestination(_base.m_lootPosition[currentRootNum].position);
-                    }
-                    return;
-                }
-
-
                 // ルート徘徊
                 if (_base.m_agent.remainingDistance < 2.0f && _base.m_agent.hasPath)
                 {
@@ -146,7 +132,7 @@ namespace Enemy
 
             public override void OnExit()
             {
-                _base.m_lastPosition = _base.m_vectorZero;
+                //_base.m_lastPosition = _base.m_vectorZero;
             }
         }
 
@@ -162,6 +148,19 @@ namespace Enemy
                 if (_base.IsMainSearch() || _base.IsSubSearch())
                 {
                     _base.ChangeState(standard_State.chase);
+                    return;
+                }
+
+                // ターゲットの最終発見ポイントがあればそこまで移動
+                if (_base.m_lastPosition != _base.m_vectorZero)
+                {
+                    _base.m_agent.SetDestination(_base.m_lastPosition);
+
+                    if (_base.m_agent.remainingDistance < 2.0f && _base.m_agent.hasPath)
+                    {
+                        _base.m_lastPosition = _base.m_vectorZero;
+                        _base.ChangeState(standard_State.move);
+                    }
                     return;
                 }
             }
@@ -188,7 +187,7 @@ namespace Enemy
                     if(m_timer >= (_base.m_time / Time.deltaTime))
                     {
                         _base.m_lastPosition = _base.m_target.position;
-                        _base.ChangeState(standard_State.move);
+                        _base.ChangeState(standard_State.warning);
                         return;
                     }
                 }
