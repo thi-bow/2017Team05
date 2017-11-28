@@ -322,19 +322,14 @@ namespace Enemy
                 list[j].gameObject.GetComponent<Collider>().enabled = true;
                 var rd = list[j].gameObject.GetComponent<Rigidbody>();
                 rd = rd ? rd : list[j].gameObject.AddComponent<Rigidbody>();
-                try
+
+                rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Take(1).Subscribe(_ =>
                 {
-                    rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Subscribe(_ =>
-                    {
-                        rd.gameObject.GetComponent<Collider>().isTrigger = true;
-                        rd.isKinematic = true;
-                    }).AddTo(this);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogWarning(e);
-                }
+                    rd.gameObject.GetComponent<Collider>().isTrigger = true;
+                    rd.isKinematic = true;
+                });
+
             }
         }
 
