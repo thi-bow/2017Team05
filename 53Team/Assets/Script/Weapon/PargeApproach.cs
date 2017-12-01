@@ -7,7 +7,7 @@ public class PargeApproach : MonoBehaviour {
     // 近接攻撃中か
     [SerializeField] private bool isApproach = false;
     // 攻撃力
-    [SerializeField] private int hitAtk = 2000;
+    [SerializeField] private int hitAtk = 1500;
     // 攻撃時間
     [SerializeField] private float atkTime = 1.0f;
     // 範囲の広さ
@@ -15,6 +15,8 @@ public class PargeApproach : MonoBehaviour {
 
     // 近接攻撃の距離
     [SerializeField] private float distance = 1.0f;
+
+    Action pargeAction = null;
 
     RaycastHit hit;
 
@@ -28,12 +30,17 @@ public class PargeApproach : MonoBehaviour {
 
 	}
 
-    void PargeAttack(int atk)
+    public void PargeAttack(int atk = 1500, Action action = null)
     {
         StartCoroutine(ApproachRun(atk));
+
+        if (action != null)
+        {
+            pargeAction = action;
+        }
     }
 
-    IEnumerator ApproachRun(int atk)
+    IEnumerator ApproachRun(int atk = 1500)
     {
         Debug.Log("パージ攻撃");
 
@@ -52,5 +59,15 @@ public class PargeApproach : MonoBehaviour {
         Debug.Log("終了");
 
         isApproach = false;
+    }
+
+    public int GetAtk
+    {
+        get { return hitAtk; }
+    }
+
+    public float GetDistance
+    {
+        get { return distance; }
     }
 }
