@@ -12,10 +12,11 @@ public class GameController : MonoBehaviour
     public EnemyMgr m_enemyMgr;
 
     [Space(10)]
-    public readonly int m_killBorder = 7;
+    public readonly int m_killBorder = 15;
 
     private IEnumerator Start()
     {
+        ResultManager.IsClear = true;
         // チュートリアルフラグが立っている時
         if (m_isTutorial)
         {

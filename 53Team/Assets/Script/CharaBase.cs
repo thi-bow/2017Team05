@@ -356,7 +356,7 @@ public class CharaBase : MonoBehaviour
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
                 armor.gameObject.transform.SetParent(_partsLocation[0].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-                armor.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                armor.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 90.0f));
                 PartsLevelChenge(_bodyList.Count, out _charaPara._bodyLevel);
                 _partsHP[0] = _charaPara._bodyHp;
                 _partsMaxHP[0] = _charaPara._bodyMaxHp;
@@ -622,11 +622,11 @@ public class CharaBase : MonoBehaviour
     private void PartsLevelChenge(int count, out int level)
     {
         int checkLevel = 0;
-        if(count >= 8)
+        if(count >= 5)
         {
             checkLevel = 3;
         }
-        else if(count >= 3)
+        else if(count >= 2)
         {
             checkLevel = 2;
         }
@@ -769,7 +769,7 @@ public class CharaBase : MonoBehaviour
                 _partsHP[3] = 0;
                 _partsMaxHP[3] = 0;
                 _charaPara._legDefense = 0;
-                _charaPara._legAttack = 10;
+                _charaPara._legAttack = 20;
                 _charaPara._totalWeight -= _charaPara._legWeight;
                 _charaPara._legWeight = 0;
                 for(int i = 0; i < _legPartsPair.Count; i++)
@@ -979,16 +979,18 @@ public class CharaBase : MonoBehaviour
     protected void LegShot()
     {
         //脚が近接状態で、近接攻撃ができる状態なら近接攻撃をする
-        if(_charaPara._leg_AttackState == Weapon.Attack_State.approach)
+        if(_charaPara._leg_AttackState == Weapon.Attack_State.approach || _legList.Count == 0)
         {
-            this.GetComponent<ApproachAttack>().Approach(_charaPara._legAttack*2);
+            int attackPower = _charaPara._legAttack;
+            if (_charaPara._leg_AttackState == Weapon.Attack_State.approach)
+            {
+                attackPower *= 2;
+            }
+            this.GetComponent<ApproachAttack>().Approach(attackPower);
             //ここに近接攻撃を命令するものを作成する
             return;
         }
-
-        //脚の攻撃状態が近接、もしくは武器を装着していなかったら攻撃はできない
-        if (_legList.Count <= 0 || _charaPara._leg_AttackState == Weapon.Attack_State.approach) return;
-
+        
         if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
         {
             _specialWepon_Shot[2].GetComponent<Weapon>().Shooting(tpsCamera);
