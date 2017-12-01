@@ -26,6 +26,12 @@ namespace Enemy
         public float m_time = 2.0f;
         public Vector3 m_lastPosition;
         public Transform[] m_lootPosition;
+
+        public ApproachAttack m_attack;
+
+
+        private Enemy_Standard_battle_behavior m_tree;
+
         private readonly Vector3 m_vectorZero = new Vector3(0, 0, 0);
 
         [Header("デバッグ確認用")]
@@ -40,6 +46,9 @@ namespace Enemy
             m_stateList.Add(new StateAttack(this));
 
             m_stateMachine = new StateMachine<Enemy_Standard>();
+
+            m_attack = GetComponent<ApproachAttack>();
+            m_tree = new Enemy_Standard_battle_behavior(this);
 
             base.Start();
         }
@@ -75,6 +84,16 @@ namespace Enemy
             set { m_lootPosition = value; }
         }
 
+
+        public void RightShot(Vector3 vector)
+        {
+            EnemyRightArmtShot(new Ray(m_viewPoint.position, vector));
+        }
+
+        public void LeftShot(Vector3 vector)
+        {
+            EnemyLeftArmShot(new Ray(m_viewPoint.position, vector));
+        }
 
         #region ---------------  State処理  ---------------
 
@@ -174,6 +193,7 @@ namespace Enemy
 
             public override void OnEnter()
             {
+                EnemyMgr.i.GetWarningEnemys(_base.transform.position);
             }
 
             public override void OnExecute()
@@ -233,8 +253,7 @@ namespace Enemy
                     return;
                 }
 
-                var vec = _base.m_target.position - _base.m_viewPoint.position;
-                _base.EnemyRightArmtShot(new Ray(_base.m_viewPoint.position, vec));
+                _base.m_tree.UpdateBattleState();
             }
 
             public override void OnExit()

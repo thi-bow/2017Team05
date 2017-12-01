@@ -16,7 +16,7 @@ namespace Enemy
 
     public class Enemy_Boss_State : EnemyBase<Enemy_Boss_State, boss_State>, IEnemy
     {
-        public Enemy_Boss_Bhavior m_bhavior;
+        public Enemy_Boss_Behavior m_bhavior;
 
         protected override void Start()
         {

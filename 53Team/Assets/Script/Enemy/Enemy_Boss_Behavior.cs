@@ -6,7 +6,7 @@ using Enemy;
 
 
 [Serializable]
-public class Enemy_Boss_Bhavior{
+public class Enemy_Boss_Behavior{
 
     public enum rule
     {
@@ -25,7 +25,7 @@ public class Enemy_Boss_Bhavior{
 
     public Dictionary<hierarchy, rule> m_tree = new Dictionary<hierarchy, rule>();
 
-    public Enemy_Boss_Bhavior()
+    public Enemy_Boss_Behavior()
     {
     }
     

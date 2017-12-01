@@ -295,8 +295,6 @@ namespace Enemy
             // 指定した距離以内
             if(dis <= distance * distance)
             {
-                Debug.DrawLine(my.position, targetPos, Color.blue);
-
                 // 指定した角度以内
                 if (ang <= angle)
                 {
@@ -317,6 +315,28 @@ namespace Enemy
             }
 
             return run;
+        }
+
+        public float GetSqrDistance()
+        {
+            var vec = m_target.position - transform.position;
+            return Vector3.SqrMagnitude(vec);
+        }
+
+        public float GetSqrDistance(Vector3 my, Vector3 target)
+        {
+            var vec = target - my;
+            return Vector3.SqrMagnitude(vec);
+        }
+
+        public bool IsInDistance(Vector3 vector, float distance)
+        {
+            return Vector3.SqrMagnitude(vector) <= distance * distance;
+        }
+
+        public bool IsInDistance(Vector3 my, Vector3 target, float distance)
+        {
+            return GetSqrDistance(my, target) <= distance * distance;
         }
 
         public virtual void DropWeapon(List<Armor> list)
