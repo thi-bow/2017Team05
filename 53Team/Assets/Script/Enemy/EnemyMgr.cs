@@ -6,22 +6,24 @@ using Enemy;
 
 public class EnemyMgr : MonoBehaviour {
 
-    public EnemyPopPoint _popBoosPoint;
-    public EnemyPopPoint[] _popPointList;
-    public EnemyDataLink[] _squads;
+    public EnemyPopPoint m_popBoosPoint;
+    public EnemyPopPoint[] m_popPointList;
+    public EnemyDataLink[] m_squads;
 
-    private static EnemyMgr _i;
+    private bool m_isBossDead = false;
 
+
+    private static EnemyMgr m_i;
     public static EnemyMgr i
     {
-        get { return _i; }
+        get { return m_i; }
     }
 
     private void Awake()
     {
-        if(_i == null)
+        if(m_i == null)
         {
-            _i = this;
+            m_i = this;
         }
         else
         {
@@ -29,14 +31,19 @@ public class EnemyMgr : MonoBehaviour {
         }
     }
 
+    public void BossDead()
+    {
+        m_isBossDead = true;
+    }
+
     public bool IsBossDead()
     {
-        return true;
+        return m_isBossDead;
     }
 
     public void PopBossEnemy()
     {
-        _popBoosPoint.PopEnemy();
+        m_popBoosPoint.PopEnemy();
     }
 
 

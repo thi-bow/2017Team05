@@ -155,6 +155,11 @@ namespace Enemy
                 m_viewPoint = transform.Find("view_point").GetComponent<Transform>();
             }
 
+            if (!m_target)
+            {
+                m_target = GameObject.FindGameObjectWithTag("Player").transform;
+            }
+
             if (m_PlayAwake)
             {
                 Initialize();

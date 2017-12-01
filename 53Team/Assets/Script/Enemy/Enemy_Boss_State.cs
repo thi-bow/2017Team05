@@ -9,20 +9,22 @@ namespace Enemy
 {
     public enum boss_State
     {
-        move,
-        attack,
+        none,
+        battle,
         dead
     }
 
-    public class Enemy_Boss : EnemyBase<Enemy_Boss, boss_State>, IEnemy
+    public class Enemy_Boss_State : EnemyBase<Enemy_Boss_State, boss_State>, IEnemy
     {
-
+        public Enemy_Boss_Bhavior m_bhavior;
 
         protected override void Start()
         {
-            // m_stateList.Add();
+            m_stateList.Add(new StateNone(this));
+            m_stateList.Add(new StateBattle(this));
+            m_stateList.Add(new StateDead(this));
 
-            m_stateMachine = new StateMachine<Enemy_Boss>();
+            m_stateMachine = new StateMachine<Enemy_Boss_State>();
 
             base.Start();
         }
@@ -33,7 +35,7 @@ namespace Enemy
             {
                 m_target = GameObject.FindGameObjectWithTag("Player").transform;
             }
-            ChangeState(boss_State.move);
+            ChangeState(boss_State.none);
         }
 
         public override void ChangeState(boss_State state)
@@ -59,12 +61,46 @@ namespace Enemy
 
         #region ---------------  State処理  ---------------
 
-        public class StateMove : State<Enemy_Boss>
+        public class StateNone : State<Enemy_Boss_State>
         {
-            public StateMove(Enemy_Boss dev) : base(dev) { }
+            public StateNone(Enemy_Boss_State dev) : base(dev) { }
 
             public override void OnEnter()
             {
+            }
+
+            public override void OnExecute()
+            {
+                _base.ChangeState(boss_State.battle);
+            }
+        }
+
+
+        public class StateBattle : State<Enemy_Boss_State>
+        {
+            public StateBattle(Enemy_Boss_State dev) : base(dev) { }
+
+            public override void OnEnter()
+            {
+            }
+
+            public override void OnExecute()
+            {
+            }
+
+            public override void OnExit()
+            {
+            }
+        }
+
+
+        public class StateDead : State<Enemy_Boss_State>
+        {
+            public StateDead(Enemy_Boss_State dev) : base(dev) { }
+
+            public override void OnEnter()
+            {
+                EnemyMgr.i.BossDead();
             }
 
             public override void OnExecute()
