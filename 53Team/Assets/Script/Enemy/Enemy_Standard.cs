@@ -60,6 +60,7 @@ namespace Enemy
 
         public override void Damage(int damage)
         {
+            if (_charaPara.isDead) return;
             EnemyMgr.i.GetWarningEnemys(transform.position);
             base.Damage(damage);
         }

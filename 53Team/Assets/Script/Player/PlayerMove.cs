@@ -400,7 +400,7 @@ public class PlayerMove : MonoBehaviour
             Debug.DrawLine(_ray.origin, _hit.point, Color.red);
         }
 
-        if (_hit.collider != null && _hit.collider.tag == "Ground")
+        if (_hit.collider != null && _hit.collider.tag != "Player")
         {
             _myRB.useGravity = false;
             _parent.transform.position = new Vector3(_parent.transform.position.x, _hit.point.y, _parent.transform.position.z);
