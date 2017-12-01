@@ -35,12 +35,19 @@ public class InputManager : MonoBehaviour
                 if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
                 {
                     _partsPurge._specialWepon_Shot[0].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
-                 {
-                     _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
-                     PartsHPUIReset(CharaBase.Parts.RightArm);
-                 });
+                    {
+                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
+                         PartsHPUIReset(CharaBase.Parts.RightArm);
+                     });
                 }
-
+                else if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.approach)
+                {
+                    _partsPurge._specialWepon_Approach[0].GetComponent<PargeApproach>().PargeAttack(1500, () =>
+                    {
+                        _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
+                        PartsHPUIReset(CharaBase.Parts.RightArm);
+                    });
+                }
                 else
                 {
                     _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
@@ -59,6 +66,14 @@ public class InputManager : MonoBehaviour
                 if (_partsPurge._charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
                 {
                     _partsPurge._specialWepon_Shot[1].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
+                    {
+                        _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
+                        PartsHPUIReset(CharaBase.Parts.LeftArm);
+                    });
+                }
+                else if (_partsPurge._charaPara._leftArm_AttackState == Weapon.Attack_State.approach)
+                {
+                    _partsPurge._specialWepon_Approach[0].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
                         PartsHPUIReset(CharaBase.Parts.LeftArm);
@@ -86,6 +101,14 @@ public class InputManager : MonoBehaviour
                         PartsHPUIReset(CharaBase.Parts.Leg);
                     });
                 }
+                else if (_partsPurge._charaPara._leg_AttackState == Weapon.Attack_State.approach)
+                {
+                    _partsPurge._specialWepon_Approach[0].GetComponent<PargeApproach>().PargeAttack(1500, () =>
+                    {
+                        _partsPurge.PargeAttackCollide(false, CharaBase.Parts.Leg);
+                        PartsHPUIReset(CharaBase.Parts.Leg);
+                    });
+                }
                 else
                 {
                     _partsPurge.PargeAttackCollide(false, CharaBase.Parts.Leg);
@@ -100,7 +123,6 @@ public class InputManager : MonoBehaviour
             Debug.Log(_longPush);
         }
 
-
         // タイマーのリセット
         if (Input.GetAxisRaw("crossX") == 0 && Input.GetAxisRaw("crossY") == 0)
         {
@@ -112,78 +134,6 @@ public class InputManager : MonoBehaviour
         {
             _longPush = true;
         }
-
-
-
-        //// コントローラーInputのデバック
-        //// パージ
-        //if (Input.GetButton("Parge"))
-        //{
-        //    Debug.Log("Parge");
-        //}
-        //// 左近接
-        //if (Input.GetButtonDown("LeftArmStrike"))
-        //{
-        //    Debug.Log("LeftArmStrike");
-        //}
-        //// 右近接
-        //if (Input.GetButtonDown("RightArmStrike"))
-        //{
-        //    Debug.Log("RightArmStrike");
-        //}
-        //// 射撃攻撃
-        //// 左
-        //if (Input.GetAxisRaw("ArmShot") == 1)
-        //{
-        //    Debug.Log("ArmShot01");
-        //}
-        //// 右
-        //else if(Input.GetAxisRaw("ArmShot") == -1)
-        //{
-        //    Debug.Log("ArmShot-01");
-        //}
-        //// 走る
-        //if (Input.GetButton("Run"))
-        //{
-        //    Debug.Log("Run");
-        //}
-        //// 足攻撃
-        //if(Input.GetButton("LegAttack"))
-        //{
-        //    Debug.Log("LegAttack");
-        //}
-        //// バックボタン
-        //if (Input.GetButton("BackButton"))
-        //{
-        //    Debug.Log("BackButton");
-        //}
-        //// しゃがみ
-        //if (Input.GetButton("Squat"))
-        //{
-        //    Debug.Log("Squat");
-        //}
-
-        //// 装備ボタン
-        //// 左
-        //if (Input.GetAxisRaw("crossX") == 1)
-        //{
-        //    Debug.Log("crossX01");
-        //}
-        //// 右
-        //else if (Input.GetAxisRaw("crossX") == -1)
-        //{
-        //    Debug.Log("crossX-01");
-        //}
-        //// 上
-        //if (Input.GetAxisRaw("crossY") == 1)
-        //{
-        //    Debug.Log("crossY01");
-        //}
-        //// 下
-        //else if (Input.GetAxisRaw("crossY") == -1)
-        //{
-        //    Debug.Log("crossY-01");
-        //}
     }
 
     private void PartsHPUIReset(Player.Parts parts)
