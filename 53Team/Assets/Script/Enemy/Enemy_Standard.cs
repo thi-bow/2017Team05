@@ -21,7 +21,7 @@ namespace Enemy
     {
 
         [Header("現在のステート")]
-        public standard_State state;
+        public standard_State m_state;
 
         public float m_time = 2.0f;
         public Vector3 m_lastPosition;
@@ -46,20 +46,20 @@ namespace Enemy
 
         public override void Initialize()
         {
-            if (!m_target) {
-                m_target = GameObject.FindGameObjectWithTag("Player").transform;
-            }
             ChangeState(standard_State.move);
         }
 
         public override void ChangeState(standard_State state)
         {
             base.ChangeState(state);
-            this.state = state;
+            this.m_state = state;
         }
 
         public override void Damage(int damage)
         {
+            Debug.Log("d" + damage);
+            if (_charaPara.isDead) { return; }
+
             EnemyMgr.i.GetWarningEnemys(transform.position);
             base.Damage(damage);
         }
@@ -132,7 +132,6 @@ namespace Enemy
 
             public override void OnExit()
             {
-                //_base.m_lastPosition = _base.m_vectorZero;
             }
         }
 
