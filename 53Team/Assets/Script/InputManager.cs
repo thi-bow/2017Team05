@@ -73,7 +73,7 @@ public class InputManager : MonoBehaviour
                 }
                 else if (_partsPurge._charaPara._leftArm_AttackState == Weapon.Attack_State.approach)
                 {
-                    _partsPurge._specialWepon_Approach[0].GetComponent<PargeApproach>().PargeAttack(1500, () =>
+                    _partsPurge._specialWepon_Approach[1].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
                         PartsHPUIReset(CharaBase.Parts.LeftArm);
@@ -103,7 +103,7 @@ public class InputManager : MonoBehaviour
                 }
                 else if (_partsPurge._charaPara._leg_AttackState == Weapon.Attack_State.approach)
                 {
-                    _partsPurge._specialWepon_Approach[0].GetComponent<PargeApproach>().PargeAttack(1500, () =>
+                    _partsPurge._specialWepon_Approach[2].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.Leg);
                         PartsHPUIReset(CharaBase.Parts.Leg);
