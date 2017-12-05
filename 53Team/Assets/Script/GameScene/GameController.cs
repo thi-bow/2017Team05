@@ -16,13 +16,8 @@ public class GameController : MonoBehaviour
 
     private IEnumerator Start()
     {
-        ResultManager.IsClear = true;
-        // チュートリアルフラグが立っている時
-        if (m_isTutorial)
-        {
-            // チュートリアルを開始,終わるまで待機
-            yield return new WaitForSeconds(1);
-        }
+        //Tutorialが終了するまで待機
+        yield return new WaitWhile(() => m_isTutorial);
 
         // ゲーム開始に必要な準備の処理
 

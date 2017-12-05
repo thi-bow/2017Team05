@@ -30,10 +30,6 @@ public class ApproachAttack : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            Approach(hitAtk);
-        }
     }
 
     // 近接攻撃
@@ -50,6 +46,10 @@ public class ApproachAttack : MonoBehaviour {
         {
             isCombo = true;
         }
+        if (comboCount >= maxCombo)
+        {
+            isCombo = false;
+        }
     }
 
     IEnumerator ApproachRun(int atk)
@@ -63,7 +63,6 @@ public class ApproachAttack : MonoBehaviour {
 
             if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, distance))
             {
-
                 if (hit.collider.gameObject.tag != this.gameObject.tag)
                 {
                     Debug.Log(hit.collider.gameObject.name);
@@ -80,5 +79,15 @@ public class ApproachAttack : MonoBehaviour {
         comboCount = 0;
 
         isApproach = false;
+    }
+
+    public int getAtk
+    {
+        get { return hitAtk; }
+    }
+    
+    public float GetDistance
+    {
+        get { return distance; }
     }
 }
