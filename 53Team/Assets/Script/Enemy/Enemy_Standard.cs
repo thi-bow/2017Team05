@@ -23,6 +23,9 @@ namespace Enemy
         [Header("現在のステート")]
         public standard_State m_state;
 
+        [Header("分隊番号")]
+        public int m_group;
+
         public float m_time = 2.0f;
         public Vector3 m_lastPosition;
         public Transform[] m_lootPosition;
@@ -44,6 +47,7 @@ namespace Enemy
             m_stateList.Add(new StateWarning(this));
             m_stateList.Add(new StateChase(this));
             m_stateList.Add(new StateAttack(this));
+            m_stateList.Add(new StateDead(this));
 
             m_stateMachine = new StateMachine<Enemy_Standard>();
 
@@ -75,6 +79,8 @@ namespace Enemy
         public override void Dead()
         {
             Debug.Log("死んだぁ！！");
+            ChangeState(standard_State.dead);
+            EnemyMgr.i.OnDeadEnemy(m_group);
             base.Dead();
         }
 
@@ -261,6 +267,23 @@ namespace Enemy
             }
         }
 
+
+        public class StateDead : State<Enemy_Standard>
+        {
+            public StateDead(Enemy_Standard dev) : base(dev) { }
+
+            public override void OnEnter()
+            {
+            }
+
+            public override void OnExecute()
+            {
+            }
+
+            public override void OnExit()
+            {
+            }
+        }
 
         #endregion
     }

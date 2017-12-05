@@ -46,6 +46,28 @@ public class EnemyMgr : MonoBehaviour {
         m_popBoosPoint.PopEnemy();
     }
 
+    public void OnDeadEnemy(int aGroup = 0)
+    {
+        ResultScore.KillCount++;
+
+        if(aGroup != 0)
+        {
+            DeadSquad(aGroup);
+        }
+    }
+
+    public void DeadSquad(int aGroup)
+    {
+        for (int i = 0; i < m_popPointList.Length; i++)
+        {
+            if(m_popPointList[i].m_group.group == aGroup)
+            {
+                m_popPointList[i].CheckSquad();
+                break;
+            }
+        }
+    }
+
 
     // 範囲内の雑魚エネミーの状態を警戒状態にする
     public List<Enemy_Standard> GetWarningEnemys(Vector3 aPosition, float aRadius = 10.0f)

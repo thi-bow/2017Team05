@@ -15,35 +15,54 @@ public class Enemy_Boss_Behavior{
         randm = 2,
     }
 
-    public enum hierarchy
+    public class Node
     {
-        check = 0,
-        command = 1,
-        skill = 2,
-        action = 3
+        public int      priority;   // 優先度
+        public Action   action;     // 実行イベント
+
+        public Node(int aPriority, Action aAction)
+        {
+            priority = aPriority;
+            action = aAction;
+        }
     }
 
-    public Dictionary<hierarchy, rule> m_tree = new Dictionary<hierarchy, rule>();
-
-    public Enemy_Boss_Behavior()
+    public class Hierarchy
     {
+        public rule rule;
+        public List<Node> contents;
+
+        public Hierarchy(rule aRule, List<Node> aList)
+        {
+            rule = aRule;
+            contents = aList;
+        }
     }
-    
+
+    public List<Hierarchy> m_behaviorTree;
+
+    private Enemy_Boss_State m_base;
+
+    public Enemy_Boss_Behavior(Enemy_Boss_State aEnemy)
+    {
+        m_base = aEnemy;
+
+    }
+
     public void Initialize()
     {
-        m_tree.Add(hierarchy.check, rule.sequence);
-        m_tree.Add(hierarchy.command, rule.priority);
-        m_tree.Add(hierarchy.skill, rule.randm);
-        m_tree.Add(hierarchy.action, rule.sequence);
     }
 
     public void Update()
     {
-
     }
 
     public void End()
     {
+    }
 
+    public int GetHp()
+    {
+        return m_base._charaPara._hp;
     }
 }

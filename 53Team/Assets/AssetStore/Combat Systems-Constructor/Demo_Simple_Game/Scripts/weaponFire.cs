@@ -14,7 +14,7 @@ public class weaponFire : MonoBehaviour {
 	public AudioClip soundFire;   
 	// Use this for initialization
  
-	void  fire() //shot
+	public virtual void  fire() //shot
 	{
 		var gameOb = (Transform) Instantiate(Shell,  Gun_End.transform.position,Gun_End.transform.rotation); 
 		Vector3 dir = new Vector3(Random.Range(-randomDir, randomDir), Random.Range(-randomDir, randomDir), Random.Range(-randomDir,randomDir)) ;

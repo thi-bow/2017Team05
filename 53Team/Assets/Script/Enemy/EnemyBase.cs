@@ -193,8 +193,6 @@ namespace Enemy
 
         public override void Dead()
         {
-            ResultScore.KillCount++;
-
             var list = GetLotteryWeapon();
             DropWeapon(list);
 

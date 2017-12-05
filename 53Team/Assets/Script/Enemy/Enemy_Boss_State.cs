@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -16,7 +17,8 @@ namespace Enemy
 
     public class Enemy_Boss_State : EnemyBase<Enemy_Boss_State, boss_State>, IEnemy
     {
-        public Enemy_Boss_Behavior m_bhavior;
+
+        public Enemy_Boss_battle m_battle;
 
         protected override void Start()
         {
@@ -36,6 +38,8 @@ namespace Enemy
                 m_target = GameObject.FindGameObjectWithTag("Player").transform;
             }
             ChangeState(boss_State.none);
+
+            m_battle.Init(this);
         }
 
         public override void ChangeState(boss_State state)
@@ -86,6 +90,7 @@ namespace Enemy
 
             public override void OnExecute()
             {
+                _base.m_battle.Update();
             }
 
             public override void OnExit()
