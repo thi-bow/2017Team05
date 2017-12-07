@@ -7,22 +7,29 @@ public class TutorialManager : MonoBehaviour
 {
     public enum TutorialState
     {
-        PartsAddTutorial,
         AttackTutorial,
-        PartsRobTutorial,
+        PartsAddTutorial,
+        SecondAttackTutorial,
+        BodyPartsAddTutorial,
         PargeTutorial,
         TakeWepon,
         End,
     }
-    public TutorialState _tutorialState = TutorialState.PartsAddTutorial;
+    public TutorialState _tutorialState = TutorialState.AttackTutorial;
     public static bool tutorialMove = false;    //Tutorialで動作を確認中はtrueになる
     [SerializeField] private Player _player = null;
     [SerializeField] private PlayerMove _playerMove = null;
     [SerializeField] private PlayerSkyMove _playerSkyMove = null;
     [SerializeField] private GameObject _tutorialUI = null;
     private TutorialTextManager _tutorialTextManager = null;
+    private TutorialClearChecker _tutorialClearChecker = null;
 
+    private bool attackCheck = false;
     private bool partsAddCheck = false;
+    private bool secondAttackCheck = false;
+    private bool bodyPartsAddCheck = false;
+    private bool fullPargeCheck = false;
+
     private bool attackTutorial = false;
     private bool partsRobTutorial = false;
     private bool pargeTutorial = false;
@@ -35,7 +42,8 @@ public class TutorialManager : MonoBehaviour
         //_playerMove.enabled = false;
         //_playerSkyMove.enabled = false;
         _tutorialTextManager = this.GetComponent<TutorialTextManager>();
-        StartCoroutine(_tutorialTextManager.TextWrite((int)TutorialState.PartsAddTutorial));
+        _tutorialClearChecker = this.GetComponent<TutorialClearChecker>();
+        StartCoroutine(_tutorialTextManager.TextWrite((int)_tutorialState));
     }
 	
 	// Update is called once per frame
@@ -43,24 +51,52 @@ public class TutorialManager : MonoBehaviour
         if (!tutorialMove) return;
         switch (_tutorialState)
         {
+            case TutorialState.AttackTutorial:
+                if (!attackCheck && _tutorialClearChecker.AttackCheck())
+                {
+                    attackCheck = true;
+                    tutorialMove = false;   //テキストを表示している間は、Tutorialのクリア判定を取らないようにする
+                    _tutorialState = TutorialState.PartsAddTutorial;
+                    StartCoroutine(_tutorialTextManager.TextWrite((int)TutorialState.AttackTutorial + 1));
+                }
+                break;
             case TutorialState.PartsAddTutorial:
-                if(Input.GetAxis("crossX") > 0 && !partsAddCheck)
+                if(!partsAddCheck && _tutorialClearChecker.PartsAddCheck())
                 {
                     partsAddCheck = true;
                     tutorialMove = false;   //テキストを表示している間は、Tutorialのクリア判定を取らないようにする
+                    _tutorialState = TutorialState.SecondAttackTutorial;
                     StartCoroutine(_tutorialTextManager.TextWrite((int)TutorialState.PartsAddTutorial + 1));
-                    _tutorialState = TutorialState.AttackTutorial;
                 }
                 break;
-            case TutorialState.AttackTutorial:
+            case TutorialState.SecondAttackTutorial:
+                if (!secondAttackCheck && _tutorialClearChecker.SecontEnemyAttack())
+                {
+                    secondAttackCheck = true;
+                    tutorialMove = false;   //テキストを表示している間は、Tutorialのクリア判定を取らないようにする
+                    _tutorialState = TutorialState.BodyPartsAddTutorial;
+                    StartCoroutine(_tutorialTextManager.TextWrite((int)TutorialState.SecondAttackTutorial + 1));
+                }
                 break;
-            case TutorialState.PartsRobTutorial:
+            case TutorialState.BodyPartsAddTutorial:
+                if (!bodyPartsAddCheck && _tutorialClearChecker.BodyPartsAddCheck())
+                {
+                    bodyPartsAddCheck = true;
+                    tutorialMove = false;   //テキストを表示している間は、Tutorialのクリア判定を取らないようにする
+                    _tutorialState = TutorialState.PargeTutorial;
+                    StartCoroutine(_tutorialTextManager.TextWrite((int)TutorialState.BodyPartsAddTutorial + 1));
+                }
                 break;
             case TutorialState.PargeTutorial:
+                if (!fullPargeCheck && _tutorialClearChecker.FullPargeCheck())
+                {
+                    fullPargeCheck = true;
+                    tutorialMove = false;   //テキストを表示している間は、Tutorialのクリア判定を取らないようにする
+                    _tutorialState = TutorialState.TakeWepon;
+                    StartCoroutine(_tutorialTextManager.TextWrite((int)TutorialState.PargeTutorial + 1, TutorialEnd));
+                }
                 break;
             case TutorialState.TakeWepon:
-                break;
-            case TutorialState.End:
                 break;
             default:
                 break;
@@ -71,7 +107,7 @@ public class TutorialManager : MonoBehaviour
     public void TutorialEnd()
     {
         GameController.m_isTutorial = false;
-        this.gameObject.SetActive(false);
+        gameObject.SetActive(false);
         _tutorialUI.SetActive(false);
     }
 }

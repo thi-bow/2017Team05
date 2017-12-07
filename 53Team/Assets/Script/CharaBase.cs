@@ -306,7 +306,7 @@ public class CharaBase : MonoBehaviour
     }
 
     #region GetPartsList
-    protected List<Armor> GetPartsList(Parts partsCheck)
+    public List<Armor> GetPartsList(Parts partsCheck)
     {
         List<Armor> partsList = new List<Armor>();
         switch (partsCheck)
@@ -894,7 +894,10 @@ public class CharaBase : MonoBehaviour
         PartsPurge(parts, () => {
             for (int i = 0; i < GetPartsList(parts).Count; i++)
             {
-                GetPartsList(parts)[i].gameObject.AddComponent<Rigidbody>();
+                if (GetPartsList(parts)[i].gameObject.GetComponent<Rigidbody>() == null)
+                {
+                    GetPartsList(parts)[i].gameObject.AddComponent<Rigidbody>();
+                }
                 float randx = UnityEngine.Random.Range(-20, 20);
                 float randy = UnityEngine.Random.Range(0, 20);
                 float randz = UnityEngine.Random.Range(-20, 20);
