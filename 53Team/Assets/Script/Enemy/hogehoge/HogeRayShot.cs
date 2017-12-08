@@ -17,7 +17,8 @@ public class HogeRayShot : MonoBehaviour {
             {
                 if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
                 {
-                    hit.collider.gameObject.GetComponent<BoneCollide>().Damage(10, Weapon.Attack_State.shooting);
+                    Debug.LogFormat("{0}にダメージ", hit.collider.gameObject.name);
+                    hit.collider.gameObject.GetComponent<BoneCollide>().Damage(50, Weapon.Attack_State.shooting);
                 }
             }
         }

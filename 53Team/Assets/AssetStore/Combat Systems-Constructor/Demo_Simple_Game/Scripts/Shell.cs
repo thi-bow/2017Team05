@@ -6,8 +6,9 @@ public class Shell : MonoBehaviour {
 	public float lifeTime = 2.0f;
 	public int shellDamage = 10;
 	public ParticleSystem m_ExplosionParticles;         // Reference to the particles that will play on explosion.
-	public AudioSource m_ExplosionAudio;             
-	void OnTriggerEnter(Collider col){
+	public AudioSource m_ExplosionAudio;
+
+    protected virtual void OnTriggerEnter(Collider col){
  
 		// Play the particle system.
 		if(m_ExplosionParticles)m_ExplosionParticles.Play();
@@ -21,11 +22,11 @@ public class Shell : MonoBehaviour {
  
  
 	}
-	private IEnumerator Start()
+	protected virtual IEnumerator Start()
 	{
-		yield return new WaitForSeconds(0.03f);
+		yield return new WaitForSeconds(0.1f);
 		GetComponent<Collider> ().enabled = true;
-		yield return new WaitForSeconds(lifeTime);
+		yield return new WaitForSeconds(lifeTime - 0.1f);
 		Destroy(gameObject);
  
 	}

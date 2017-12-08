@@ -18,6 +18,7 @@ namespace Enemy
     public class Enemy_Boss_State : EnemyBase<Enemy_Boss_State, boss_State>, IEnemy
     {
 
+        public GameObject m_armorUnits;
         public Enemy_Boss_battle m_battle;
 
         protected override void Start()
@@ -50,6 +51,29 @@ namespace Enemy
         public override void Damage(int attackPower)
         {
             base.Damage(attackPower);
+        }
+
+        public override void OnParge(Parts aParts)
+        {
+            base.OnParge(aParts);
+
+            var list = GetPartsList(aParts);
+            for (int i = 0; i < list.Count; i++)
+            {
+                var list2 = list[i].gameObject.GetComponentsInChildren<weaponFire>();
+                for (int k = 0; k < list2.Length; k++)
+                {
+                    Destroy(list2[k]);
+                }
+            }
+
+            var r_list = aParts != Parts.RightArm ? GetPartsList(Parts.RightArm) : new List<Armor>();
+            var l_list = aParts != Parts.LeftArm ? GetPartsList(Parts.LeftArm) : new List<Armor>();
+            if(r_list.Count == 0 && l_list.Count == 0)
+            {
+                Destroy(m_armorUnits);
+                m_battle.ExMode();
+            }
         }
 
         public override void Dead()

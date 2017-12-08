@@ -11,11 +11,16 @@ public class Enemy_Boss_battle {
 
     public BattleType m_battleType;
     public WeponType m_currentWeponType;
+    private WeponType m_currentMainWepon;
+    private WeponType m_currentSubWepon;
     private Enemy_Boss_State m_base;
     public float m_dis;
-    private Vector3[] m_currentPos = new Vector3[3];
-    private Vector3[] m_poss = new Vector3[3];
+    private Vector3[] m_currentPos;
+    private Vector3[] m_poss;
     private int m_currentPNum;
+    private int m_moveNum;
+    private float m_moveTime;
+    private float m_waitTime;
 
     [Serializable]
     public struct Weapon
@@ -28,27 +33,64 @@ public class Enemy_Boss_battle {
     private float[] m_nextFire;
     public enum WeponType
     {
-        main,
-        sub
+        normal_main,
+        normal_sub,
+        ex_main,
+        ex_sub
     }
 
     public enum BattleType
     {
         move,
-        fire
+        fire,
+        none
     }
 
-    private readonly int MAX_POS_NUM = 3;
+    private readonly int NORMAL_POS_NUM = 3;
+    private readonly float NORMAL_MOVE_TIME = 2.5f;
+    private readonly float NORMAL_WAIT_TIME = 4.0f;
+    private readonly int EXTRA_POS_NUM = 5;
+    private readonly float EXTRA_MOVE_TIME = 1.0f;
+    private readonly float EXTRA_WAIT_TIME = 3.0f;
 
     public void Init(Enemy_Boss_State aBase)
     {
         m_base = aBase;
         Array.Resize(ref m_nextFire, m_weapons.Length);
+
+        m_currentWeponType = WeponType.normal_main;
+        m_currentSubWepon = WeponType.normal_sub;
+        m_moveTime = NORMAL_MOVE_TIME;
+        m_waitTime = NORMAL_WAIT_TIME;
+        m_moveNum = NORMAL_POS_NUM;
+        m_currentPos = new Vector3[NORMAL_POS_NUM];
+        m_poss = new Vector3[NORMAL_POS_NUM];
+
         ChangeType(BattleType.move);
     }
 
     public void Update()
     {
+        switch (m_battleType)
+        {
+            case BattleType.move:
+                Move();
+                break;
+            case BattleType.fire:
+                time += Time.deltaTime;
+                if (time >= m_waitTime)
+                {
+                    time = 0;
+                    ChangeType(BattleType.move);
+                }
+                break;
+            case BattleType.none:
+                return;
+            default:
+                break;
+        }
+
+
         m_base.transform.LookAt(m_base.m_target);
         var angle = m_base.transform.rotation.eulerAngles;
         angle.x = angle.x > 180 ? angle.x - 360 : angle.x;
@@ -57,27 +99,20 @@ public class Enemy_Boss_battle {
 
         CoolTime();
         Fire();
-        switch (m_battleType)
-        {
-            case BattleType.move:
-                Move();               
-                break;
-            case BattleType.fire:
-                time += Time.deltaTime;
-                if (time >= 3)
-                {
-                    time = 0;
-                    ChangeType(BattleType.move);
-                }
-                break;
-            default:
-                break;
-        }
     }
 
-    public void End()
+    // 発狂モード
+    public void ExMode()
     {
+        Debug.LogWarning("ハイパーモード");
+        m_currentMainWepon = WeponType.ex_main;
+        m_currentSubWepon = WeponType.ex_sub;
+        m_moveTime = EXTRA_MOVE_TIME;
+        m_waitTime = EXTRA_WAIT_TIME;
+        m_moveNum = EXTRA_POS_NUM;
 
+        m_currentPos = new Vector3[EXTRA_POS_NUM];
+        m_poss = new Vector3[EXTRA_POS_NUM];
     }
 
     public void ChangeType(BattleType aType)
@@ -87,10 +122,12 @@ public class Enemy_Boss_battle {
         {
             case BattleType.move:
                 SetRoot();
-                m_currentWeponType = WeponType.main;
+                m_currentWeponType = m_currentMainWepon;
                 break;
             case BattleType.fire:
-                m_currentWeponType = WeponType.sub;
+                m_currentWeponType = m_currentSubWepon;
+                break;
+            case BattleType.none:
                 break;
             default:
                 break;
@@ -108,7 +145,7 @@ public class Enemy_Boss_battle {
         {
             if (IsWeaponType(m_weapons[i].type))
             {
-                if (m_nextFire[i] == 0)
+                if (m_nextFire[i] == 0 && !IsNull(m_weapons[i].weapon))
                 {
                     m_nextFire[i] = m_weapons[i].cool_time;
                     m_weapons[i].weapon.fire();
@@ -133,11 +170,11 @@ public class Enemy_Boss_battle {
 
         m_currentPos[0] = m_base.transform.position;
 
-        for (int i = 0; i < MAX_POS_NUM; i++)
+        for (int i = 0; i < m_moveNum; i++)
         {
             SetTargetPostion();
             m_poss[i] = pos;
-            if (i + 1 < MAX_POS_NUM) m_currentPos[i + 1] = pos;
+            if (i + 1 < m_moveNum) m_currentPos[i + 1] = pos;
         }
     }
 
@@ -145,13 +182,13 @@ public class Enemy_Boss_battle {
     private float time;
     public void Move()
     {
-        time += Time.deltaTime;
+        time += Time.deltaTime / m_moveTime;
         m_base.transform.position = Vector3.Lerp(m_currentPos[m_currentPNum], m_poss[m_currentPNum], time);
         if(time >= 1)
         {
             m_currentPNum++;
             time = 0;
-            if(m_currentPNum == MAX_POS_NUM)
+            if(m_currentPNum == m_moveNum)
             {
                 m_currentPNum = 0;
                 ChangeType(BattleType.fire);
@@ -172,5 +209,18 @@ public class Enemy_Boss_battle {
         // 目標位置の設定
         pos.x = t.position.x + UnityEngine.Random.Range(-m_dis, m_dis);
         pos.z = t.position.z + UnityEngine.Random.Range(-m_dis, m_dis);
+    }
+
+    static bool IsNull<T>(T obj) where T : class
+    {
+        var unityObj = obj as UnityEngine.Object;
+        if (!object.ReferenceEquals(unityObj, null))
+        {
+            return unityObj == null;
+        }
+        else
+        {
+            return obj == null;
+        }
     }
 }

@@ -74,7 +74,7 @@ namespace Enemy
         public bool m_seachAreaDraw;
 
         [Header("ドロップ率")]
-        float probability = 50.0f;
+        public float m_probability = 50.0f;
 
         // RaycastHit
         protected RaycastHit m_raycastHit;
@@ -109,10 +109,7 @@ namespace Enemy
                     else
                     {
                         PartsDamage(dmg.value, parts, () => {
-                            Debug.Log(parts + "パージ!!");
-
-                            var list = GetPartsList(parts);
-                            DropWeapon(list);
+                            OnParge(parts);
                         });
 
                     }
@@ -181,9 +178,16 @@ namespace Enemy
             OnChangeState(state);
         }
 
-        public virtual void OnChangeState(TEnum state)
+        public virtual void OnChangeState(TEnum state){ }
+
+        public virtual void OnParge(Parts parts)
         {
+            Debug.Log(parts + "パージ!!");
+
+            var list = GetPartsList(parts);
+            DropWeapon(list);
         }
+
 
         // 現在のステートと指定したステートが等しいかを返す
         public virtual bool IsCurrentState(TEnum state)
@@ -364,7 +368,7 @@ namespace Enemy
             for (int i = 0; i < count; i++)
             {
                 var rand = UnityEngine.Random.Range(0.0f, 100.0f);
-                if(probability <= rand)
+                if(m_probability <= rand)
                 {
                     list.AddRange(GetPartsList((Parts)i));
                 }
