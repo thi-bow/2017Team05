@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 
+[RequireComponent(typeof(Collider))]
 public class BoneCollide : MonoBehaviour {
 
     // 弱点かどうか

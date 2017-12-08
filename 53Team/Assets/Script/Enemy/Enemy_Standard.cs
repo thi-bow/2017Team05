@@ -23,9 +23,18 @@ namespace Enemy
         [Header("現在のステート")]
         public standard_State m_state;
 
+        [Header("分隊番号")]
+        public int m_group;
+
         public float m_time = 2.0f;
         public Vector3 m_lastPosition;
         public Transform[] m_lootPosition;
+
+        public ApproachAttack m_attack;
+
+
+        private Enemy_Standard_battle_behavior m_tree;
+
         private readonly Vector3 m_vectorZero = new Vector3(0, 0, 0);
 
         [Header("デバッグ確認用")]
@@ -38,8 +47,12 @@ namespace Enemy
             m_stateList.Add(new StateWarning(this));
             m_stateList.Add(new StateChase(this));
             m_stateList.Add(new StateAttack(this));
+            m_stateList.Add(new StateDead(this));
 
             m_stateMachine = new StateMachine<Enemy_Standard>();
+
+            m_attack = GetComponent<ApproachAttack>();
+            m_tree = new Enemy_Standard_battle_behavior(this);
 
             base.Start();
         }
@@ -66,6 +79,8 @@ namespace Enemy
         public override void Dead()
         {
             Debug.Log("死んだぁ！！");
+            ChangeState(standard_State.dead);
+            EnemyMgr.i.OnDeadEnemy(m_group);
             base.Dead();
         }
 
@@ -75,6 +90,16 @@ namespace Enemy
             set { m_lootPosition = value; }
         }
 
+
+        public void RightShot(Vector3 vector)
+        {
+            EnemyRightArmtShot(new Ray(m_viewPoint.position, vector));
+        }
+
+        public void LeftShot(Vector3 vector)
+        {
+            EnemyLeftArmShot(new Ray(m_viewPoint.position, vector));
+        }
 
         #region ---------------  State処理  ---------------
 
@@ -174,6 +199,7 @@ namespace Enemy
 
             public override void OnEnter()
             {
+                EnemyMgr.i.GetWarningEnemys(_base.transform.position);
             }
 
             public override void OnExecute()
@@ -233,8 +259,7 @@ namespace Enemy
                     return;
                 }
 
-                var vec = _base.m_target.position - _base.m_viewPoint.position;
-                _base.EnemyRightArmtShot(new Ray(_base.m_viewPoint.position, vec));
+                _base.m_tree.UpdateBattleState();
             }
 
             public override void OnExit()
@@ -242,6 +267,23 @@ namespace Enemy
             }
         }
 
+
+        public class StateDead : State<Enemy_Standard>
+        {
+            public StateDead(Enemy_Standard dev) : base(dev) { }
+
+            public override void OnEnter()
+            {
+            }
+
+            public override void OnExecute()
+            {
+            }
+
+            public override void OnExit()
+            {
+            }
+        }
 
         #endregion
     }

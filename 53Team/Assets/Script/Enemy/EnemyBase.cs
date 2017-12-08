@@ -74,7 +74,7 @@ namespace Enemy
         public bool m_seachAreaDraw;
 
         [Header("ドロップ率")]
-        float probability = 50.0f;
+        public float m_probability = 50.0f;
 
         // RaycastHit
         protected RaycastHit m_raycastHit;
@@ -109,10 +109,7 @@ namespace Enemy
                     else
                     {
                         PartsDamage(dmg.value, parts, () => {
-                            Debug.Log(parts + "パージ!!");
-
-                            var list = GetPartsList(parts);
-                            DropWeapon(list);
+                            OnParge(parts);
                         });
 
                     }
@@ -181,9 +178,16 @@ namespace Enemy
             OnChangeState(state);
         }
 
-        public virtual void OnChangeState(TEnum state)
+        public virtual void OnChangeState(TEnum state){ }
+
+        public virtual void OnParge(Parts parts)
         {
+            Debug.Log(parts + "パージ!!");
+
+            var list = GetPartsList(parts);
+            DropWeapon(list);
         }
+
 
         // 現在のステートと指定したステートが等しいかを返す
         public virtual bool IsCurrentState(TEnum state)
@@ -193,8 +197,6 @@ namespace Enemy
 
         public override void Dead()
         {
-            ResultScore.KillCount++;
-
             var list = GetLotteryWeapon();
             DropWeapon(list);
 
@@ -295,8 +297,6 @@ namespace Enemy
             // 指定した距離以内
             if(dis <= distance * distance)
             {
-                Debug.DrawLine(my.position, targetPos, Color.blue);
-
                 // 指定した角度以内
                 if (ang <= angle)
                 {
@@ -317,6 +317,28 @@ namespace Enemy
             }
 
             return run;
+        }
+
+        public float GetSqrDistance()
+        {
+            var vec = m_target.position - transform.position;
+            return Vector3.SqrMagnitude(vec);
+        }
+
+        public float GetSqrDistance(Vector3 my, Vector3 target)
+        {
+            var vec = target - my;
+            return Vector3.SqrMagnitude(vec);
+        }
+
+        public bool IsInDistance(Vector3 vector, float distance)
+        {
+            return Vector3.SqrMagnitude(vector) <= distance * distance;
+        }
+
+        public bool IsInDistance(Vector3 my, Vector3 target, float distance)
+        {
+            return GetSqrDistance(my, target) <= distance * distance;
         }
 
         public virtual void DropWeapon(List<Armor> list)
@@ -346,7 +368,7 @@ namespace Enemy
             for (int i = 0; i < count; i++)
             {
                 var rand = UnityEngine.Random.Range(0.0f, 100.0f);
-                if(probability <= rand)
+                if(m_probability <= rand)
                 {
                     list.AddRange(GetPartsList((Parts)i));
                 }
