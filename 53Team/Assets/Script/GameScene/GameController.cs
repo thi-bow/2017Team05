@@ -25,9 +25,9 @@ public class GameController : MonoBehaviour
         yield return new WaitWhile(() => ResultScore.KillCount < m_killBorder);
 
         // ボス出現処理
-        //m_enemyMgr.PopBossEnemy();
-        //// ボスが倒されるまで待つ
-        //yield return new WaitWhile(() => !m_enemyMgr.IsBossDead());
+        m_enemyMgr.PopBossEnemy();
+        // ボスが倒されるまで待つ
+        yield return new WaitWhile(() => !m_enemyMgr.IsBossDead());
 
         // ゲームクリア演出
 

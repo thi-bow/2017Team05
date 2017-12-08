@@ -6,7 +6,7 @@ using Enemy;
 
 public class EnemyMgr : MonoBehaviour {
 
-    public EnemyPopPoint m_popBoosPoint;
+    public GameObject m_Boss;
     public EnemyPopPoint[] m_popPointList;
     public EnemyDataLink[] m_squads;
 
@@ -43,7 +43,7 @@ public class EnemyMgr : MonoBehaviour {
 
     public void PopBossEnemy()
     {
-        m_popBoosPoint.PopEnemy();
+        m_Boss.gameObject.SetActive(true);
     }
 
     public void OnDeadEnemy(int aGroup = 0)
