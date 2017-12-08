@@ -41,7 +41,7 @@ public class TutorialTextManager : MonoBehaviour {
             _skipFlag = true;
             if(_textOff)
             {
-                TextOff();
+                //TextOff();
             }
         }
     }
@@ -67,7 +67,7 @@ public class TutorialTextManager : MonoBehaviour {
             "「十字上」を長押ししてみてください。"},
         new string[]{
             "パージできましたね。\nパージをすると装着している装備によって異なる必殺技を放つことができます。",
-            "また「十字上」以外にも「十字右」「十字左」「十字下」を押すと\nパーツ毎にパージすることができ、特殊な必殺技を放つことができます",
+            "また「十字上」以外にも「十字右」「十字左」「十字下」を押すと特殊な必殺技を放つことができます",
             "お疲れ様です。\nこれにてチュートリアルは終了です",
             "この進の先にはたくさんの敵が待ち構えているので、こちらで基本装備を準備しこの先に配置しときました。",
             "その装備を基本に倒しつくしましょう!!",
@@ -119,10 +119,12 @@ public class TutorialTextManager : MonoBehaviour {
         {
             _writeNumber = 0;
             _textOff = true;
+            yield return new WaitForSeconds(1.0f);
             if (endAction != null)
             {
                 _endAction = endAction;
             }
+            TextOff();
         }
     }
 

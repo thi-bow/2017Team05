@@ -78,6 +78,7 @@ namespace Enemy
 
         public override void Dead()
         {
+            EnemyMgr.i.BossDead();
             base.Dead();
         }
 

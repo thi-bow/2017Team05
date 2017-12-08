@@ -7,6 +7,7 @@ public class ResultManager : MonoBehaviour {
 
     public static bool IsClear = true;
     [SerializeField] private GameObject[] logoImage = null;
+    [SerializeField] private Text _killCount = null;
     [SerializeField] private Text _shotKill = null;
     [SerializeField] private Text _approachKill = null;
     [SerializeField] private Text _clearTime = null;
@@ -20,15 +21,19 @@ public class ResultManager : MonoBehaviour {
             logoImage[0].SetActive(true);
             logoImage[1].SetActive(false);
 
+            _killCount.gameObject.SetActive(true);
+            _killCount.text = "敵を倒した数:" + ResultScore.KillCount.ToString();
+
+
             //_shotKill.gameObject.SetActive(true);
-            //_shotKill.text = ResultScore.ShotKillCount.ToString();
+            //_shotKill.text = "敵を倒した数:" + ResultScore.ShotKillCount.ToString();
 
             //_approachKill.gameObject.SetActive(true);
             //_approachKill.text = ResultScore.ApproachKillCount.ToString();
 
 
-            //_clearTime.gameObject.SetActive(true);
-            //_clearTime.text = TimeText();
+            _clearTime.gameObject.SetActive(true);
+            _clearTime.text = TimeText();
 
         }
         else
@@ -50,13 +55,13 @@ public class ResultManager : MonoBehaviour {
     string TimeText()
     {
         string timeText = "";
-        float time = TimeCount._timeCount;
+        int time = (int)TimeCount._timeCount;
         string secondsText = "00";
         int minutesTime = 0;
         string minutuText = "00";
         if (time >= 60)
         {
-            minutesTime = (int)time / 60;
+            minutesTime = time / 60;
             time = time - (minutesTime * 60);
 
             if(minutesTime <= 9)
@@ -78,7 +83,7 @@ public class ResultManager : MonoBehaviour {
             secondsText = time.ToString();
         }
 
-        timeText = minutuText + "分" + secondsText + "秒";
+        timeText = "クリア時間:" + minutuText + "分" + secondsText + "秒";
 
         return timeText;
     }

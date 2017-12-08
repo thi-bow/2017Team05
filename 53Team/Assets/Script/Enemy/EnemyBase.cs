@@ -368,7 +368,7 @@ namespace Enemy
             for (int i = 0; i < count; i++)
             {
                 var rand = UnityEngine.Random.Range(0.0f, 100.0f);
-                if(m_probability <= rand)
+                if(m_probability >= rand)
                 {
                     list.AddRange(GetPartsList((Parts)i));
                 }
