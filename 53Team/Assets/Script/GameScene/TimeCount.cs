@@ -5,6 +5,7 @@ using UnityEngine;
 public class TimeCount : MonoBehaviour {
 
     public static float _timeCount = 0.0f;
+    public float _count = 0.0f;
 
     // Use this for initialization
     void Start () {
@@ -14,10 +15,12 @@ public class TimeCount : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(GameController.m_isTutorial)
+        if(!GameController.m_isTutorial)
         {
             _timeCount += Time.deltaTime;
         }
-		
-	}
+        _count = _timeCount;
+
+
+    }
 }

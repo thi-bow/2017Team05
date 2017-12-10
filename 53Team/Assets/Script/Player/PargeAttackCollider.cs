@@ -37,7 +37,7 @@ public class PargeAttackCollider : MonoBehaviour {
 
         if (other.gameObject.GetComponent<BoneCollide>() != null && other.tag != this.tag)
         {
-            other.gameObject.GetComponent<BoneCollide>().Damage(_attackPower, Weapon.Attack_State.approach);
+            other.gameObject.GetComponent<BoneCollide>().Damage(_attackPower, Weapon.Attack_State.NULL);
         }
     }
 
