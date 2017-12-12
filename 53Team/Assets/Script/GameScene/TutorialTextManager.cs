@@ -112,14 +112,14 @@ public class TutorialTextManager : MonoBehaviour {
         if(_writeNumber < TutorialTex[tutorialNumber].Length - 1)
         {
             _writeNumber++;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.0f);
             StartCoroutine(TextWrite(tutorialNumber, endAction));
         }
         else
         {
             _writeNumber = 0;
             _textOff = true;
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(1.5f);
             if (endAction != null)
             {
                 _endAction = endAction;

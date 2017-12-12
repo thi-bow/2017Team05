@@ -51,10 +51,12 @@ public class Weapon : MonoBehaviour {
     // スクリーン中央取得用
     private Vector3 center;
 
+    public GameObject _hitEffe = null;
+
     // 射撃時間
     private float ShotTime;
 
-    int mask = 1 << 8;
+    int mask = 1 << 8 | 1 << 10;
 
     // Use this for initialization
     void Start () {
@@ -149,6 +151,13 @@ public class Weapon : MonoBehaviour {
             if (hit.collider.gameObject.GetComponent<BoneCollide>() != null && hit.collider.tag != "Player")
             {
                 hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Attack_State.shooting);
+
+            }
+            if (_hitEffe != null && hit.collider.tag != "Player")
+            {
+                var hibana = Instantiate(_hitEffe);
+                hibana.transform.position = hit.point;
+                Destroy(hibana, 0.5f);
             }
         }
         ShotTime = 0;
@@ -167,6 +176,12 @@ public class Weapon : MonoBehaviour {
             if (hit.collider.gameObject.GetComponent<BoneCollide>() != null)
             {
                 hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Attack_State.shooting);
+            }
+            if (_hitEffe != null)
+            {
+                var hibana = Instantiate(_hitEffe);
+                hibana.transform.position = hit.point;
+                Destroy(hibana, 0.5f);
             }
         }
         ShotTime = 0;

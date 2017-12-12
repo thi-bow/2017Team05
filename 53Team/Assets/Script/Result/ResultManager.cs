@@ -10,6 +10,7 @@ public class ResultManager : MonoBehaviour {
     [SerializeField] private Text _killCount = null;
     [SerializeField] private Text _shotKill = null;
     [SerializeField] private Text _approachKill = null;
+    [SerializeField] private Text _pargeKill = null;
     [SerializeField] private Text _clearTime = null;
 
 
@@ -22,14 +23,17 @@ public class ResultManager : MonoBehaviour {
             logoImage[1].SetActive(false);
 
             _killCount.gameObject.SetActive(true);
-            _killCount.text = "敵を倒した数:" + ResultScore.KillCount.ToString();
+            _killCount.text = "KillCount : " + ResultScore.KillCount.ToString();
 
 
             //_shotKill.gameObject.SetActive(true);
-            //_shotKill.text = "敵を倒した数:" + ResultScore.ShotKillCount.ToString();
+            //_shotKill.text = "ShotKill : " + ResultScore.ShotKillCount.ToString();
 
             //_approachKill.gameObject.SetActive(true);
-            //_approachKill.text = ResultScore.ApproachKillCount.ToString();
+            //_approachKill.text = "Strikekill : " + ResultScore.ApproachKillCount.ToString();
+
+            _pargeKill.gameObject.SetActive(true);
+            _pargeKill.text = "PargeKill : " + ResultScore.PargeKillCount.ToString();
 
 
             _clearTime.gameObject.SetActive(true);
