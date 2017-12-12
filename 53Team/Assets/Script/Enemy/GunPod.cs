@@ -7,6 +7,7 @@ public class GunPod : weaponFire {
     [Space(10)]
     public int m_magazine;
     public float m_rate;
+    public float m_waitTime;
 
     public override void fire()
     {
@@ -15,6 +16,8 @@ public class GunPod : weaponFire {
 
     IEnumerator Wait()
     {
+        yield return new WaitForSeconds(m_waitTime);
+
         for (int i = 0; i < m_magazine; i++)
         {
             base.fire();

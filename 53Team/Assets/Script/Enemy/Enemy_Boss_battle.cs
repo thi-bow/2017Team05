@@ -15,8 +15,8 @@ public class Enemy_Boss_battle {
     private WeponType m_currentSubWepon;
     private Enemy_Boss_State m_base;
     public float m_dis;
-    private Vector3[] m_currentPos;
-    private Vector3[] m_poss;
+    public Vector3 m_currentPos;
+    public Vector3 m_pos;
     private int m_currentPNum;
     private int m_moveNum;
     private float m_moveTime;
@@ -46,12 +46,12 @@ public class Enemy_Boss_battle {
         none
     }
 
-    private readonly int NORMAL_POS_NUM = 3;
-    private readonly float NORMAL_MOVE_TIME = 2.5f;
-    private readonly float NORMAL_WAIT_TIME = 4.0f;
-    private readonly int EXTRA_POS_NUM = 5;
-    private readonly float EXTRA_MOVE_TIME = 1.0f;
-    private readonly float EXTRA_WAIT_TIME = 3.0f;
+    private readonly int        NORMAL_POS_NUM      = 3;
+    private readonly float      NORMAL_MOVE_TIME    = 2.5f;
+    private readonly float      NORMAL_WAIT_TIME    = 4.0f;
+    private readonly int        EXTRA_POS_NUM       = 5;
+    private readonly float      EXTRA_MOVE_TIME     = 1.0f;
+    private readonly float      EXTRA_WAIT_TIME     = 3.0f;
 
     public void Init(Enemy_Boss_State aBase)
     {
@@ -63,8 +63,6 @@ public class Enemy_Boss_battle {
         m_moveTime = NORMAL_MOVE_TIME;
         m_waitTime = NORMAL_WAIT_TIME;
         m_moveNum = NORMAL_POS_NUM;
-        m_currentPos = new Vector3[NORMAL_POS_NUM];
-        m_poss = new Vector3[NORMAL_POS_NUM];
 
         ChangeType(BattleType.move);
     }
@@ -104,15 +102,18 @@ public class Enemy_Boss_battle {
     // 発狂モード
     public void ExMode()
     {
-        Debug.LogWarning("ハイパーモード");
+        Debug.LogWarning("Boss状態変化");
         m_currentMainWepon = WeponType.ex_main;
         m_currentSubWepon = WeponType.ex_sub;
         m_moveTime = EXTRA_MOVE_TIME;
         m_waitTime = EXTRA_WAIT_TIME;
         m_moveNum = EXTRA_POS_NUM;
 
-        m_currentPos = new Vector3[EXTRA_POS_NUM];
-        m_poss = new Vector3[EXTRA_POS_NUM];
+        m_currentPNum = 0;
+
+        time = 0;
+
+        ChangeType(BattleType.move);
     }
 
     public void ChangeType(BattleType aType)
@@ -168,14 +169,10 @@ public class Enemy_Boss_battle {
     public void SetRoot()
     {
 
-        m_currentPos[0] = m_base.transform.position;
+        m_currentPos = m_base.transform.position;
 
-        for (int i = 0; i < m_moveNum; i++)
-        {
-            SetTargetPostion();
-            m_poss[i] = pos;
-            if (i + 1 < m_moveNum) m_currentPos[i + 1] = pos;
-        }
+        SetTargetPostion();
+        m_pos = pos;
     }
 
     // 設定されたルートを移動
@@ -183,7 +180,7 @@ public class Enemy_Boss_battle {
     public void Move()
     {
         time += Time.deltaTime / m_moveTime;
-        m_base.transform.position = Vector3.Lerp(m_currentPos[m_currentPNum], m_poss[m_currentPNum], time);
+        m_base.transform.position = Vector3.Lerp(m_currentPos, m_pos, time);
         if(time >= 1)
         {
             m_currentPNum++;
@@ -192,13 +189,16 @@ public class Enemy_Boss_battle {
             {
                 m_currentPNum = 0;
                 ChangeType(BattleType.fire);
+                return;
             }
+            SetRoot();
         }
     }
 
     // 目標ポイントの設定
     private Transform t;
     private Vector3 pos;
+    private Ray ray;
     public void SetTargetPostion()
     {
         t = m_base.m_target;
@@ -209,6 +209,12 @@ public class Enemy_Boss_battle {
         // 目標位置の設定
         pos.x = t.position.x + UnityEngine.Random.Range(-m_dis, m_dis);
         pos.z = t.position.z + UnityEngine.Random.Range(-m_dis, m_dis);
+
+        ray = new Ray(m_currentPos, pos - m_currentPos);
+        if(Physics.SphereCast(ray, 5.0f))
+        {
+            SetTargetPostion();
+        }
     }
 
     static bool IsNull<T>(T obj) where T : class
@@ -222,5 +228,5 @@ public class Enemy_Boss_battle {
         {
             return obj == null;
         }
-    }
+    }    
 }

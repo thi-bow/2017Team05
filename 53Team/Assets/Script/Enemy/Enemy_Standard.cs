@@ -82,6 +82,7 @@ namespace Enemy
             ChangeState(standard_State.dead);
             EnemyMgr.i.OnDeadEnemy(m_group);
             base.Dead();
+            Destroy(gameObject);
         }
 
         public Transform[] LootPosition

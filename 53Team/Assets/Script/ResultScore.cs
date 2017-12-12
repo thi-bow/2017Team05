@@ -18,4 +18,16 @@ public class ResultScore : MonoBehaviour
         DefaultKillCount = 0;
         PargeKillCount = 0;
     }
+
+    public static void AddKiilCount(Weapon.Attack_State state)
+    {
+        if(state == Weapon.Attack_State.approach)
+        {
+            ApproachKillCount++;
+        }
+        else if(state == Weapon.Attack_State.shooting)
+        {
+            ShotKillCount++;
+        }
+    }
 }

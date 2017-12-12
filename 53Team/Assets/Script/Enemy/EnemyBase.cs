@@ -102,6 +102,7 @@ namespace Enemy
                 m_boneCollides[n].OnDamage.Subscribe(dmg =>
                 {
                     Parts parts = m_boneCollides[n].m_parts;
+                    _deadAction = () => ResultScore.AddKiilCount(dmg.type);
                     if(parts == Parts.WeakPoint || dmg.type == Weapon.Attack_State.approach)
                     {
                         Damage(dmg.value);
@@ -223,7 +224,6 @@ namespace Enemy
                     });
                 }
             }
-            Destroy(gameObject);
         }
 
         protected override void Update()
@@ -353,7 +353,11 @@ namespace Enemy
                 rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Take(1).Subscribe(_ =>
                 {
-                    rd.gameObject.GetComponent<Collider>().isTrigger = true;
+                    var cols = rd.transform.GetComponentsInChildren<Collider>();
+                    for (int i = 0; i < cols.Length; i++)
+                    {
+                        cols[i].isTrigger = true;
+                    }
                     rd.isKinematic = true;
                 });
 

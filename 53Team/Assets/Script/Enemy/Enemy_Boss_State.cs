@@ -78,8 +78,9 @@ namespace Enemy
 
         public override void Dead()
         {
-            EnemyMgr.i.BossDead();
+            m_battle.ChangeType(Enemy_Boss_battle.BattleType.none);
             base.Dead();
+            ChangeState(boss_State.dead);
         }
 
         public Transform[] LootPosition
@@ -136,12 +137,22 @@ namespace Enemy
             public override void OnExecute()
             {
             }
-
-            public override void OnExit()
-            {
-            }
         }
 
         #endregion
+
+        private void OnDrawGizmosSelected()
+        {
+            if (m_battle.m_currentPos.x != 0)
+            {
+                Vector3 p1, p2;
+                p1 = m_battle.m_currentPos;
+                p2 = m_battle.m_pos;
+
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(p1, p2);
+                Gizmos.DrawWireSphere(p2, 5.0f);
+            }
+        }
     }
 }

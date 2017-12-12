@@ -29,10 +29,16 @@ public class EnemyMgr : MonoBehaviour {
         {
             Destroy(this);
         }
+
+        if (m_Boss)
+        {
+            m_Boss.SetActive(false);
+        }
     }
 
     public void BossDead()
     {
+        ResultScore.KillCount++;
         m_isBossDead = true;
     }
 
