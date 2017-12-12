@@ -32,7 +32,7 @@ public class SoundManger : MonoBehaviour {
     //BGM
     private AudioSource BGMsource;
     //SE
-    private AudioSource[] SEsources = new AudioSource[15];
+    private AudioSource[] SEsources = new AudioSource[100];
     //Voice
     private AudioSource[] VoiceSources = new AudioSource[0];
 
@@ -138,6 +138,42 @@ public class SoundManger : MonoBehaviour {
         BGMsource.Play();
     }
 
+    //BGM再生
+    public void PlayBGM(string name)
+    {
+        int index = 0;
+        for(int i = 0; i < BGM.Length; i++)
+        {
+            if(BGM[i].name == name)
+            {
+                index = i;
+                break;
+            }
+        }
+        //何も入っていなければ音を出さない
+        if (BGM[index] == null)
+        {
+            StopBGM();
+            return;
+        }
+        _fadeoutflag = false;
+        if (0 > index || BGM.Length <= index)
+        {
+            return;
+        }
+
+        //同じBGMの場合何もしない
+        if (BGMsource == BGM[index])
+        {
+            return;
+        }
+        BGMsource.Stop();
+        BGMsource.clip = BGM[index];
+        volume.BGM = 1.0f;
+        BGMsource.Play();
+    }
+
+
     public void FadeInBGM(int index)
     {
         _fadeoutflag = false;
@@ -211,6 +247,36 @@ public class SoundManger : MonoBehaviour {
         foreach(AudioSource source in SEsources)
         {
             if(false == source.isPlaying)
+            {
+                source.clip = SE[index];
+                source.Play();
+                return;
+            }
+        }
+    }
+
+    public void PlaySE(string name)
+    {
+
+        int index = 0;
+        for (int i = 0; i < SE.Length; i++)
+        {
+            if (SE[i].name == name)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (0 > index || SE.Length <= index)
+        {
+            return;
+        }
+
+        //再生中で無いAudioSourceで鳴らす
+        foreach (AudioSource source in SEsources)
+        {
+            if (false == source.isPlaying)
             {
                 source.clip = SE[index];
                 source.Play();
