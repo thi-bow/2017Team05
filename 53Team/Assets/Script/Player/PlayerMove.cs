@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviour
     private GameObject _mainCamera = null;
     private Rigidbody _myRB = null;
 
+    private Animator mAnimator;
 
     #region 移動に関する変数
     [Header("----------------移動速度---------------------")]
@@ -64,6 +65,7 @@ public class PlayerMove : MonoBehaviour
         _myRB = _parent.GetComponent<Rigidbody>();
         _playerSkyMove = this.gameObject.GetComponent<PlayerSkyMove>();
         _mainCamera = _player._mainCamera;
+        mAnimator = GetComponent<Animator>();
     }
     
     public void Move()
@@ -142,18 +144,23 @@ public class PlayerMove : MonoBehaviour
             if (_player.PlayerState == Player.playerState.RUN)
             {
                 RunMove();
+                // 走るアニメーション
+                mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.run);
             }
 
             else if (_player.PlayerState == Player.playerState.SQUAT ||
                     _player.PlayerState == Player.playerState.MOVE)
             {
                 WalkMove();
+                // 歩きアニメーション
+                mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.wark);
             }
         }
 
         //ジャンプ
         if (!_rollingFlag && Input.GetButtonDown("Jump"))
         {
+            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.jump);
             Jump(_move, _jumpPower);
             print("ジャンプ");
         }
@@ -200,11 +207,16 @@ public class PlayerMove : MonoBehaviour
             else
             {
                 _move *= _moveSpeed;
+                
             }
         }
         //移動スピードが変更されている場合はここで変更を対応させる
         _move *= _player.Speed;
         //this.transform.localPosition += _move;
+        if(_move.x + _move.z > 0)
+        {
+            Debug.Log(_move);
+        }
         _myRB.MovePosition(_move + _parent.transform.position);
 
     }

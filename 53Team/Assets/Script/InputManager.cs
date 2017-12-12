@@ -5,7 +5,10 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
 
-    private GameObject _player;
+    [SerializeField] private GameObject _player;
+    [SerializeField] private GameObject _playerChild;
+    private Animator mAnimator;
+
     private Player _partsPurge;
 
     private float _pushTime;
@@ -16,16 +19,21 @@ public class InputManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        _player = GameObject.Find("PlayerParent");
+        mAnimator = _playerChild.GetComponent<Animator>();
         _partsPurge = _player.GetComponent<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(Input.anyKey == false && Input.GetAxis("Vertical") == 0.0f && Input.GetAxis("Horizontal") == 0.0f)
+        {
+            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.idle01);
+        }
+
         // 部分パージのInput    
         // 右パージ 
-        if(Input.GetAxisRaw("crossX") > 0)
+        if (Input.GetAxisRaw("crossX") > 0)
         {
             _pushTime += Time.deltaTime;
             if (_longPush == true && _partsPurge._rightArmParge == true)

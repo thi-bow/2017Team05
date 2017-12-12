@@ -44,6 +44,8 @@ public class Player : CharaBase
     private GameObject _inputManager;
     private bool _longPushButton;
 
+    private Animator mAnimator;
+
     // Use this for initialization
     protected override void Start ()
     {
@@ -51,6 +53,8 @@ public class Player : CharaBase
         _playerMove = _playerChild.GetComponent<PlayerMove>();
         _playerSkyMove = _playerChild.GetComponent<PlayerSkyMove>();
         _status = playerState.IDLE;
+
+        mAnimator = _playerChild.GetComponent<Animator>();
 
         _inputManager = GameObject.Find("InputManager");
 
@@ -109,26 +113,29 @@ public class Player : CharaBase
         //右腕の攻撃
         if (Input.GetAxis("ArmShot") > 0.5f )
         {
+            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.attack_weapon_R02);
             RightArmtShot();
         }
         else if(Input.GetButtonDown("RightArmStrike"))
         {
+            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.attack_jab_R);
             int attack = _charaPara._rightAttack;
             if (_charaPara._rightArm_AttackState == Weapon.Attack_State.approach)
             {
                 attack *= 2;
             }
             this.GetComponent<ApproachAttack>().Approach(attack);
-
         }
 
         //左腕の攻撃
         if (Input.GetAxis("ArmShot") < -0.5f)
         {
+            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.attack_weapon_L02);
             LeftArmShot();
         }
         else if (Input.GetButtonDown("LeftArmStrike"))
         {
+            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.attack_jab_L);
             int attack = _charaPara._leftAttack;
             if (_charaPara._leftArm_AttackState == Weapon.Attack_State.approach)
             {
@@ -160,6 +167,16 @@ public class Player : CharaBase
                 });
                 _fullParge = false;
             }
+        }
+
+        /*Playerアニメーション*/
+        else if (_status == playerState.SKYMOVE)
+        {
+            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.boost_up);
+        }
+        else if (_status == playerState.SQUAT)
+        {
+            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.crouch);
         }
         base.Update();
     }
