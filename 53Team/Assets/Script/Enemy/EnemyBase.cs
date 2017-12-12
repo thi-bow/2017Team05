@@ -307,7 +307,7 @@ namespace Enemy
                     if(Physics.Raycast(my.position, vec.normalized, out m_raycastHit, distance) && Penetration)
                     {
                         // Rayが当たった対象がtargetならtrue
-                        if(m_raycastHit.transform.gameObject == target.gameObject)
+                        if(m_raycastHit.transform.gameObject.tag == target.gameObject.tag)
                         {
                             run = true;
                             //Debug.Log("HitObjct Name." + m_raycastHit.transform.name);
