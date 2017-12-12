@@ -843,6 +843,7 @@ public class CharaBase : MonoBehaviour
             Destroy(pargeEffe, 1.0f);
         }
         if (endAction != null) endAction();
+        SoundManger.Instance.PlaySE(1);
     }
     #endregion
 
