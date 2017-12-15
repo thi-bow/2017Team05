@@ -89,7 +89,9 @@ public class EnemyMgr : MonoBehaviour {
             if(e)
             {
                 e.m_lastPosition = p.transform.position;
-                e.ChangeState(standard_State.warning);
+
+                if(e.IsCurrentState(standard_State.warning))
+                    e.ChangeState(standard_State.warning);
             }
         }
 

@@ -32,18 +32,7 @@ namespace Enemy
         public float seachSubAng;       // サブ索敵範囲(角度)
         public float rotateSpd;         // 旋回速度
 
-
-        public EnemyStatus(string name, float attackDis, float attackAng, float seachMainDis, float seachMainAng, float seachSubDis, float seachSubAng, float rotateSpd)
-        {
-            this.name = name;
-            this.attackDis = attackDis;
-            this.attackAng = attackAng;
-            this.seachMainDis = seachMainDis;
-            this.seachMainAng = seachMainAng;
-            this.seachSubDis = seachSubDis;
-            this.seachSubAng = seachSubAng;
-            this.rotateSpd = rotateSpd;
-        }
+        public readonly Vector3 viewOffset = new Vector3(0, 1, 0);
     }
 
     // Enemyの基底クラス
@@ -282,7 +271,7 @@ namespace Enemy
 
             bool run = false;
 
-            Vector3 targetPos = target.position;
+            Vector3 targetPos = target.position + m_enemyStatus.viewOffset;
             targetPos.y += 0.5f;
 
             // 対象までのベクトル
@@ -295,7 +284,7 @@ namespace Enemy
             var ang = Vector3.Angle(my.forward, vec2);
 
             // 指定した距離以内
-            if(dis <= distance * distance)
+            if (dis <= distance * distance)
             {
                 // 指定した角度以内
                 if (ang <= angle)
@@ -306,11 +295,11 @@ namespace Enemy
                     // Rayがtrueの場合対象方向にRayを飛ばす
                     if(Physics.Raycast(my.position, vec.normalized, out m_raycastHit, distance) && Penetration)
                     {
+                        Debug.DrawRay(my.position, vec.normalized * distance, Color.blue);
                         // Rayが当たった対象がtargetならtrue
                         if(m_raycastHit.transform.gameObject.tag == target.gameObject.tag)
                         {
                             run = true;
-                            //Debug.Log("HitObjct Name." + m_raycastHit.transform.name);
                         }
                     }
                 }

@@ -143,16 +143,22 @@ namespace Enemy
 
         private void OnDrawGizmosSelected()
         {
-            if (m_battle.m_currentPos.x != 0)
-            {
-                Vector3 p1, p2;
-                p1 = m_battle.m_currentPos;
-                p2 = m_battle.m_pos;
+            //if (m_battle.m_currentPos.x != 0)
+            //{
+            //    Vector3 p1, p2, p3;
+            //    float n1, n2;
+            //    p1 = m_battle.m_currentPos;
+            //    p2 = m_battle.m_pos;
+            //    p3 = m_target.position;
+            //    n1 = m_battle.m_dis;
+            //    n2 = m_battle.m_radius;
 
-                Gizmos.color = Color.blue;
-                Gizmos.DrawLine(p1, p2);
-                Gizmos.DrawWireSphere(p2, 5.0f);
-            }
+            //    Gizmos.color = Color.blue;
+            //    Gizmos.DrawLine(p1, p2);
+            //    Gizmos.DrawWireSphere(p2, n2);
+            //    Gizmos.DrawWireCube(p3, new Vector3(n1, 6, n1));
+            //}
+
         }
     }
 }
