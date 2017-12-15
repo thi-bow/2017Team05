@@ -128,12 +128,12 @@ public class SceneManagerScript : MonoBehaviour
             return;
         }
 
-        ////Escキーをおしたらゲーム終了
-        //if (Input.GetKeyDown(KeyCode.Escape) || (Input.GetButton("BackButton") && Input.GetButton("Pause")))
-        //{
-        //    QuitCheck();
-        //    return;
-        //}
+        //Escキーをおしたらゲーム終了
+        if (Input.GetKeyDown(KeyCode.Escape) || (Input.GetButton("BackButton") && Input.GetButton("Pause")))
+        {
+            QuitCheck();
+            return;
+        }
 
         //放置でシーン移動するならこの下の処理を行う
         if (_leave_Alone == true)

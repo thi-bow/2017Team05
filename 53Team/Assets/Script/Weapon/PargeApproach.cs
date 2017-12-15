@@ -53,6 +53,7 @@ public class PargeApproach : MonoBehaviour {
             GetComponent<BoxCollider>().enabled = false;
 
             isApproach = false;
+            pargeAction();
         }
     }
 
@@ -60,8 +61,11 @@ public class PargeApproach : MonoBehaviour {
     {
        if(other.gameObject.tag != this.gameObject.tag)
         {
-            Debug.Log(other.gameObject.name);
-            other.gameObject.GetComponent<BoneCollide>().Damage(hitAtk, Weapon.Attack_State.approach);
+            if (other.gameObject.GetComponent<BoneCollide>() != null)
+            {
+                Debug.Log(other.gameObject.name);
+                other.gameObject.GetComponent<BoneCollide>().Damage(hitAtk, Weapon.Attack_State.approach);
+            }
         }
     }
 

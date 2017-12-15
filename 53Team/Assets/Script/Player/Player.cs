@@ -107,6 +107,7 @@ public class Player : CharaBase
     // Update is called once per frame
     protected override void Update ()
     {
+        if (GameController._pause) return;
         // コントローラー長押しフラグの取得
         _longPushButton = _inputManager.GetComponent<InputManager>()._longPush;
 
@@ -183,6 +184,7 @@ public class Player : CharaBase
 
     private void LateUpdate()
     {
+        if (GameController._pause) return;
         if (_status == playerState.SKYMOVE)
         {
             _playerSkyMove.SkyMove();

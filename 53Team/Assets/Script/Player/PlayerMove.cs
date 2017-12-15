@@ -56,6 +56,7 @@ public class PlayerMove : MonoBehaviour
 
     [Header("--------------Rayの長さ------------------")]
     [SerializeField] private float rayLength = 5.0f;
+    [SerializeField] private LayerMask mask;
 
 
     // Use this for initialization
@@ -133,7 +134,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         // キャラクターの向きを進行方向に
-        if (_move != Vector3.zero)
+        if (_move != Vector3.zero && !GameController._pause)
         {
             transform.rotation = Quaternion.LookRotation(_move);
         }
@@ -213,10 +214,6 @@ public class PlayerMove : MonoBehaviour
         //移動スピードが変更されている場合はここで変更を対応させる
         _move *= _player.Speed;
         //this.transform.localPosition += _move;
-        if(_move.x + _move.z > 0)
-        {
-            Debug.Log(_move);
-        }
         _myRB.MovePosition(_move + _parent.transform.position);
 
     }
@@ -407,12 +404,12 @@ public class PlayerMove : MonoBehaviour
         Vector3 _pos = Vector3.zero;
         _ray = new Ray(transform.position + new Vector3(0, 1, 0), -this.transform.up);
 
-        if (Physics.Raycast(_ray, out _hit, length))
+        if (Physics.Raycast(_ray, out _hit, length, mask))
         {
             Debug.DrawLine(_ray.origin, _hit.point, Color.red);
         }
 
-        if (_hit.collider != null && _hit.collider.tag != "Player")
+        if (_hit.collider != null && _hit.collider.tag == "Ground")
         {
             _myRB.useGravity = false;
             _parent.transform.position = new Vector3(_parent.transform.position.x, _hit.point.y, _parent.transform.position.z);
@@ -421,7 +418,6 @@ public class PlayerMove : MonoBehaviour
         {
             _myRB.useGravity = true;
             Jump(_move, 0.0f);
-            //_parent.transform.position += new Vector3(0, -0.1f, 0);
         }
     }
     #endregion

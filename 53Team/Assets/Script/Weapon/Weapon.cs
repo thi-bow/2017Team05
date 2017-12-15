@@ -114,6 +114,7 @@ public class Weapon : MonoBehaviour {
             ShotTime += Time.deltaTime;
             if (ShotTime >= 60.0f / minuteShot)
             {
+                SoundManger.Instance.PlaySE(0);
                 StartCoroutine(ShootingInterval());
                 
             }

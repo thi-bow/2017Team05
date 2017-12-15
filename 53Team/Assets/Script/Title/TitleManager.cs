@@ -7,6 +7,7 @@ public class TitleManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         ResultScore.Reset();
+        GameController._pause = false;
 		
 	}
 	

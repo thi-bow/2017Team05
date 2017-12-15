@@ -67,6 +67,7 @@ public class InputManager : MonoBehaviour
         // 左パージ
         if (Input.GetAxisRaw("crossX") < 0)
         {
+
             _pushTime += Time.deltaTime;
             if (_longPush == true && _partsPurge._leftArmParge == true)
             {

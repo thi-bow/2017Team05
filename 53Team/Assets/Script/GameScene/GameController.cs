@@ -8,6 +8,9 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     public static bool m_isTutorial = true;
+    public static bool _pause = false;
+    [SerializeField] private GameObject _pauseUI = null;
+    [SerializeField] private Button _reStartButton = null;
 
     public EnemyMgr m_enemyMgr;
 
@@ -16,6 +19,7 @@ public class GameController : MonoBehaviour
 
     private IEnumerator Start()
     {
+        _pause = false;
         //Tutorialが終了するまで待機
         yield return new WaitWhile(() => m_isTutorial);
         Debug.Log("チュートリアル終了");
@@ -37,8 +41,33 @@ public class GameController : MonoBehaviour
         SceneManagerScript.sceneManager.SceneOut(SceneName.sceneName.Result.ToString());
     }
 
+    public void Update()
+    {
+        if(Input.GetButtonDown("Pause"))
+        {
+            GamePause();
+        }
+    }
+
     private IEnumerator Clear()
     {
         yield return null;
+    }
+
+    public void GamePause()
+    {
+        if (!_pause)
+        {
+            SceneManagerScript.sceneManager.FadeBlack();
+            _pause = true;
+            _pauseUI.SetActive(true);
+            _reStartButton.Select();
+        }
+        else
+        {
+            _pauseUI.SetActive(false);
+            SceneManagerScript.sceneManager.FadeWhite();
+            _pause = false;
+        }
     }
 }
