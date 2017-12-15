@@ -15,6 +15,7 @@ public class Enemy_Boss_battle {
     private WeponType m_currentSubWepon;
     private Enemy_Boss_State m_base;
     public float m_dis;
+    public float m_radius;
     public Vector3 m_currentPos;
     public Vector3 m_pos;
     private int m_currentPNum;
@@ -165,15 +166,6 @@ public class Enemy_Boss_battle {
             }
         }
     }
-        // 移動ルートの設定
-    public void SetRoot()
-    {
-
-        m_currentPos = m_base.transform.position;
-
-        SetTargetPostion();
-        m_pos = pos;
-    }
 
     // 設定されたルートを移動
     private float time;
@@ -195,23 +187,61 @@ public class Enemy_Boss_battle {
         }
     }
 
+
+    // 移動ルートの設定
+    public List<RaycastHit> hits = new List<RaycastHit>();
+    public List<Vector3> poss = new List<Vector3>();
+    [Serializable]
+    public class hoge
+    {
+        public GameObject aa;
+        public LayerMask bb;
+
+        public hoge(GameObject aa, LayerMask bb)
+        {
+            this.aa = aa;
+            this.bb = bb;
+        }
+    }
+
+    public List<hoge> hitObjs = new List<hoge>();
+    private int n;
+    public void SetRoot()
+    {
+
+        m_currentPos = m_base.transform.position;
+
+        poss = new List<Vector3>();
+        hits = new List<RaycastHit>();
+        hitObjs = new List<hoge>();
+        n = 5;
+        SetTargetPostion();
+
+        m_pos = pos;
+    }
+
     // 目標ポイントの設定
     private Transform t;
     private Vector3 pos;
-    private Ray ray;
+    public LayerMask mask;
     public void SetTargetPostion()
     {
         t = m_base.m_target;
 
         // 目標高度の設定
-        pos.y = t.position.y + UnityEngine.Random.Range(1f, 5f);
+        pos.y = t.position.y + UnityEngine.Random.Range(2f, 6f);
 
         // 目標位置の設定
-        pos.x = t.position.x + UnityEngine.Random.Range(-m_dis, m_dis);
-        pos.z = t.position.z + UnityEngine.Random.Range(-m_dis, m_dis);
+        float n1, n2;
+        n1 = UnityEngine.Random.Range(-m_dis, m_dis);
+        n2 = UnityEngine.Random.Range(-m_dis, m_dis);
+        pos.x = t.position.x + n1;
+        pos.z = t.position.z + n2;
 
-        ray = new Ray(m_currentPos, pos - m_currentPos);
-        if(Physics.SphereCast(ray, 5.0f))
+        var hit = new RaycastHit();
+        var ray = new Ray(m_currentPos, pos - m_currentPos);
+        var dis = Vector3.Magnitude(pos - m_currentPos);
+        if (Physics.SphereCast(ray.origin, m_radius, ray.direction, out hit, dis, mask))
         {
             SetTargetPostion();
         }

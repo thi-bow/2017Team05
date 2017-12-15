@@ -26,8 +26,8 @@ public class Enemy_Standard_battle_behavior {
 
             if (m_time <= 0)
             {
-                PhysicalAttack();
                 ResetTime();
+                PhysicalAttack();
             }
         }
         else
