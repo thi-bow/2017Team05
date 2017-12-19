@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 6d091fe80524cb34bb5c00e2f30a8867
+timeCreated: 1513649006
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Akashi
+  fontNames:
+  - Akashi
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
