@@ -23,7 +23,7 @@ public class ResultManager : MonoBehaviour {
             logoImage[1].SetActive(false);
 
             _killCount.gameObject.SetActive(true);
-            _killCount.text = "KillCount : " + ResultScore.KillCount.ToString();
+            _killCount.text = "Kill Count  " + ResultScore.KillCount.ToString();
 
 
             //_shotKill.gameObject.SetActive(true);
@@ -33,7 +33,7 @@ public class ResultManager : MonoBehaviour {
             //_approachKill.text = "Strikekill : " + ResultScore.ApproachKillCount.ToString();
 
             _pargeKill.gameObject.SetActive(true);
-            _pargeKill.text = "PargeKill : " + ResultScore.PargeKillCount.ToString();
+            _pargeKill.text = "Parge Kill  " + ResultScore.PargeKillCount.ToString();
 
 
             _clearTime.gameObject.SetActive(true);
@@ -62,20 +62,13 @@ public class ResultManager : MonoBehaviour {
         int time = (int)TimeCount._timeCount;
         string secondsText = "00";
         int minutesTime = 0;
-        string minutuText = "00";
+        string minutuText = "0";
         if (time >= 60)
         {
             minutesTime = time / 60;
             time = time - (minutesTime * 60);
 
-            if(minutesTime <= 9)
-            {
-                minutuText = "0" + minutesTime.ToString();
-            }
-            else
-            {
-                minutuText = minutesTime.ToString();
-            }
+            minutuText = minutesTime.ToString();
         }
 
         if(time <= 9)
@@ -87,7 +80,7 @@ public class ResultManager : MonoBehaviour {
             secondsText = time.ToString();
         }
 
-        timeText = "クリア時間:" + minutuText + "分" + secondsText + "秒";
+        timeText = "ClearTime  " + minutuText + ":" + secondsText;
 
         return timeText;
     }

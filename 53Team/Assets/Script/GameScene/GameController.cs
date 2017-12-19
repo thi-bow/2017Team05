@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
         //Tutorialが終了するまで待機
         yield return new WaitWhile(() => m_isTutorial);
         Debug.Log("チュートリアル終了");
+        ResultScore.KillCount = 0;
         // ゲーム開始に必要な準備の処理
 
         // 一定数Playerが敵を倒すまで待つ
