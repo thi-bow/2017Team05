@@ -428,14 +428,15 @@ namespace Enemy
                 rd = rd ? rd : list[j].gameObject.AddComponent<Rigidbody>();
 
                 rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                rd.drag = 5f;
                 rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Take(1).Subscribe(_ =>
                 {
+                    rd.isKinematic = true;
                     var cols = rd.transform.GetComponentsInChildren<Collider>();
                     for (int i = 0; i < cols.Length; i++)
                     {
                         cols[i].isTrigger = true;
                     }
-                    rd.isKinematic = true;
                 });
 
             }
