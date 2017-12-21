@@ -16,7 +16,6 @@ namespace Enemy
         dead
     }
 
-    [RequireComponent(typeof(NavMeshAgent))]
     public class Enemy_Standard : EnemyBase<Enemy_Standard, standard_State>, IEnemy
     {
 
@@ -27,19 +26,15 @@ namespace Enemy
         public int m_group;
 
         public float m_time = 2.0f;
-        public Vector3 m_lastPosition;
         public Transform[] m_lootPosition;
+        public Vector3 m_lastPosition { get; set; }
 
-        public ApproachAttack m_attack;
-
+        [Space(10)]
+        public bool m_isTutorial = false;
 
         private Enemy_Standard_battle_behavior m_tree;
 
         private readonly Vector3 m_vectorZero = new Vector3(0, 0, 0);
-
-        [Header("デバッグ確認用")]
-        public float m_distance;
-        public int m_rootNum;
 
         protected override void Start()
         {
@@ -51,7 +46,6 @@ namespace Enemy
 
             m_stateMachine = new StateMachine<Enemy_Standard>();
 
-            m_attack = GetComponent<ApproachAttack>();
             m_tree = new Enemy_Standard_battle_behavior(this);
 
             base.Start();
@@ -128,7 +122,6 @@ namespace Enemy
                         currentRootNum = i;
                     }
                 }
-                _base.m_rootNum = currentRootNum;
             }
 
             public override void OnExecute()
@@ -147,12 +140,15 @@ namespace Enemy
                 }
 
                 // ルート徘徊
-                if (_base.m_agent.remainingDistance < 2.0f && _base.m_agent.hasPath)
-                {
+                if (_base.IsArrival())
                     currentRootNum = (currentRootNum + 1) % _base.m_lootPosition.Length;
-                    _base.m_rootNum = currentRootNum;
-                }
-                _base.m_agent.SetDestination(_base.m_lootPosition[currentRootNum].position);
+                _base.Move(_base.m_lootPosition[currentRootNum].position, false);
+                //if (_base.m_agent.remainingDistance < _base.m_agent.stoppingDistance && _base.m_agent.hasPath)
+                //{
+                //    currentRootNum = (currentRootNum + 1) % _base.m_lootPosition.Length;
+                //    _base.m_rootNum = currentRootNum;
+                //}
+                //_base.m_agent.SetDestination(_base.m_lootPosition[currentRootNum].position);
             }
 
             public override void OnExit()
@@ -178,14 +174,16 @@ namespace Enemy
                 // ターゲットの最終発見ポイントがあればそこまで移動
                 if (_base.m_lastPosition != _base.m_vectorZero)
                 {
-                    _base.m_agent.SetDestination(_base.m_lastPosition);
-
-                    if (_base.m_agent.remainingDistance < 2.0f && _base.m_agent.hasPath)
+                    _base.Move(_base.m_lastPosition, true);
+                    if (_base.IsArrival())
                     {
-                        _base.m_lastPosition = _base.m_vectorZero;
-                        _base.ChangeState(standard_State.move);
-                    }
-                    return;
+                        Observable.Timer(System.TimeSpan.FromSeconds(3f))
+                            .Where(x => _base.IsCurrentState(standard_State.warning)).Subscribe(_ => 
+                            {
+                                _base.m_lastPosition = _base.m_vectorZero;
+                                _base.ChangeState(standard_State.move);
+                            });
+                    };
                 }
             }
         }
@@ -201,6 +199,7 @@ namespace Enemy
             public override void OnEnter()
             {
                 EnemyMgr.i.GetWarningEnemys(_base.transform.position);
+                m_timer = 0;
             }
 
             public override void OnExecute()
@@ -216,7 +215,7 @@ namespace Enemy
                         return;
                     }
                 }
-                else
+                else if(!_base.IsMainSearch() || !_base.IsSubSearch())
                 {
                     // 視界内、尚且つタイマーがカウントされていればリセット
                     if(m_timer > 0)
@@ -226,19 +225,19 @@ namespace Enemy
                 }
 
 
-                if(_base.IsAttackSearch())
+                if(_base.IsAttackSearch(-_base.m_enemyStatus.attackDis / 5f))
                 {
+                    _base.Stop();
                     _base.ChangeState(standard_State.attack);
                     return;
                 }
 
-                _base.m_agent.SetDestination(_base.m_target.position);
-                _base.m_distance = _base.m_agent.remainingDistance;
+                _base.Move(_base.m_target.position, true);
+                // _base.Rotate(_base.m_target.position);
             }
 
             public override void OnExit()
             {
-                _base.m_agent.ResetPath();
             }
         }
 
@@ -259,6 +258,10 @@ namespace Enemy
                     _base.ChangeState(standard_State.chase);
                     return;
                 }
+
+                _base.LookRotate(_base.m_target.position);
+
+                if (_base.m_isTutorial) return;
 
                 _base.m_tree.UpdateBattleState();
             }

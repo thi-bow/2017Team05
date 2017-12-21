@@ -82,6 +82,7 @@ public class EnemyMgr : MonoBehaviour {
 
         var p = GameObject.FindGameObjectWithTag("Player");
 
+        StartCoroutine(ShowWarningArea(aPosition, aRadius));
         var cols = Physics.OverlapSphere(aPosition, aRadius);
         for (int i = 0; i < cols.Length; i++)
         {
@@ -90,11 +91,33 @@ public class EnemyMgr : MonoBehaviour {
             {
                 e.m_lastPosition = p.transform.position;
 
-                if(e.IsCurrentState(standard_State.warning))
+                if(e.IsCurrentState(standard_State.move))
                     e.ChangeState(standard_State.warning);
             }
         }
 
         return list;
+    }
+
+    private Vector3 pos;
+    private float r;
+    IEnumerator ShowWarningArea(Vector3 aPos, float aRadius)
+    {
+        pos = aPos;
+        r = aRadius;
+
+        yield return new WaitForSeconds(3);
+
+        pos = new Vector3(0, 0, 0);
+        r = 0f;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if(pos != Vector3.zero && r != 0)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(pos, r);
+        }
     }
 }
