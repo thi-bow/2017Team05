@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UniRx;
 using UniRx.Triggers;
 using DG.Tweening;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 namespace Enemy
 {
@@ -30,13 +31,13 @@ namespace Enemy
         public float seachMainAng;      // メイン索敵範囲(角度)
         public float seachSubDis;       // サブ索敵距離
         public float seachSubAng;       // サブ索敵範囲(角度)
-        public float rotateSpd;         // 旋回速度
 
         public readonly Vector3 viewOffset = new Vector3(0, 1, 0);
     }
 
     // Enemyの基底クラス
     [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(CharacterMovement))]
     public class EnemyBase<T, TEnum> : CharaBase
         where T : class where TEnum : IConvertible
     {
@@ -70,6 +71,7 @@ namespace Enemy
 
         // NavMeshAgent
         protected NavMeshAgent m_agent;
+        protected CharacterMovement m_character;
 
         // 状態を格納する配列
         protected List<State<T>> m_stateList = new List<State<T>>();
@@ -81,8 +83,10 @@ namespace Enemy
         {
             base.Start();
             m_agent = GetComponent<NavMeshAgent>();
+            m_character = GetComponent<CharacterMovement>();
 
-            m_agent.angularSpeed = 360 * m_enemyStatus.rotateSpd;
+            m_agent.updateRotation = false;
+            m_agent.updatePosition = false;
 
 
             for (int i = 0; i < m_boneCollides.Length; i++)
@@ -190,29 +194,33 @@ namespace Enemy
             var list = GetLotteryWeapon();
             DropWeapon(list);
 
-            var transforms = GetComponentsInChildren<Transform>();
-            Vector3 pos = transform.position + transform.forward * 2;
+            // Animetorに死亡アニメーションを流す処理
 
-            for (int i = 0; i < transforms.Length; i++)
-            {
-                int n = i;
-                if (transform == transforms[i]) { continue; }
+            Destroy(this);
+            Destroy(gameObject, 3f);
+            //var transforms = GetComponentsInChildren<Transform>();
+            //Vector3 pos = transform.position + transform.forward * 2;
 
-                transforms[n].transform.SetParent(null);
-                var rd = transforms[n].gameObject.GetComponent<Rigidbody>();
-                rd = rd != null ? rd : transforms[n].gameObject.AddComponent<Rigidbody>();
-                if (rd != null)
-                {
-                    rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
-                    Observable.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(5.0f, 6.0f))).Subscribe(_ =>
-                    {
-                        if (rd != null)
-                        {
-                            Destroy(rd.gameObject);
-                        }
-                    });
-                }
-            }
+            //for (int i = 0; i < transforms.Length; i++)
+            //{
+            //    int n = i;
+            //    if (transform == transforms[i]) { continue; }
+
+            //    transforms[n].transform.SetParent(null);
+            //    var rd = transforms[n].gameObject.GetComponent<Rigidbody>();
+            //    rd = rd != null ? rd : transforms[n].gameObject.AddComponent<Rigidbody>();
+            //    if (rd != null)
+            //    {
+            //        rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
+            //        Observable.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(5.0f, 6.0f))).Subscribe(_ =>
+            //        {
+            //            if (rd != null)
+            //            {
+            //                Destroy(rd.gameObject);
+            //            }
+            //        });
+            //    }
+            //}
         }
 
         protected override void Update()
@@ -221,6 +229,84 @@ namespace Enemy
             {
                 m_stateMachine.Update();
             }
+
+            if (m_agent)
+            {
+                m_agent.nextPosition = transform.position;
+            }
+        }
+
+        public virtual void Move(Vector3 position, bool run = false)
+        {
+            if (m_agent.isStopped == true)
+                m_agent.isStopped = false;
+
+            m_agent.SetDestination(position);
+
+            if (m_agent.remainingDistance > m_agent.stoppingDistance)
+            {
+                var velocity = m_agent.desiredVelocity;
+                if (!run)
+                    velocity *= 0.5f;
+                m_character.Move(velocity, false, false);
+            }
+            else
+            {
+                m_character.Move(new Vector3(0, 0, 0), false, false);                
+            }
+        }
+
+        public virtual void LookRotate(Vector3 position)
+        {
+            position.y = transform.position.y;
+            transform.LookAt(position);
+        }
+
+        public virtual void Rotate(Vector3 position)
+        {     
+            Vector3 vec = (position - transform.position).normalized;
+            vec.y = 0;
+            Vector3 fowerd = transform.forward;
+            fowerd.y = 0;
+            float angle = Vector3.Angle(vec, fowerd);
+
+            if (angle > 10)
+            {
+                float direction = Mathf.Atan2(fowerd.z, fowerd.x) * Mathf.Rad2Deg;
+                float targetDirection = Mathf.Atan2(vec.z, vec.x) * Mathf.Rad2Deg;
+                float deltaAngle = Mathf.DeltaAngle(direction, targetDirection);
+                if (deltaAngle > 0)
+                {
+                    m_character.Move(transform.right * -1, false, false);
+                }
+                else if (deltaAngle < 0)
+                {
+                    m_character.Move(transform.right, false, false);
+                }
+            }
+            else
+            {
+                m_character.Move(new Vector3(0, 0, 0), false, false);
+            }
+        }
+
+        public virtual void Stop()
+        {
+            m_agent.isStopped = true;
+
+            var t = Observable.Timer(TimeSpan.FromSeconds(1));
+            Observable.EveryUpdate().Where(x => m_agent.isStopped).TakeUntil(t).Subscribe(_ => 
+            {
+                m_agent.SetDestination(transform.position);
+                m_agent.nextPosition = transform.position;
+
+                m_character.Move(new Vector3(0, 0, 0), false, false);
+            }).AddTo(this);
+        }
+
+        public virtual bool IsArrival()
+        {
+            return m_agent.remainingDistance <= m_agent.stoppingDistance;
         }
 
         // メイン視界にターゲットがいるかどうか
@@ -251,6 +337,11 @@ namespace Enemy
             return Search(m_viewPoint, Target, m_enemyStatus.attackDis, m_enemyStatus.attackAng, Penetration);
         }
 
+        public virtual bool IsAttackSearch(float distance)
+        {
+            return Search(m_viewPoint, m_target, m_enemyStatus.attackDis + distance, m_enemyStatus.attackAng, false);
+        }
+
         public virtual bool IsAttackSearch(bool Penetration = false)
         {
             return Search(m_viewPoint, m_target, m_enemyStatus.attackDis, m_enemyStatus.attackAng, Penetration);
@@ -269,10 +360,7 @@ namespace Enemy
         {
             if(my == null) { return false; }
 
-            bool run = false;
-
             Vector3 targetPos = target.position + m_enemyStatus.viewOffset;
-            targetPos.y += 0.5f;
 
             // 対象までのベクトル
             var vec = targetPos - my.position;
@@ -289,23 +377,23 @@ namespace Enemy
                 // 指定した角度以内
                 if (ang <= angle)
                 {
-                    if(!Penetration)
-                        run = true;
+                    if (Penetration)
+                        return true;
 
                     // Rayがtrueの場合対象方向にRayを飛ばす
-                    if(Physics.Raycast(my.position, vec.normalized, out m_raycastHit, distance) && Penetration)
+                    if(Physics.Raycast(my.position, vec.normalized, out m_raycastHit, distance) && !Penetration)
                     {
-                        Debug.DrawRay(my.position, vec.normalized * distance, Color.blue);
+                        Debug.DrawLine(my.position, m_raycastHit.point, Color.blue);
                         // Rayが当たった対象がtargetならtrue
-                        if(m_raycastHit.transform.gameObject.tag == target.gameObject.tag)
+                        if (m_raycastHit.transform.gameObject.tag == target.gameObject.tag)
                         {
-                            run = true;
+                            return true;
                         }
                     }
                 }
             }
 
-            return run;
+            return false;
         }
 
         public float GetSqrDistance()
@@ -340,14 +428,15 @@ namespace Enemy
                 rd = rd ? rd : list[j].gameObject.AddComponent<Rigidbody>();
 
                 rd.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                rd.drag = 5f;
                 rd.ObserveEveryValueChanged(x => x.IsSleeping()).Where(x => x).Take(1).Subscribe(_ =>
                 {
+                    rd.isKinematic = true;
                     var cols = rd.transform.GetComponentsInChildren<Collider>();
                     for (int i = 0; i < cols.Length; i++)
                     {
                         cols[i].isTrigger = true;
                     }
-                    rd.isKinematic = true;
                 });
 
             }
