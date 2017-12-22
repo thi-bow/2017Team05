@@ -11,8 +11,7 @@ namespace Enemy
     public enum boss_State
     {
         none,
-        battle,
-        dead
+        battle
     }
 
     public class Enemy_Boss_State : EnemyBase<Enemy_Boss_State, boss_State>, IEnemy
@@ -25,7 +24,6 @@ namespace Enemy
         {
             m_stateList.Add(new StateNone(this));
             m_stateList.Add(new StateBattle(this));
-            m_stateList.Add(new StateDead(this));
 
             m_stateMachine = new StateMachine<Enemy_Boss_State>();
 
@@ -79,8 +77,11 @@ namespace Enemy
         public override void Dead()
         {
             m_battle.ChangeType(Enemy_Boss_battle.BattleType.none);
-            base.Dead();
-            ChangeState(boss_State.dead);
+            // base.Dead();
+            // ボス死亡アニメーションを流す
+
+            EnemyMgr.i.BossDead();
+            Destroy(this);
         }
 
         public Transform[] LootPosition
@@ -123,22 +124,6 @@ namespace Enemy
             {
             }
         }
-
-
-        public class StateDead : State<Enemy_Boss_State>
-        {
-            public StateDead(Enemy_Boss_State dev) : base(dev) { }
-
-            public override void OnEnter()
-            {
-                EnemyMgr.i.BossDead();
-            }
-
-            public override void OnExecute()
-            {
-            }
-        }
-
         #endregion
 
         private void OnDrawGizmosSelected()
