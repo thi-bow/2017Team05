@@ -11,7 +11,17 @@ public class Weapon : MonoBehaviour {
         NULL
     }
 
+    public enum Weapon_State
+    {
+        Gun,
+        Laser,
+        Shot,
+        NULL
+    }
+
     public Attack_State state;
+
+    public Weapon_State state_W;
 
     private GameObject nowWeapon;
 
@@ -51,12 +61,18 @@ public class Weapon : MonoBehaviour {
     // スクリーン中央取得用
     private Vector3 center;
 
+    // 着弾エフェクト
     public GameObject _hitEffe = null;
+    // ビームエフェクト
+    public GameObject _beamEffe = null;
+    GameObject beamClone;
 
     // 射撃時間
     private float ShotTime;
 
     int mask = 1 << 8 | 1 << 10;
+
+    private Vector3 effPos;
 
     // Use this for initialization
     void Start () {
@@ -74,10 +90,14 @@ public class Weapon : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //if (Input.GetKeyDown(KeyCode.C))
-        //{
-        //    _WeaponChange.Change();
-        //}
+        Reload();
+        if (beamClone != null)
+        {
+            beamClone.transform.position += tpsCamera.transform.forward  * distance * (Time.deltaTime * 3.0f);
+            //beamClone.transform.position += effPos * distance * (Time.deltaTime * 3.0f);
+
+            Destroy(beamClone, 0.3f);
+        }
     }
 
     public void Reload()
@@ -93,7 +113,7 @@ public class Weapon : MonoBehaviour {
             // リロード完了までの時間処理
             if (reloadTime > reloadFinishTime)
             {
-                Debug.Log("リロード");
+
                 bullets = maxBullets;
                 reloadTime = 0;
                 isReload = false;
@@ -104,7 +124,7 @@ public class Weapon : MonoBehaviour {
     // 射撃
     public void Shooting(Camera tpsCamera)
     {
-        Reload();
+
         if (tpsCamera != null)
         {
             this.tpsCamera = tpsCamera;
@@ -112,7 +132,7 @@ public class Weapon : MonoBehaviour {
         if (bullets >= 0)
         {
             ShotTime += Time.deltaTime;
-            if (ShotTime >= 60.0f / minuteShot)
+            if (ShotTime > 60.0f / minuteShot)
             {
                 SoundManger.Instance.PlaySE(0);
                 StartCoroutine(ShootingInterval());
@@ -138,30 +158,76 @@ public class Weapon : MonoBehaviour {
     {
         yield return new WaitForSeconds(shotspeed);
         bullets--;
-        Vector3 shotPos = tpsCamera.ScreenToWorldPoint(center);
-        Ray ray;
-
-        ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
-
-        //GameObject b = Instantiate(bullet, transform.position, Quaternion.identity);
-        //b.transform.position = tpsCamera.transform.forward * 10;
-
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, distance,mask))
+        if (state_W == Weapon_State.Gun)
         {
-            if (hit.collider.gameObject.GetComponent<BoneCollide>() != null && hit.collider.tag != "Player")
+
+            beamClone = GameObject.Instantiate(_beamEffe, this.transform.position, this.transform.rotation);
+
+            Vector3 shotPos = tpsCamera.ScreenToWorldPoint(center);
+            Ray ray;
+
+            ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
+            //Debug.DrawRay(ray.origin, ray.direction * distance,Color.blue,2.0f);
+
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, distance, mask))
             {
-                hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Attack_State.shooting);
+                if (hit.collider.gameObject.GetComponent<BoneCollide>() != null && hit.collider.tag != "Player")
+                {
+                    hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Attack_State.shooting);
+                }
+                if (_hitEffe != null && hit.collider.tag != "Player")
+                {
+                    var hibana = Instantiate(_hitEffe);
+                    hibana.transform.position = hit.point;
+                    Destroy(hibana, 0.5f);
+                }
+                effPos = hit.transform.position;
 
             }
-            if (_hitEffe != null && hit.collider.tag != "Player")
+            else
             {
-                var hibana = Instantiate(_hitEffe);
-                hibana.transform.position = hit.point;
-                Destroy(hibana, 0.5f);
+                effPos = tpsCamera.transform.forward;
             }
+            ShotTime = 0;
+
         }
-        ShotTime = 0;
+        if (state_W == Weapon_State.Shot)
+        {
+
+            Vector3[] vectores = new Vector3[6];
+
+            Vector3 shotPos = tpsCamera.ScreenToWorldPoint(center);
+
+
+            for (int i = 0; i < vectores.Length; i++)
+            {
+
+
+                Ray ray;
+                ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
+
+                vectores[i] = new Vector3(Random.Range(0.0f, 3.0f), Random.Range(-3.0f, 3.0f), Random.Range(0.0f, 3.0f));
+
+                Debug.DrawRay(ray.origin, ray.direction * 3.0f, Color.red, 2.0f);
+
+                Debug.DrawRay(ray.origin, (ray.direction * 10 + vectores[i]) * 3.0f, Color.red, 2.0f);
+
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit, 10, mask))
+                {
+                    Debug.Log(hit.collider.name);
+
+                    if (hit.collider.gameObject.GetComponent<BoneCollide>() != null && hit.collider.tag != "Player")
+                    {
+                        hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Attack_State.shooting);
+                    }
+                }
+
+            }
+            ShotTime = 0;
+        }
     }
 
     IEnumerator ShootingInterval(Ray shotRay)
@@ -205,31 +271,12 @@ public class Weapon : MonoBehaviour {
     // 現在のカメラ
     public void CameraCheck()
     {
-        /*if (fpsCamera.activeInHierarchy)
-        {
-            transform.parent = homing.transform;
 
-        }
-        if (tpsCamera.activeInHierarchy)
-        {
-            transform.parent = player.transform;
-            //reticle.SetActive(false);
-        }*/
     }
 
     // 攻撃力の取得
     public int GetAtk
     {
         get { return atk; }
-    }
-
-    public void CameraMove(Vector3 move)
-    {
-        tpsCamera.transform.position += move;
-    }
-
-    public void StateChange(Attack_State state)
-    {
-
     }
 }
