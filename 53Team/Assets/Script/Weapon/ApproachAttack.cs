@@ -61,7 +61,8 @@ public class ApproachAttack : MonoBehaviour {
             
             Vector3 crePos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
 
-            if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, distance))
+            int mask = 1 << 8;
+            if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, distance, mask))
             {
                 if (hit.collider.gameObject.tag != this.gameObject.tag)
                 {

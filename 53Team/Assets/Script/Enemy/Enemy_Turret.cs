@@ -96,7 +96,7 @@ namespace Enemy {
                     return;
                 }
 
-                _base.m_turret.Aim(_base.m_target.localPosition, _base.m_enemyStatus.rotateSpd);
+                _base.m_turret.Aim(_base.m_target.localPosition, 30);
             }
 
             public override void OnExit()

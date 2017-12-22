@@ -189,32 +189,11 @@ public class Enemy_Boss_battle {
 
 
     // 移動ルートの設定
-    public List<RaycastHit> hits = new List<RaycastHit>();
-    public List<Vector3> poss = new List<Vector3>();
-    [Serializable]
-    public class hoge
-    {
-        public GameObject aa;
-        public LayerMask bb;
-
-        public hoge(GameObject aa, LayerMask bb)
-        {
-            this.aa = aa;
-            this.bb = bb;
-        }
-    }
-
-    public List<hoge> hitObjs = new List<hoge>();
-    private int n;
     public void SetRoot()
     {
 
         m_currentPos = m_base.transform.position;
 
-        poss = new List<Vector3>();
-        hits = new List<RaycastHit>();
-        hitObjs = new List<hoge>();
-        n = 5;
         SetTargetPostion();
 
         m_pos = pos;

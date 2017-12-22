@@ -37,6 +37,8 @@ public class EnemyPopPoint : MonoBehaviour {
 
         for (int i = 0; i < m_squadNum; i++)
         {
+            if (m_group.squads[i] == null) return;
+
             var e = m_group.squads[i].GetComponent<Enemy_Standard>();
             e.m_group = m_group.group;
         }
@@ -46,7 +48,7 @@ public class EnemyPopPoint : MonoBehaviour {
     public void PopEnemy()
     {
         var enemy = Instantiate(m_enemyPrefabs[Random.Range(0, m_enemyPrefabs.Length)], m_popPoint.position, m_popPoint.rotation, m_popParent);
-        enemy.GetComponent<Enemy.IEnemy>().LootPosition = m_Roots[Random.Range(0, m_Roots.Length)].points;
+        enemy.GetComponent<IEnemy>().LootPosition = m_Roots[Random.Range(0, m_Roots.Length)].points;
         enemy.GetComponent<Enemy_Standard>().m_group = m_group.group;
         m_group.squads.Add(enemy);
     }
