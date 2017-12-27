@@ -221,19 +221,24 @@ public class Player : CharaBase
     private void OnCollisionEnter(Collision collision)
     {
         //地面に触っていれば空中にいる判定は消す
-        if(collision.gameObject.tag == "Ground")
+        if (collision.gameObject.tag == "Ground")
         {
-            if(_playerMove.JumpFlg == true)
+            if (_playerMove.JumpFlg == true)
             {
                 _playerMove.JumpFlg = false;
                 this.GetComponent<Rigidbody>().useGravity = false;
                 this.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             }
-            if(_status == playerState.SKYMOVE)
+            if (_status == playerState.SKYMOVE)
             {
                 _status = playerState.MOVE;
                 _playerSkyMove.UseBoost = false;
             }
+        }
+        if (collision.gameObject.tag == "Fall")
+        {
+            Debug.Log("捕鯨");
+            Dead();
         }
     }
 
@@ -253,6 +258,11 @@ public class Player : CharaBase
                 _status = playerState.MOVE;
                 _playerSkyMove.UseBoost = false;
             }
+        }
+        if (other.tag == "Fall")
+        {
+            Debug.Log("ほげい");
+            Dead();
         }
     }
 

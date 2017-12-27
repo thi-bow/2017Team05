@@ -290,18 +290,25 @@ namespace Enemy
             }
         }
 
+        CompositeDisposable disp = new CompositeDisposable();
         public virtual void Stop()
         {
             m_agent.isStopped = true;
 
             var t = Observable.Timer(TimeSpan.FromSeconds(1));
-            Observable.EveryUpdate().Where(x => m_agent.isStopped).TakeUntil(t).Subscribe(_ => 
+            var s = m_agent.ObserveEveryValueChanged(x => x.isStopped).Where(x => !x);
+            this.UpdateAsObservable().TakeUntil(s).TakeUntil(t).Subscribe(_ => 
             {
                 m_agent.SetDestination(transform.position);
                 m_agent.nextPosition = transform.position;
 
                 m_character.Move(new Vector3(0, 0, 0), false, false);
-            }).AddTo(this);
+            }).AddTo(disp);
+        }
+
+        private void OnDisable()
+        {
+            disp.Dispose();
         }
 
         public virtual bool IsArrival()
