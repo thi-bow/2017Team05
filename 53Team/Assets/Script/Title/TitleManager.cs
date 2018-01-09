@@ -15,7 +15,7 @@ public class TitleManager : MonoBehaviour {
 	void Update () {
         if(Input.GetButtonDown("Jump"))
         {
-            SceneManagerScript.sceneManager.FadeOut("CheckScene");
+            SceneManagerScript.sceneManager.FadeOut("Game");
         }
 		
 	}

@@ -72,7 +72,7 @@ public class Weapon : MonoBehaviour {
 
     int mask = 1 << 8 | 1 << 10;
 
-    private Vector3 effPos;
+    public Vector3 effPos;
 
     // Use this for initialization
     void Start () {
@@ -93,8 +93,8 @@ public class Weapon : MonoBehaviour {
         Reload();
         if (beamClone != null)
         {
-            beamClone.transform.position += tpsCamera.transform.forward  * distance * (Time.deltaTime * 3.0f);
-            //beamClone.transform.position += effPos * distance * (Time.deltaTime * 3.0f);
+            //beamClone.transform.position += tpsCamera.transform.forward  * distance * (Time.deltaTime * 3.0f);
+            beamClone.transform.position += effPos * distance * (Time.deltaTime * 3.0f);
 
             Destroy(beamClone, 0.3f);
         }
@@ -160,8 +160,10 @@ public class Weapon : MonoBehaviour {
         bullets--;
         if (state_W == Weapon_State.Gun)
         {
-
-            beamClone = GameObject.Instantiate(_beamEffe, this.transform.position, this.transform.rotation);
+            if (_beamEffe != null)
+            {
+                beamClone = GameObject.Instantiate(_beamEffe, this.transform.position, this.transform.rotation);
+            }
 
             Vector3 shotPos = tpsCamera.ScreenToWorldPoint(center);
             Ray ray;
@@ -180,9 +182,11 @@ public class Weapon : MonoBehaviour {
                 {
                     var hibana = Instantiate(_hitEffe);
                     hibana.transform.position = hit.point;
+                    effPos = (hit.point - tpsCamera.transform.position).normalized;
+
                     Destroy(hibana, 0.5f);
                 }
-                effPos = hit.transform.position;
+
 
             }
             else

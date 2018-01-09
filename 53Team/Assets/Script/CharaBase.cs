@@ -341,7 +341,7 @@ public class CharaBase : MonoBehaviour
         {
             return;
         }
-        armor.GetComponent<BoxCollider>().enabled = false;
+        armor.GetComponent<Collider>().enabled = false;
         int _shootNumber = 0;
         switch (parts)
         {
@@ -352,7 +352,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._bodyHp += armor.ArmorHpPara;
                 _charaPara._bodyMaxHp += armor.ArmorHpPara;
                 _charaPara._bodyWeight += armor.ArmorWeightPara;
-                armor.gameObject.GetComponent<BoxCollider>().enabled = false;
+                armor.gameObject.GetComponent<Collider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
                 armor.gameObject.transform.SetParent(_partsLocation[0].transform);
                 armor.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
@@ -368,7 +368,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._rightArmHp += armor.ArmorHpPara;
                 _charaPara._rightArmMaxHp += armor.ArmorHpPara;
                 _charaPara._rightArmWeight += armor.ArmorWeightPara;
-                armor.gameObject.GetComponent<BoxCollider>().enabled = false;
+                armor.gameObject.GetComponent<Collider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
                 if (armor.GetComponent<Weapon>() != null)
                 {
@@ -400,7 +400,6 @@ public class CharaBase : MonoBehaviour
                 {
                     if (_charaPara._rightArm_AttackState != Weapon.Attack_State.shooting)
                     {
-                        print("右腕を遠距離攻撃に切り替えた");
                         //遠距離特殊武器のActiveをtrueにし、近距離攻撃のActiveをfalseにする
                         _specialWepon_Shot[0].SetActive(true);
                         _specialWepon_Approach[0].SetActive(false);
@@ -413,7 +412,6 @@ public class CharaBase : MonoBehaviour
                 {
                     if (_charaPara._rightArm_AttackState != Weapon.Attack_State.approach)
                     {
-                        print("右腕を近距離攻撃に切り替えた");
                         //近距離特殊武器のActiveをtrueにし、遠距離攻撃のActiveをfalseにする
                         _specialWepon_Shot[0].SetActive(false);
                         _specialWepon_Approach[0].SetActive(true);
@@ -425,7 +423,6 @@ public class CharaBase : MonoBehaviour
                 else if (_shootNumber == 0 && _charaPara._rightArm_AttackState != Weapon.Attack_State.NULL)
                 {
                     //特殊状態から切り替えるときは、武器のActiveがfalseになったいるためtrueにする
-                    print("右腕をガラクタがくっついている状態に切り替えた");
                     //近距離特殊武器と遠距離攻撃のActiveをfalseにする
                     _specialWepon_Shot[0].SetActive(false);
                     _specialWepon_Approach[0].SetActive(false);
@@ -444,7 +441,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._leftArmHp += armor.ArmorHpPara;
                 _charaPara._leftArmMaxHp += armor.ArmorHpPara;
                 _charaPara._leftArmWeight += armor.ArmorWeightPara;
-                armor.gameObject.GetComponent<BoxCollider>().enabled = false;
+                armor.gameObject.GetComponent<Collider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
                 if (armor.GetComponent<Weapon>() != null)
                 {
@@ -474,7 +471,6 @@ public class CharaBase : MonoBehaviour
                 }
                 if (_shootNumber >= _charaPara._leftArm_SwitchNumber && _charaPara._leftArm_AttackState != Weapon.Attack_State.shooting)
                 {
-                    print("左腕を遠距離攻撃に切り替えた");
                     //遠距離特殊武器のActiveをtrueにし、近距離攻撃のActiveをfalseにする
                     _specialWepon_Shot[1].SetActive(true);
                     _specialWepon_Approach[1].SetActive(false);
@@ -484,7 +480,6 @@ public class CharaBase : MonoBehaviour
                 }
                 else if (_shootNumber <= -_charaPara._leftArm_SwitchNumber && _charaPara._leftArm_AttackState != Weapon.Attack_State.approach)
                 {
-                    print("左腕を近距離攻撃に切り替えた");
                     //近距離特殊武器のActiveをtrueにし、遠距離攻撃のActiveをfalseにする
                     _specialWepon_Shot[1].SetActive(false);
                     _specialWepon_Approach[1].SetActive(true);
@@ -495,7 +490,6 @@ public class CharaBase : MonoBehaviour
                 else if (_shootNumber == 0 && _charaPara._leftArm_AttackState != Weapon.Attack_State.NULL)
                 {
                     //特殊状態から切り替えるときは、武器のActiveがfalseになったいるためtrueにする
-                    print("左腕をガラクタがくっついている状態に切り替えた");
                     //近距離特殊武器と遠距離攻撃のActiveをfalseにする
                     _specialWepon_Shot[1].SetActive(false);
                     _specialWepon_Approach[1].SetActive(false);
@@ -515,7 +509,7 @@ public class CharaBase : MonoBehaviour
                 _charaPara._legHp += armor.ArmorHpPara;
                 _charaPara._legMaxHp += armor.ArmorHpPara;
                 _charaPara._legWeight += armor.ArmorWeightPara;
-                armor.gameObject.GetComponent<BoxCollider>().enabled = false;
+                armor.gameObject.GetComponent<Collider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
                 if (armor.GetComponent<Weapon>() != null)
                 {
@@ -552,7 +546,6 @@ public class CharaBase : MonoBehaviour
                 }
                 if (_shootNumber >= _charaPara._leg_SwitchNumber && _charaPara._leg_AttackState != Weapon.Attack_State.shooting)
                 {
-                    print("脚を遠距離攻撃に切り替えた");
                     //遠距離特殊武器のActiveをtrueにし、近距離攻撃のActiveをfalseにする
                     _specialWepon_Shot[2].SetActive(true);
                     _specialWepon_Approach[2].SetActive(false);
@@ -565,7 +558,6 @@ public class CharaBase : MonoBehaviour
                 }
                 else if (_shootNumber <= -_charaPara._leg_SwitchNumber && _charaPara._leg_AttackState != Weapon.Attack_State.approach)
                 {
-                    print("脚を近距離攻撃に切り替えた");
                     //近距離特殊武器のActiveをtrueにし、遠距離攻撃のActiveをfalseにする
                     _specialWepon_Shot[2].SetActive(false);
                     _specialWepon_Approach[2].SetActive(true);
@@ -579,7 +571,6 @@ public class CharaBase : MonoBehaviour
                 }
                 else if (_shootNumber == 0 && _charaPara._leg_AttackState != Weapon.Attack_State.NULL)
                 {
-                    print("脚をガラクタがくっついている状態に切り替えた");
                     //近距離特殊武器と遠距離攻撃のActiveをfalseにする
                     _specialWepon_Shot[2].SetActive(false);
                     _specialWepon_Approach[2].SetActive(false);

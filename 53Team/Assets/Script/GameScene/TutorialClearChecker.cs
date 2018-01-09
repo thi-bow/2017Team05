@@ -7,6 +7,8 @@ public class TutorialClearChecker : MonoBehaviour {
     [SerializeField] private Player _player = null;
     [SerializeField] private GameObject _TutorialEnemy = null;
     [SerializeField] private GameObject _TutorialSecondEnemy = null;
+    [SerializeField] private GameObject _TutorialPargeEnemysParent = null;
+    [SerializeField] private GameObject[] _TutorialPargeEnemys = null;
     [SerializeField] private InputManager _inputManager = null;
     
     private int partsCount = 0;
@@ -17,10 +19,6 @@ public class TutorialClearChecker : MonoBehaviour {
     // Use this for initialization
     void Start () {
         _tutorialManager = this.GetComponent<TutorialManager>();
-        for (int i = 0; i < _player._allPartsList.Count; i++)
-        {
-            partsCount += _player.GetPartsList(_player._allPartsList[i]).Count;
-        }
     }
 	
 	// Update is called once per frame
@@ -33,6 +31,10 @@ public class TutorialClearChecker : MonoBehaviour {
     {
         if (_TutorialEnemy == null)
         {
+            for (int i = 0; i < _player._allPartsList.Count; i++)
+            {
+                partsCount += _player.GetPartsList(_player._allPartsList[i]).Count;
+            }
             return true;
         }
         return false;
@@ -69,6 +71,7 @@ public class TutorialClearChecker : MonoBehaviour {
         count = _player.GetPartsList(Player.Parts.Body).Count;
         if(count > bodyPartsCount)
         {
+            _TutorialPargeEnemysParent.SetActive(true);
             return true;
         }
         return false;
@@ -76,10 +79,22 @@ public class TutorialClearChecker : MonoBehaviour {
 
     public bool FullPargeCheck()
     {
-        if(!_player._fullParge && !fullParge)
+        int count = 0;
+        for (int i = 0; i < _player._allPartsList.Count; i++)
         {
-            fullParge = true;
-            return true;
+            count += _player.GetPartsList(_player._allPartsList[i]).Count;
+        }
+        if (count==0)
+        {
+            for(int i = 0; i < _TutorialPargeEnemys.Length; i++)
+            {
+                if(_TutorialPargeEnemys[i] == null)
+                {
+                    fullParge = true;
+                    _TutorialPargeEnemysParent.SetActive(false);
+                    return true;
+                }
+            }
         }
         
         return false;

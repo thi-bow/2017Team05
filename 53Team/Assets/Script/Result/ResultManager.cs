@@ -44,6 +44,10 @@ public class ResultManager : MonoBehaviour {
         {
             logoImage[0].SetActive(false);
             logoImage[1].SetActive(true);
+
+            _killCount.gameObject.SetActive(false);
+            _pargeKill.gameObject.SetActive(false);
+            _clearTime.gameObject.SetActive(false);
         }
 	}
 	
@@ -63,6 +67,7 @@ public class ResultManager : MonoBehaviour {
         string secondsText = "00";
         int minutesTime = 0;
         string minutuText = "0";
+        Debug.Log(time);
         if (time >= 60)
         {
             minutesTime = time / 60;
@@ -81,7 +86,6 @@ public class ResultManager : MonoBehaviour {
         }
 
         timeText = "ClearTime  " + minutuText + ":" + secondsText;
-
         return timeText;
     }
 }
