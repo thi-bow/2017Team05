@@ -18,7 +18,7 @@ public class TitleManager : MonoBehaviour {
         {
             _sceneMove = true;
             //選択音に変更する
-            SoundManger.Instance.PlaySE(1);
+            SoundManger.Instance.PlaySE(2);
             SceneManagerScript.sceneManager.FadeOut("Game");
         }
 		

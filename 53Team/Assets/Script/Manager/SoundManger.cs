@@ -85,6 +85,8 @@ public class SoundManger : MonoBehaviour {
         {
             VoiceSources[i] = gameObject.AddComponent<AudioSource>();
         }
+        if (_fadeInTime <= 0.0f) _fadeInTime = 1.0f;
+        if (_fadeOutTime <= 0.0f) _fadeOutTime = 1.0f;
     }
 
     void Update()
@@ -197,10 +199,11 @@ public class SoundManger : MonoBehaviour {
     //BGMの音の大きさを徐々に大きくする
     IEnumerator VolumeUP()
     {
-        while (volume.BGM <= 1.0f)
+        while (volume.BGM < 1.0f)
         {
             yield return new WaitForSeconds(0.1f);
             volume.BGM += _fadeInTime;
+            if (volume.BGM > 1.0f) volume.BGM = 1.0f;
         }
     }
 
