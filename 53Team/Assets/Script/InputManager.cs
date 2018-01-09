@@ -26,10 +26,16 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.anyKey == false && Input.GetAxis("Vertical") == 0.0f && Input.GetAxis("Horizontal") == 0.0f)
+        if(Input.GetAxis("Vertical") == 0.0f && Input.GetAxis("Horizontal") == 0.0f)
         {
-            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.idle01);
+            mAnimator.SetBool("walk",false);
         }
+        else
+        {
+            // 歩きアニメーション
+            mAnimator.SetBool("walk", true);
+        }
+        
 
         // 部分パージのInput    
         // 右パージ 

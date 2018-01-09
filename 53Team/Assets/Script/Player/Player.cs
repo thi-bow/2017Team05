@@ -114,36 +114,45 @@ public class Player : CharaBase
         //右腕の攻撃
         if (Input.GetAxis("ArmShot") > 0.5f )
         {
-            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.attack_weapon_R02);
             RightArmtShot();
+            mAnimator.SetBool("rightshot", true);
         }
         else if(Input.GetButtonDown("RightArmStrike"))
         {
-            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.attack_jab_R);
             int attack = _charaPara._rightAttack;
             if (_charaPara._rightArm_AttackState == Weapon.Attack_State.approach)
             {
                 attack *= 2;
             }
             this.GetComponent<ApproachAttack>().Approach(attack);
+            mAnimator.SetTrigger("rightpunch");
+        }
+        else
+        {
+            mAnimator.SetBool("rightshot", false);
         }
 
         //左腕の攻撃
         if (Input.GetAxis("ArmShot") < -0.5f)
         {
-            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.attack_weapon_L02);
             LeftArmShot();
+            mAnimator.SetBool("lefttshot", true);
         }
         else if (Input.GetButtonDown("LeftArmStrike"))
         {
-            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.attack_jab_L);
             int attack = _charaPara._leftAttack;
             if (_charaPara._leftArm_AttackState == Weapon.Attack_State.approach)
             {
                 attack *= 2;
             }
             this.GetComponent<ApproachAttack>().Approach(attack);
+            mAnimator.SetTrigger("leftpunch");
         }
+        else
+        {
+            mAnimator.SetBool("leftshot",false);
+        }
+
 
         //脚の攻撃
         if(Input.GetButton("LegAttack"))
@@ -171,13 +180,29 @@ public class Player : CharaBase
         }
 
         /*Playerアニメーション*/
-        else if (_status == playerState.SKYMOVE)
+        if (_status == playerState.SKYMOVE)
         {
-            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.boost_up);
+            mAnimator.SetBool("booster", true);
         }
-        else if (_status == playerState.SQUAT)
+        else
         {
-            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.crouch);
+            mAnimator.SetBool("booster",false);
+        }
+        if (_status == playerState.SQUAT)
+        {
+            mAnimator.SetBool("squat", true);
+        }
+        else
+        {
+            mAnimator.SetBool("squat", false);
+        }
+        if (_status == playerState.RUN)
+        {
+            mAnimator.SetBool("run", true);
+        }
+        else
+        {
+            mAnimator.SetBool("run", false);
         }
         base.Update();
     }
@@ -318,8 +343,8 @@ public class Player : CharaBase
         }
         if (!fullParge)
         {
-            BrowOffParge(par);
             attackPower = GetPartsList(par).Count * 100;
+            BrowOffParge(par);
             maxSize = 5.0f;
         }
         _pargeColl.GetComponent<PargeAttackCollider>().PargeStart(attackPower, maxSize);

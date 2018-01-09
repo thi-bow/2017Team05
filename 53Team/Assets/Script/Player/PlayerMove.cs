@@ -145,27 +145,25 @@ public class PlayerMove : MonoBehaviour
             if (_player.PlayerState == Player.playerState.RUN)
             {
                 RunMove();
-                // 走るアニメーション
-                mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.run);
             }
 
             else if (_player.PlayerState == Player.playerState.SQUAT ||
                     _player.PlayerState == Player.playerState.MOVE)
             {
                 WalkMove();
-                // 歩きアニメーション
-                mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.wark);
             }
         }
 
         //ジャンプ
         if (!_rollingFlag && Input.GetButtonDown("Jump"))
         {
-            mAnimator.SetInteger("AnimIdx", (int)ArmorWarriorDefine.Idx.jump);
             Jump(_move, _jumpPower);
             print("ジャンプ");
         }
-
+        else
+        {
+            mAnimator.SetBool("jump", false);
+        }
         check = _myRB.velocity;
 
     }
@@ -208,7 +206,6 @@ public class PlayerMove : MonoBehaviour
             else
             {
                 _move *= _moveSpeed;
-                
             }
         }
         //移動スピードが変更されている場合はここで変更を対応させる
@@ -263,6 +260,7 @@ public class PlayerMove : MonoBehaviour
             _myRB.useGravity = false;
             _playerSkyMove.boostVelocity = _myRB.velocity;
             _myRB.velocity = Vector3.zero;
+            mAnimator.SetBool("jump", false);
             return;
         }
         if(_slidingFlg)
@@ -277,6 +275,7 @@ public class PlayerMove : MonoBehaviour
 
             _jumpFlg = true;
         }
+        mAnimator.SetBool("jump",true);
     }
 
     public bool JumpFlg
