@@ -182,12 +182,10 @@ public class Weapon : MonoBehaviour {
                 {
                     var hibana = Instantiate(_hitEffe);
                     hibana.transform.position = hit.point;
-                    effPos = (hit.point - tpsCamera.transform.position).normalized;
 
                     Destroy(hibana, 0.5f);
                 }
-
-
+                effPos = (hit.point - tpsCamera.transform.position).normalized;
             }
             else
             {

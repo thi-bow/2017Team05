@@ -606,6 +606,9 @@ public class CharaBase : MonoBehaviour
         }
         _charaPara._totalWeight += armor.ArmorWeightPara;
         if (!_fullParge) _fullParge = true;
+
+        //装着音に変更
+        SoundManger.Instance.PlaySE(1);
     }
     #endregion
 
