@@ -74,15 +74,15 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             m_Jump = false;
         }
 
-        private void OnDrawGizmos()
-        {
-            Vector3 p1,p2;
+        //private void OnDrawGizmos()
+        //{
+        //    Vector3 p1,p2;
 
-            p1 = transform.position;
-            p2 = p1 + velocity;
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(p1, p2);
-            Gizmos.DrawSphere(p2, 0.3f);
-        }
+        //    p1 = transform.position;
+        //    p2 = p1 + velocity;
+        //    Gizmos.color = Color.green;
+        //    Gizmos.DrawLine(p1, p2);
+        //    Gizmos.DrawSphere(p2, 0.3f);
+        //}
     }
 }
