@@ -19,6 +19,10 @@ public class TutorialClearChecker : MonoBehaviour {
     // Use this for initialization
     void Start () {
         _tutorialManager = this.GetComponent<TutorialManager>();
+        for (int i = 0; i < _player._allPartsList.Count; i++)
+        {
+            partsCount += _player.GetPartsList(_player._allPartsList[i]).Count;
+        }
     }
 	
 	// Update is called once per frame
@@ -31,10 +35,6 @@ public class TutorialClearChecker : MonoBehaviour {
     {
         if (_TutorialEnemy == null)
         {
-            for (int i = 0; i < _player._allPartsList.Count; i++)
-            {
-                partsCount += _player.GetPartsList(_player._allPartsList[i]).Count;
-            }
             return true;
         }
         return false;
@@ -86,18 +86,27 @@ public class TutorialClearChecker : MonoBehaviour {
         }
         if (count==0)
         {
-            for(int i = 0; i < _TutorialPargeEnemys.Length; i++)
-            {
-                if(_TutorialPargeEnemys[i] == null)
-                {
-                    fullParge = true;
-                    _TutorialPargeEnemysParent.SetActive(false);
-                    return true;
-                }
-            }
+            //for(int i = 0; i < _TutorialPargeEnemys.Length; i++)
+            //{
+            //    if(_TutorialPargeEnemys[i] == null)
+            //    {
+            //        fullParge = true;
+            //        _TutorialPargeEnemysParent.SetActive(false);
+            //        return true;
+            //    }
+            //}
+            StartCoroutine(TutorialEnemysRemove());
+            return true;
         }
         
         return false;
+    }
+
+    IEnumerator TutorialEnemysRemove()
+    {
+        yield return new WaitForSeconds(1.5f);
+        fullParge = true;
+        _TutorialPargeEnemysParent.SetActive(false);
     }
 
     public bool PartsPargeCheck()

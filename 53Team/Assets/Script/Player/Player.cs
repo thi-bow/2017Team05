@@ -136,7 +136,7 @@ public class Player : CharaBase
         if (Input.GetAxis("ArmShot") < -0.5f)
         {
             LeftArmShot();
-            mAnimator.SetBool("lefttshot", true);
+            mAnimator.SetBool("leftshot", true);
         }
         else if (Input.GetButtonDown("LeftArmStrike"))
         {

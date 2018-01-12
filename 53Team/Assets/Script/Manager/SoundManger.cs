@@ -199,11 +199,11 @@ public class SoundManger : MonoBehaviour {
     //BGMの音の大きさを徐々に大きくする
     IEnumerator VolumeUP()
     {
-        while (volume.BGM < 1.0f)
+        while (volume.BGM < volume.maxVolumeBGM)
         {
             yield return new WaitForSeconds(0.1f);
             volume.BGM += _fadeInTime;
-            if (volume.BGM > 1.0f) volume.BGM = 1.0f;
+            if (volume.BGM > volume.maxVolumeBGM) volume.BGM = volume.maxVolumeBGM;
         }
     }
 
@@ -390,6 +390,13 @@ public class SoundManger : MonoBehaviour {
             source.clip = null;
         }
     }
+
+    //BGMの音量の変更
+    public void BGMVolumeChenge(float chengeVolume, float maxChengeVolume = 1.0f)
+    {
+        volume.BGM = chengeVolume;
+        volume.maxVolumeBGM = maxChengeVolume;
+    }
 }
 
 //音量クラス
@@ -400,6 +407,7 @@ public class SoundVolume
     public float Voice = 1.0f;
     public float SE = 1.0f;
     public bool Mute = false;
+    public float maxVolumeBGM = 1.0f;
 
     public void Init()
     {
