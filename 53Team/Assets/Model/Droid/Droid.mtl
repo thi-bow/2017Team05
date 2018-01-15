@@ -1,0 +1,600 @@
+newmtl Brushed_silver0
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver0.jpg
+newmtl Standard_120
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_120_1.jpg
+newmtl Pottery_clay0
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay0_2.jpg
+newmtl Brushed_silver1
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver1_3.jpg
+newmtl Standard_121
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_121_4.jpg
+newmtl Pottery_clay1
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay1_5.jpg
+newmtl Brushed_silver2
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver2_6.jpg
+newmtl Standard_122
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_122_7.jpg
+newmtl Pottery_clay2
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay2_8.jpg
+newmtl Brushed_silver3
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver3_9.jpg
+newmtl Standard_123
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_123_10.jpg
+newmtl Brushed_silver4
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver4_11.jpg
+newmtl Standard_124
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_124_12.jpg
+newmtl Brushed_silver5
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver5_13.jpg
+newmtl Standard_125
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_125_14.jpg
+newmtl Brushed_silver6
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver6_15.jpg
+newmtl Standard_126
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_126_16.jpg
+newmtl Pottery_clay3
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay3_17.jpg
+newmtl Brushed_silver7
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver7_18.jpg
+newmtl Standard_127
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_127_19.jpg
+newmtl Pottery_clay4
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay4_20.jpg
+newmtl Brushed_silver8
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver8_21.jpg
+newmtl Standard_128
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_128_22.jpg
+newmtl Pottery_clay5
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay5_23.jpg
+newmtl Brushed_silver9
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver9_24.jpg
+newmtl Standard_129
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_129_25.jpg
+newmtl Pottery_clay6
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay6_26.jpg
+newmtl Brushed_silver10
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver10_27.jpg
+newmtl Standard_1210
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1210_28.jpg
+newmtl Pottery_clay7
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay7_29.jpg
+newmtl Brushed_silver11
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver11_30.jpg
+newmtl Standard_1211
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1211_31.jpg
+newmtl Pottery_clay8
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay8_32.jpg
+newmtl Brushed_silver12
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver12_33.jpg
+newmtl Standard_1212
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1212_34.jpg
+newmtl Pottery_clay9
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay9_35.jpg
+newmtl Brushed_silver13
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver13_36.jpg
+newmtl Standard_1213
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1213_37.jpg
+newmtl Brushed_silver14
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver14_38.jpg
+newmtl Standard_1214
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1214_39.jpg
+newmtl Brushed_silver15
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver15_40.jpg
+newmtl Standard_1215
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1215_41.jpg
+newmtl Brushed_silver16
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver16_42.jpg
+newmtl Standard_1216
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1216_43.jpg
+newmtl Pottery_clay10
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay10_44.jpg
+newmtl Brushed_silver17
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver17_45.jpg
+newmtl Standard_1217
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1217_46.jpg
+newmtl Pottery_clay11
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay11_47.jpg
+newmtl Brushed_silver18
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver18_48.jpg
+newmtl Standard_1218
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1218_49.jpg
+newmtl Pottery_clay12
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay12_50.jpg
+newmtl Brushed_silver19
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver19_51.jpg
+newmtl Standard_1219
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1219_52.jpg
+newmtl Brushed_silver20
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver20_53.jpg
+newmtl Standard_1220
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1220_54.jpg
+newmtl Brushed_silver21
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver21_55.jpg
+newmtl Standard_1221
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1221_56.jpg
+newmtl Brushed_silver22
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver22_57.jpg
+newmtl Standard_1222
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1222_58.jpg
+newmtl Brushed_silver23
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver23_59.jpg
+newmtl Standard_1223
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1223_60.jpg
+newmtl Chrome0
+Ka 0 0 0
+Ns 114.434
+Ks 1 1 1
+Kd 0.681949 0.720702 0.73147
+map_Kd Chrome0_61.jpg
+newmtl Standard_1224
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1224_62.jpg
+newmtl Brushed_silver24
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver24_63.jpg
+newmtl initialShadingGr
+Ka 0 0 0
+Ns 8.16617
+Ks 0.772549 0.772549 0.772549
+Kd 0.00392157 0.00392157 0.00392157
+map_Kd initialShadingGr_64.jpg
+newmtl Standard_1225
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1225_65.jpg
+newmtl Chrome1
+Ka 0 0 0
+Ns 114.434
+Ks 1 1 1
+Kd 0.681949 0.720702 0.73147
+map_Kd Chrome1_66.jpg
+newmtl Standard_1226
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1226_67.jpg
+newmtl Brushed_silver25
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver25_68.jpg
+newmtl Brushed_gold0
+Ka 0 0 0
+Ns 6.04965
+Ks 1 0.717647 0.133333
+Kd 0.917647 0.666667 0
+map_Kd Brushed_gold0_69.jpg
+newmtl Standard_1227
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1227_70.jpg
+newmtl Brushed_silver26
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver26_71.jpg
+newmtl Standard_1228
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1228_72.jpg
+newmtl Standard_1229
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1229_73.jpg
+newmtl Brushed_silver27
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver27_74.jpg
+newmtl Standard_1230
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1230_75.jpg
+newmtl Chrome2
+Ka 0 0 0
+Ns 114.434
+Ks 1 1 1
+Kd 0.681949 0.720702 0.73147
+map_Kd Chrome2_76.jpg
+newmtl Brushed_silver28
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver28_77.jpg
+newmtl Standard_1231
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1231_78.jpg
+newmtl Standard_1232
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1232_79.jpg
+newmtl Brushed_silver29
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver29_80.jpg
+newmtl Standard_1233
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1233_81.jpg
+newmtl Brushed_silver30
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver30_82.jpg
+newmtl Standard_1234
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1234_83.jpg
+newmtl Pottery_clay13
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay13_84.jpg
+newmtl Brushed_silver31
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver31_85.jpg
+newmtl Brushed_silver32
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver32_86.jpg
+newmtl Standard_1235
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1235_87.jpg
+newmtl Brushed_silver33
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver33_88.jpg
+newmtl Standard_1236
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1236_89.jpg
+newmtl Brushed_silver34
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver34_90.jpg
+newmtl Standard_1237
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1237_91.jpg
+newmtl Brushed_silver35
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver35_92.jpg
+newmtl Standard_1238
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1238_93.jpg
+newmtl Brushed_silver36
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver36_94.jpg
+newmtl Brushed_silver37
+Ka 0 0 0
+Ns 3.32012
+Ks 1 0.788235 0.635294
+Kd 0.749005 0.749005 0.749005
+map_Kd Brushed_silver37_95.jpg
+newmtl Standard_1239
+Ka 0 0 0
+Ns 1.82212
+Ks 0.898039 0.898039 0.898039
+Kd 0.264304 0.271515 0.229509
+map_Kd Standard_1239_96.jpg
+newmtl Pottery_clay14
+Ka 0 0 0
+Ns 2.31637
+Ks 0.129412 0.129412 0.129412
+Kd 0.027451 0.027451 0.027451
+map_Kd Pottery_clay14_97.jpg
+newmtl Brushed_gold1
+Ka 0 0 0
+Ns 6.04965
+Ks 1 0.717647 0.133333
+Kd 0.917647 0.666667 0
+map_Kd Brushed_gold1_98.jpg
+newmtl BlackInodizedAlu
+Ka 0 0 0
+Ns 3.47873
+Ks 1 1 1
+Kd 0.198039 0.198039 0.198039
+map_Kd BlackInodizedAlu_99.jpg
