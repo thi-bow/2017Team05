@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 // 認識範囲の構造体
 [Serializable]
@@ -113,6 +115,7 @@ public class RecognitionModule : MonoBehaviour{
 }
 
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(RecognitionModule))]
 public class RecognitionModuleEx : Editor
 {
@@ -129,3 +132,4 @@ public class RecognitionModuleEx : Editor
         }
     }
 }
+#endif
