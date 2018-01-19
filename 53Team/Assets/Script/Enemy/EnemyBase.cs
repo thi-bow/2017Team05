@@ -110,36 +110,36 @@ namespace Enemy
                 });
             }
 
-            if (m_seachAreaDraw)
-            {
-                float startdeg = 0.0f;
-                float enddeg = 0.0f;
+            //if (m_seachAreaDraw)
+            //{
+            //    float startdeg = 0.0f;
+            //    float enddeg = 0.0f;
 
-                // 武器射程の描画
-                if(m_sectorAtk != null)
-                {
-                    startdeg = 90 - m_enemyStatus.attackAng;
-                    enddeg = 90 + m_enemyStatus.attackAng;
-                    m_sectorAtk.Show(m_enemyStatus.attackDis, startdeg, enddeg);
-                }
+            //    // 武器射程の描画
+            //    if(m_sectorAtk != null)
+            //    {
+            //        startdeg = 90 - m_enemyStatus.attackAng;
+            //        enddeg = 90 + m_enemyStatus.attackAng;
+            //        m_sectorAtk.Show(m_enemyStatus.attackDis, startdeg, enddeg);
+            //    }
 
-                // メイン視界の描画
-                if (m_sectorMain != null)
-                {
-                    startdeg = 90 - m_enemyStatus.seachMainAng;
-                    enddeg = 90 + m_enemyStatus.seachMainAng;
-                    m_sectorMain.Show(m_enemyStatus.seachMainDis, startdeg, enddeg);
-                }
+            //    // メイン視界の描画
+            //    if (m_sectorMain != null)
+            //    {
+            //        startdeg = 90 - m_enemyStatus.seachMainAng;
+            //        enddeg = 90 + m_enemyStatus.seachMainAng;
+            //        m_sectorMain.Show(m_enemyStatus.seachMainDis, startdeg, enddeg);
+            //    }
 
-                // サブ視界の描画
-                if (m_sectorSub != null)
-                {
-                    startdeg = 90 - m_enemyStatus.seachSubAng;
-                    enddeg = 90 + m_enemyStatus.seachSubAng;
-                    m_sectorSub.Show(m_enemyStatus.seachSubDis, startdeg, enddeg);
-                }
+            //    // サブ視界の描画
+            //    if (m_sectorSub != null)
+            //    {
+            //        startdeg = 90 - m_enemyStatus.seachSubAng;
+            //        enddeg = 90 + m_enemyStatus.seachSubAng;
+            //        m_sectorSub.Show(m_enemyStatus.seachSubDis, startdeg, enddeg);
+            //    }
 
-            }
+            //}
 
             if(m_viewPoint == null)
             {
