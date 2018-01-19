@@ -51,28 +51,28 @@ namespace Enemy
             base.Damage(attackPower);
         }
 
-        public override void OnParge(Parts aParts)
-        {
-            base.OnParge(aParts);
+        //public override void OnParge(Parts aParts)
+        //{
+        //    base.OnParge(aParts);
 
-            var list = GetPartsList(aParts);
-            for (int i = 0; i < list.Count; i++)
-            {
-                var list2 = list[i].gameObject.GetComponentsInChildren<weaponFire>();
-                for (int k = 0; k < list2.Length; k++)
-                {
-                    Destroy(list2[k]);
-                }
-            }
+        //    var list = GetPartsList(aParts);
+        //    for (int i = 0; i < list.Count; i++)
+        //    {
+        //        var list2 = list[i].gameObject.GetComponentsInChildren<weaponFire>();
+        //        for (int k = 0; k < list2.Length; k++)
+        //        {
+        //            Destroy(list2[k]);
+        //        }
+        //    }
 
-            var r_list = aParts != Parts.RightArm ? GetPartsList(Parts.RightArm) : new List<Armor>();
-            var l_list = aParts != Parts.LeftArm ? GetPartsList(Parts.LeftArm) : new List<Armor>();
-            if(r_list.Count == 0 && l_list.Count == 0)
-            {
-                Destroy(m_armorUnits);
-                m_battle.ExMode();
-            }
-        }
+        //    var r_list = aParts != Parts.RightArm ? GetPartsList(Parts.RightArm) : new List<Armor>();
+        //    var l_list = aParts != Parts.LeftArm ? GetPartsList(Parts.LeftArm) : new List<Armor>();
+        //    if(r_list.Count == 0 && l_list.Count == 0)
+        //    {
+        //        Destroy(m_armorUnits);
+        //        m_battle.ExMode();
+        //    }
+        //}
 
         public override void Dead()
         {
@@ -126,24 +126,24 @@ namespace Enemy
         }
         #endregion
 
-        private void OnDrawGizmosSelected()
-        {
-            //if (m_battle.m_currentPos.x != 0)
-            //{
-            //    Vector3 p1, p2, p3;
-            //    float n1, n2;
-            //    p1 = m_battle.m_currentPos;
-            //    p2 = m_battle.m_pos;
-            //    p3 = m_target.position;
-            //    n1 = m_battle.m_dis;
-            //    n2 = m_battle.m_radius;
+        //private void OnDrawGizmosSelected()
+        //{
+        //    if (m_battle.m_currentPos.x != 0)
+        //    {
+        //        Vector3 p1, p2, p3;
+        //        float n1, n2;
+        //        p1 = m_battle.m_currentPos;
+        //        p2 = m_battle.m_pos;
+        //        p3 = m_target.position;
+        //        n1 = m_battle.m_dis;
+        //        n2 = m_battle.m_radius;
 
-            //    Gizmos.color = Color.blue;
-            //    Gizmos.DrawLine(p1, p2);
-            //    Gizmos.DrawWireSphere(p2, n2);
-            //    Gizmos.DrawWireCube(p3, new Vector3(n1, 6, n1));
-            //}
+        //        Gizmos.color = Color.blue;
+        //        Gizmos.DrawLine(p1, p2);
+        //        Gizmos.DrawWireSphere(p2, n2);
+        //        Gizmos.DrawWireCube(p3, new Vector3(n1, 6, n1));
+        //    }
 
-        }
+        //}
     }
 }

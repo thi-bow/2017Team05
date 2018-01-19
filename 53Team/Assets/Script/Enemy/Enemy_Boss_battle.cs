@@ -16,8 +16,8 @@ public class Enemy_Boss_battle {
     private Enemy_Boss_State m_base;
     public float m_dis;
     public float m_radius;
-    public Vector3 m_currentPos;
-    public Vector3 m_pos;
+    private Vector3 m_currentPos;
+    private Vector3 m_pos;
     private int m_currentPNum;
     private int m_moveNum;
     private float m_moveTime;

@@ -37,7 +37,7 @@ namespace Enemy
 
     // Enemyの基底クラス
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(CharacterMovement))]
+    //[RequireComponent(typeof(CharacterMovement))]
     public class EnemyBase<T, TEnum> : CharaBase
         where T : class where TEnum : IConvertible
     {
