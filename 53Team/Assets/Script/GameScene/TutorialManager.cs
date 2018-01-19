@@ -15,6 +15,10 @@ public class TutorialManager : MonoBehaviour
         TakeWepon,
         End,
     }
+
+    [SerializeField] private GameObject _guideObje = null;
+    [SerializeField] private bool _tutorialStart = true;
+
     public TutorialState _tutorialState = TutorialState.AttackTutorial;
     public static bool tutorialMove = false;    //Tutorialで動作を確認中はtrueになる
     [SerializeField] private Player _player = null;
@@ -23,6 +27,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject _tutorialUI = null;
     private TutorialTextManager _tutorialTextManager = null;
     private TutorialClearChecker _tutorialClearChecker = null;
+    public static bool _purgeOff = true;
 
     private bool attackCheck = false;
     private bool partsAddCheck = false;
@@ -37,17 +42,21 @@ public class TutorialManager : MonoBehaviour
 
     // Use this for initialization
     void Start () {
-
-        //_player.enabled = false;
-        //_playerMove.enabled = false;
-        //_playerSkyMove.enabled = false;
-        _tutorialTextManager = this.GetComponent<TutorialTextManager>();
-        _tutorialClearChecker = this.GetComponent<TutorialClearChecker>();
-        StartCoroutine(_tutorialTextManager.TextWrite((int)_tutorialState));
+        _purgeOff = true;
+        StartCoroutine(MoveGuideON());
     }
 	
 	// Update is called once per frame
 	void Update () {
+        if(!_tutorialStart)
+        {
+            if(Input.anyKeyDown)
+            {
+                MoveGuideOff();
+                return;
+            }
+        }
+
         if (!tutorialMove) return;
         switch (_tutorialState)
         {
@@ -75,6 +84,7 @@ public class TutorialManager : MonoBehaviour
                     secondAttackCheck = true;
                     tutorialMove = false;   //テキストを表示している間は、Tutorialのクリア判定を取らないようにする
                     _tutorialState = TutorialState.BodyPartsAddTutorial;
+                    _purgeOff = false;
                     StartCoroutine(_tutorialTextManager.TextWrite((int)TutorialState.SecondAttackTutorial + 1));
                 }
                 break;
@@ -102,6 +112,24 @@ public class TutorialManager : MonoBehaviour
                 break;
         }
 
+    }
+
+    IEnumerator MoveGuideON()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _guideObje.SetActive(true);
+        SceneManagerScript.sceneManager.TimeStop();
+        _tutorialStart = false;
+    }
+
+    void MoveGuideOff()
+    {
+        SceneManagerScript.sceneManager.TimeStart();
+        _tutorialStart = true;
+        _guideObje.SetActive(false);
+        _tutorialTextManager = this.GetComponent<TutorialTextManager>();
+        _tutorialClearChecker = this.GetComponent<TutorialClearChecker>();
+        StartCoroutine(_tutorialTextManager.TextWrite((int)_tutorialState));
     }
 
     public void TutorialEnd()

@@ -39,7 +39,7 @@ public class InputManager : MonoBehaviour
 
         // 部分パージのInput    
         // 右パージ 
-        if (Input.GetAxisRaw("crossX") > 0)
+        if (Input.GetAxisRaw("crossX") > 0 && !TutorialManager._purgeOff)
         {
             _pushTime += Time.deltaTime;
             if (_longPush == true && _partsPurge._rightArmParge == true)
@@ -73,7 +73,7 @@ public class InputManager : MonoBehaviour
             }
         }
         // 左パージ
-        if (Input.GetAxisRaw("crossX") < 0)
+        if (Input.GetAxisRaw("crossX") < 0 && !TutorialManager._purgeOff)
         {
 
             _pushTime += Time.deltaTime;
@@ -104,7 +104,7 @@ public class InputManager : MonoBehaviour
             }
         }
         // 足パージ
-        if (Input.GetAxisRaw("crossY") < 0)
+        if (Input.GetAxisRaw("crossY") < 0 && !TutorialManager._purgeOff)
         {
             _pushTime += Time.deltaTime;
             if (_longPush == true && _partsPurge._legParge == true)
@@ -134,7 +134,7 @@ public class InputManager : MonoBehaviour
             }
         }
         // フルパージボタン
-        if (Input.GetAxisRaw("crossY") > 0)
+        if (Input.GetAxisRaw("crossY") > 0 && !TutorialManager._purgeOff)
         {
            _pushTime += Time.deltaTime;
             Debug.Log(_longPush);
