@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using Enemy;
 
 public class EnemyPopPoint : MonoBehaviour {
@@ -109,6 +111,7 @@ public class EnemyPopPoint : MonoBehaviour {
 }
 
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(EnemyPopPoint))]
 public class EnemyPopPointEx : Editor
 {
@@ -125,3 +128,4 @@ public class EnemyPopPointEx : Editor
         }
     }
 }
+#endif

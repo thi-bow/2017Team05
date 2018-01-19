@@ -48,6 +48,7 @@ public class InputManager : MonoBehaviour
 
                 if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
                 {
+
                     _partsPurge._specialWepon_Shot[0].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
                     {
                          _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
@@ -56,6 +57,7 @@ public class InputManager : MonoBehaviour
                 }
                 else if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.approach)
                 {
+
                     _partsPurge._specialWepon_Approach[0].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);

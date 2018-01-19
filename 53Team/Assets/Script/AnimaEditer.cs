@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
+#if UNITY_EDITOR
 public class AnimaEditer : EditorWindow
 {
     [MenuItem("Kuu/Animation/Init Animator Transition")]
@@ -100,3 +103,4 @@ public class AnimaEditer : EditorWindow
     }
 
 }
+#endif

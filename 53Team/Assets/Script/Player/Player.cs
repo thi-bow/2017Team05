@@ -43,6 +43,7 @@ public class Player : CharaBase
 
     private GameObject _inputManager;
     private bool _longPushButton;
+    private bool _isAttack;
 
     private Animator mAnimator;
 
@@ -114,6 +115,7 @@ public class Player : CharaBase
         //右腕の攻撃
         if (Input.GetAxis("ArmShot") > 0.5f )
         {
+            _isAttack = true;
             RightArmtShot();
             mAnimator.SetBool("rightshot", true);
         }
@@ -124,6 +126,7 @@ public class Player : CharaBase
             {
                 attack *= 2;
             }
+            _isAttack = true;
             this.GetComponent<ApproachAttack>().Approach(attack);
             mAnimator.SetTrigger("rightpunch");
         }
@@ -135,6 +138,7 @@ public class Player : CharaBase
         //左腕の攻撃
         if (Input.GetAxis("ArmShot") < -0.5f)
         {
+            _isAttack = true;
             LeftArmShot();
             mAnimator.SetBool("leftshot", true);
         }
@@ -145,6 +149,7 @@ public class Player : CharaBase
             {
                 attack *= 2;
             }
+            _isAttack = true;
             this.GetComponent<ApproachAttack>().Approach(attack);
             mAnimator.SetTrigger("leftpunch");
         }
@@ -157,6 +162,7 @@ public class Player : CharaBase
         //脚の攻撃
         if(Input.GetButton("LegAttack"))
         {
+            _isAttack = true;
             LegShot();
         }
 
@@ -226,6 +232,16 @@ public class Player : CharaBase
             {
                 _playerSkyMove.BoostGage += 1.0f;
             }
+        }
+
+        if (_isAttack)
+        {
+            var angle = _playerMove.transform.rotation;
+            var vec = Quaternion.LookRotation(_mainCamera.transform.forward);
+            vec.x = angle.x;
+            vec.z = angle.z;
+            _playerMove.transform.rotation = vec;
+            _isAttack = false;
         }
     }
 
