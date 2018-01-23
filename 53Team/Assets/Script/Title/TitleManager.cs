@@ -14,7 +14,7 @@ public class TitleManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(!_sceneMove && Input.GetButtonDown("Jump"))
+        if(!_sceneMove && Input.anyKeyDown)
         {
             _sceneMove = true;
             //選択音に変更する

@@ -54,7 +54,7 @@ public class ResultManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.anyKeyDown)
         {
             SceneManagerScript.sceneManager.FadeOut(SceneName.sceneName.Title.ToString());
         }
@@ -67,7 +67,6 @@ public class ResultManager : MonoBehaviour {
         string secondsText = "00";
         int minutesTime = 0;
         string minutuText = "0";
-        Debug.Log(time);
         if (time >= 60)
         {
             minutesTime = time / 60;
