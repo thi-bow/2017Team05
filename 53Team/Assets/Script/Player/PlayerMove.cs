@@ -164,6 +164,10 @@ public class PlayerMove : MonoBehaviour
             Jump(_move, _jumpPower);
             print("ジャンプ");
         }
+        else
+        {
+            mAnimator.SetBool("jump",false);
+        }
 
         check = _myRB.velocity;
 
@@ -261,7 +265,6 @@ public class PlayerMove : MonoBehaviour
             _myRB.useGravity = false;
             _playerSkyMove.boostVelocity = _myRB.velocity;
             _myRB.velocity = Vector3.zero;
-            mAnimator.SetBool("jump", false);
             return;
         }
         if(_slidingFlg)
