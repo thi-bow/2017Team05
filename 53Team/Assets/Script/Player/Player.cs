@@ -112,6 +112,17 @@ public class Player : CharaBase
         // コントローラー長押しフラグの取得
         _longPushButton = _inputManager.GetComponent<InputManager>()._longPush;
 
+
+        if (_playerMove.JumpFlg == true)
+        {
+            mAnimator.SetBool("ground", true);
+        }
+        else
+        {
+            mAnimator.SetBool("ground", false);
+        }
+
+
         //右腕の攻撃
         if (Input.GetAxis("ArmShot") > 0.5f )
         {
@@ -315,18 +326,24 @@ public class Player : CharaBase
             // 右手装備
             if (Input.GetAxis("crossX") > 0 && _longPushButton == false)
             {
+                // 装備SE
+                SoundManger.Instance.PlaySE(0);
                 PartsAdd(Parts.RightArm, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.RightArm, _partsHP[(int)Parts.RightArm], _partsMaxHP[(int)Parts.RightArm]);
             }
             // 左手装備
             if (Input.GetAxis("crossX") < 0 && _longPushButton == false)
             {
+                // 装備SE
+                SoundManger.Instance.PlaySE(0);
                 PartsAdd(Parts.LeftArm, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.LeftArm, _partsHP[(int)Parts.LeftArm], _partsMaxHP[(int)Parts.LeftArm]);
             }
             // 足装備
             if (Input.GetAxis("crossY") < 0 && _longPushButton == false)
             {
+                // 装備SE
+                SoundManger.Instance.PlaySE(0);
                 PartsAdd(Parts.Leg, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.Leg, _partsHP[(int)Parts.Leg], _partsMaxHP[(int)Parts.Leg]);
             }
@@ -350,6 +367,8 @@ public class Player : CharaBase
         _pargeColl.gameObject.SetActive(true);
         if (fullParge)
         {
+            // フルパージSE
+            SoundManger.Instance.PlaySE(0);
             for (int i = 0; i < _allPartsList.Count; i++)
             {
                 attackPower += GetPartsList(_allPartsList[i]).Count * 100;

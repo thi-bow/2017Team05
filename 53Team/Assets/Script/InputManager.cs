@@ -25,18 +25,7 @@ public class InputManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        if(Input.GetAxis("Vertical") == 0.0f && Input.GetAxis("Horizontal") == 0.0f)
-        {
-            mAnimator.SetBool("walk",false);
-        }
-        else
-        {
-            // 歩きアニメーション
-            mAnimator.SetBool("walk", true);
-        }
-        
-
+    {  
         // 部分パージのInput    
         // 右パージ 
         if (Input.GetAxisRaw("crossX") > 0 && !TutorialManager._purgeOff)
@@ -145,6 +134,29 @@ public class InputManager : MonoBehaviour
         {
             _pushTime = 0;
             _longPush = false;
+            mAnimator.SetBool("walk", false);
+        }
+
+        // 歩きアニメーションとSE
+        if (Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
+        {
+            mAnimator.SetBool("walk", false);
+        }
+        else
+        {
+            // 歩きアニメーション
+            mAnimator.SetBool("walk", true);
+        }
+
+        if (mAnimator.GetBool("walk") == true && mAnimator.GetBool("run") == false && mAnimator.GetBool("ground") == false)
+        {
+            // 歩きSE
+            SoundManger.Instance.PlaySE(0);
+        }
+        if (mAnimator.GetBool("run") == true && mAnimator.GetBool("ground") == false)
+        {
+            // 走りSE
+            SoundManger.Instance.PlaySE(0);
         }
         // 長押しフラグの切り替え
         if (_pushTime >= 0.3f)
