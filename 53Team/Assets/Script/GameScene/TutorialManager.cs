@@ -43,6 +43,9 @@ public class TutorialManager : MonoBehaviour
     // Use this for initialization
     void Start () {
         _purgeOff = true;
+        _player.enabled = false;
+        _playerMove.enabled = false;
+        _playerSkyMove.enabled = false;
         StartCoroutine(MoveGuideON());
     }
 	
@@ -130,6 +133,15 @@ public class TutorialManager : MonoBehaviour
         _tutorialTextManager = this.GetComponent<TutorialTextManager>();
         _tutorialClearChecker = this.GetComponent<TutorialClearChecker>();
         StartCoroutine(_tutorialTextManager.TextWrite((int)_tutorialState));
+        StartCoroutine(PlayerOn());
+    }
+    
+    IEnumerator PlayerOn()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _playerMove.enabled = true;
+        _playerSkyMove.enabled = true;
+        _player.enabled = true;
     }
 
     public void TutorialEnd()

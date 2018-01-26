@@ -13,6 +13,8 @@ public class GameController : MonoBehaviour
     public static bool _pause = false;
     [SerializeField] private GameObject _pauseUI = null;
     [SerializeField] private Button _reStartButton = null;
+    private bool guideActive = false;
+    [SerializeField] private GameObject _guideImage = null;
 
     public EnemyMgr m_enemyMgr;
 
@@ -50,6 +52,12 @@ public class GameController : MonoBehaviour
         {
             GamePause();
         }
+
+        if(guideActive && Input.anyKeyDown)
+        {
+            guideActive = false;
+            _guideImage.SetActive(false);
+        }
     }
 
     private IEnumerator Clear()
@@ -72,5 +80,11 @@ public class GameController : MonoBehaviour
             SceneManagerScript.sceneManager.FadeWhite();
             _pause = false;
         }
+    }
+
+    public void GudeActiveChenge()
+    {
+        guideActive = true;
+        _guideImage.SetActive(true);
     }
 }

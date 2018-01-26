@@ -15,9 +15,4 @@ public class UIFlashing : MonoBehaviour {
             .setLoopPingPong();
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
