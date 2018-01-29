@@ -259,6 +259,7 @@ public class PlayerMove : MonoBehaviour
         }*/
         if (_jumpFlg == true && _playerSkyMove.BoostGage > 0)
         {
+            SoundManger.Instance.PlaySE(20);
             _player.PlayerState = Player.playerState.SKYMOVE;
             _jumpFlg = false;
             _playerSkyMove.UseBoost = true;
@@ -276,11 +277,11 @@ public class PlayerMove : MonoBehaviour
         {
             _myRB.velocity = new Vector3(moveSpeed.x * 60, jumpPower, moveSpeed.z * 60);
             _myRB.useGravity = true;
-            // ジャンプSE
-            SoundManger.Instance.PlaySE(0);
             _jumpFlg = true;
         }
         mAnimator.SetBool("jump",true);
+        // ジャンプSE
+        SoundManger.Instance.PlaySE(0);
     }
 
     public bool JumpFlg

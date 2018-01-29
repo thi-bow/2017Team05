@@ -98,6 +98,8 @@ public class Player : CharaBase
             {
                 if (x.GetComponent<Armor>().GetParts == Parts.Body || x.GetComponent<Armor>().GetParts == Parts.Booster)
                 {
+                    // 装着SE
+                    SoundManger.Instance.PlaySE(10);
                     PartsAdd(x.GetComponent<Armor>().GetParts, x.GetComponent<Armor>());
                     _playerUIManager.ArmorHP((int)x.GetComponent<Armor>().GetParts, _partsHP[(int)x.GetComponent<Armor>().GetParts], _partsMaxHP[(int)x.GetComponent<Armor>().GetParts]);
                 }
@@ -124,7 +126,7 @@ public class Player : CharaBase
 
 
         //右腕の攻撃
-        if (Input.GetAxis("ArmShot") > 0.5f )
+        if (Input.GetAxis("ArmShot") > 0.5f)
         {
             _isAttack = true;
             RightArmtShot();
@@ -140,6 +142,7 @@ public class Player : CharaBase
             _isAttack = true;
             this.GetComponent<ApproachAttack>().Approach(attack);
             mAnimator.SetTrigger("rightpunch");
+
         }
         else
         {
@@ -173,8 +176,21 @@ public class Player : CharaBase
         //脚の攻撃
         if(Input.GetButton("LegAttack"))
         {
+            if (_charaPara._leg_AttackState == Weapon.Attack_State.shooting)
+            {
+                mAnimator.SetBool("legshoot",true);
+            }
+            else if (_charaPara._leg_AttackState == Weapon.Attack_State.approach)
+            {
+                mAnimator.SetBool("legapproach", true);
+            }
             _isAttack = true;
             LegShot();
+        }
+        else
+        {
+            mAnimator.SetBool("legshoot", false);
+            mAnimator.SetBool("legapproach", false);
         }
 
         // フルパージボタン
@@ -327,7 +343,7 @@ public class Player : CharaBase
             if (Input.GetAxis("crossX") > 0 && _longPushButton == false)
             {
                 // 装備SE
-                SoundManger.Instance.PlaySE(0);
+                SoundManger.Instance.PlaySE(10);
                 PartsAdd(Parts.RightArm, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.RightArm, _partsHP[(int)Parts.RightArm], _partsMaxHP[(int)Parts.RightArm]);
             }
@@ -335,15 +351,15 @@ public class Player : CharaBase
             if (Input.GetAxis("crossX") < 0 && _longPushButton == false)
             {
                 // 装備SE
-                SoundManger.Instance.PlaySE(0);
+                SoundManger.Instance.PlaySE(10);
                 PartsAdd(Parts.LeftArm, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.LeftArm, _partsHP[(int)Parts.LeftArm], _partsMaxHP[(int)Parts.LeftArm]);
             }
             // 足装備
             if (Input.GetAxis("crossY") < 0 && _longPushButton == false)
             {
-                // 装備SE
-                SoundManger.Instance.PlaySE(0);
+                // 装備SE          
+                SoundManger.Instance.PlaySE(10);
                 PartsAdd(Parts.Leg, other.GetComponent<Armor>());
                 _playerUIManager.ArmorHP((int)Parts.Leg, _partsHP[(int)Parts.Leg], _partsMaxHP[(int)Parts.Leg]);
             }
@@ -358,6 +374,8 @@ public class Player : CharaBase
         action();
         //
         BrowOffParge(parts);
+        // パージSE
+        SoundManger.Instance.PlaySE(0);
     }
 
     public void PargeAttackCollide(bool fullParge = true, Parts par = Parts.Body)
@@ -388,6 +406,8 @@ public class Player : CharaBase
 
     void DeadAction()
     {
+        // 死亡アニメーション
+        mAnimator.SetBool("dead",true);
         ResultManager.IsClear = false;
         SceneManagerScript.sceneManager.SceneOut(SceneName.sceneName.Result.ToString());
     }
