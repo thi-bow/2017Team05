@@ -27,12 +27,15 @@ namespace Enemy
 
         public float m_time = 2.0f;
         public Transform[] m_lootPosition;
-        public Vector3 m_lastPosition { get; set; }
+        [HideInInspector]
+        public Vector3 m_lastPosition;
+        public ParticleSystem m_ExplosionParticles;
+        public ParticleSystem m_SmokeEffect;
 
         [Space(10)]
         public bool m_isTutorial = false;
 
-        private Enemy_Standard_battle_behavior m_tree;
+        private Enemy_Turret m_turret;
 
         private readonly Vector3 m_vectorZero = new Vector3(0, 0, 0);
 
@@ -46,7 +49,9 @@ namespace Enemy
 
             m_stateMachine = new StateMachine<Enemy_Standard>();
 
-            m_tree = new Enemy_Standard_battle_behavior(this);
+            m_turret = GetComponent<Enemy_Turret>();
+            m_turret.SetOffset(m_enemyStatus.viewOffset);
+            m_enemyStatus.attackDis = m_turret.m_range;
 
             base.Start();
         }
@@ -72,11 +77,26 @@ namespace Enemy
 
         public override void Dead()
         {
-            Debug.Log("死んだぁ！！");
+            // Debug.Log("死んだぁ！！");
+            m_animator.Dead();
+            m_ExplosionParticles.Play();
+            m_SmokeEffect.gameObject.SetActive(true);
+            m_SmokeEffect.Play();
+
             ChangeState(standard_State.dead);
             EnemyMgr.i.OnDeadEnemy(m_group);
             base.Dead();
             // Destroy(gameObject);
+        }
+
+        public Transform GetLootPos(int n)
+        {
+            Transform t = transform;
+            if(m_lootPosition.Length > 0)
+            {
+                t = m_lootPosition[n];
+            }
+            return t;
         }
 
         public Transform[] LootPosition
@@ -111,7 +131,7 @@ namespace Enemy
 
                 // 最初の徘徊ポジションの決定
                 // 現在のポジションから一番近いポジションをスタートにする
-                distance = Vector3.SqrMagnitude(_base.m_lootPosition[0].position - _base.transform.position);
+                distance = Vector3.SqrMagnitude(_base.GetLootPos(0).position - _base.transform.position);
                 float adis;
                 for (int i = 1; i < _base.m_lootPosition.Length; i++)
                 {
@@ -142,7 +162,7 @@ namespace Enemy
                 // ルート徘徊
                 if (_base.IsArrival())
                     currentRootNum = (currentRootNum + 1) % _base.m_lootPosition.Length;
-                _base.Move(_base.m_lootPosition[currentRootNum].position, false);
+                _base.Move(_base.GetLootPos(currentRootNum).position, false);
                 //if (_base.m_agent.remainingDistance < _base.m_agent.stoppingDistance && _base.m_agent.hasPath)
                 //{
                 //    currentRootNum = (currentRootNum + 1) % _base.m_lootPosition.Length;
@@ -174,7 +194,8 @@ namespace Enemy
                 // ターゲットの最終発見ポイントがあればそこまで移動
                 if (_base.m_lastPosition != _base.m_vectorZero)
                 {
-                    _base.Move(_base.m_lastPosition, true);
+                    _base.m_turret.Aim(_base.m_lastPosition);
+                    _base.Move(_base.m_lastPosition, false);
                     if (_base.IsArrival())
                     {
                         Observable.Timer(System.TimeSpan.FromSeconds(3f))
@@ -227,11 +248,11 @@ namespace Enemy
 
                 if(_base.IsAttackSearch(-_base.m_enemyStatus.attackDis / 5f))
                 {
-                    _base.Stop();
                     _base.ChangeState(standard_State.attack);
                     return;
                 }
 
+                _base.m_turret.Aim(_base.m_target);
                 _base.Move(_base.m_target.position, true);
                 // _base.Rotate(_base.m_target.position);
             }
@@ -259,11 +280,13 @@ namespace Enemy
                     return;
                 }
 
-                _base.LookRotate(_base.m_target.position);
-
                 if (_base.m_isTutorial) return;
 
-                _base.m_tree.UpdateBattleState();
+                _base.m_turret.Aim(_base.m_target);
+                if (!_base.m_turret.IsOutRange)
+                {
+                    _base.m_turret.Fire();
+                }
             }
 
             public override void OnExit()

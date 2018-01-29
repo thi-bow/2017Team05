@@ -32,12 +32,11 @@ namespace Enemy
         public float seachSubDis;       // サブ索敵距離
         public float seachSubAng;       // サブ索敵範囲(角度)
 
-        public readonly Vector3 viewOffset = new Vector3(0, 1, 0);
+        public Vector3 viewOffset = new Vector3(0, 1, 0);
     }
 
     // Enemyの基底クラス
     [RequireComponent(typeof(NavMeshAgent))]
-    //[RequireComponent(typeof(CharacterMovement))]
     public class EnemyBase<T, TEnum> : CharaBase
         where T : class where TEnum : IConvertible
     {
@@ -66,12 +65,20 @@ namespace Enemy
         [Header("ドロップ率")]
         public float m_probability = 50.0f;
 
+        [Header("死骸の残る時間")]
+        public float m_zonbiLifeTime = 10f;
+
+        private Vector3 m_velocity;
+        private bool m_is_run;
+
+        private readonly Vector3 vector3zero = new Vector3(0, 0, 0);
+
         // RaycastHit
         protected RaycastHit m_raycastHit;
 
         // NavMeshAgent
         protected NavMeshAgent m_agent;
-        protected CharacterMovement m_character;
+        protected Enemy_Movement m_animator;
 
         // 状態を格納する配列
         protected List<State<T>> m_stateList = new List<State<T>>();
@@ -83,7 +90,7 @@ namespace Enemy
         {
             base.Start();
             m_agent = GetComponent<NavMeshAgent>();
-            m_character = GetComponent<CharacterMovement>();
+            m_animator = GetComponent<Enemy_Movement>();
 
             m_agent.updateRotation = false;
             m_agent.updatePosition = false;
@@ -148,7 +155,9 @@ namespace Enemy
 
             if (!m_target)
             {
-                m_target = GameObject.FindGameObjectWithTag("Player").transform;
+                var obj = GameObject.FindGameObjectWithTag("Player");
+                m_target = obj != null ? obj.transform : null;
+
             }
 
             if (m_PlayAwake)
@@ -197,30 +206,7 @@ namespace Enemy
             // Animetorに死亡アニメーションを流す処理
 
             Destroy(this);
-            Destroy(gameObject, 3f);
-            //var transforms = GetComponentsInChildren<Transform>();
-            //Vector3 pos = transform.position + transform.forward * 2;
-
-            //for (int i = 0; i < transforms.Length; i++)
-            //{
-            //    int n = i;
-            //    if (transform == transforms[i]) { continue; }
-
-            //    transforms[n].transform.SetParent(null);
-            //    var rd = transforms[n].gameObject.GetComponent<Rigidbody>();
-            //    rd = rd != null ? rd : transforms[n].gameObject.AddComponent<Rigidbody>();
-            //    if (rd != null)
-            //    {
-            //        rd.AddExplosionForce(10.0f, pos, 30.0f, 10.0f, ForceMode.Impulse);
-            //        Observable.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(5.0f, 6.0f))).Subscribe(_ =>
-            //        {
-            //            if (rd != null)
-            //            {
-            //                Destroy(rd.gameObject);
-            //            }
-            //        });
-            //    }
-            //}
+            Destroy(gameObject, m_zonbiLifeTime);
         }
 
         protected override void Update()
@@ -234,81 +220,25 @@ namespace Enemy
             {
                 m_agent.nextPosition = transform.position;
             }
+
+            m_animator.Move(m_velocity, m_is_run);
+            m_velocity = vector3zero;
+            m_is_run = false;
         }
 
         public virtual void Move(Vector3 position, bool run = false)
         {
-            if (m_agent.isStopped == true)
-                m_agent.isStopped = false;
-
             m_agent.SetDestination(position);
 
             if (m_agent.remainingDistance > m_agent.stoppingDistance)
             {
-                var velocity = m_agent.desiredVelocity;
-                if (!run)
-                    velocity *= 0.5f;
-                m_character.Move(velocity, false, false);
+                m_velocity = m_agent.desiredVelocity;
+                m_is_run = run;
             }
             else
             {
-                m_character.Move(new Vector3(0, 0, 0), false, false);                
+                m_velocity = vector3zero;
             }
-        }
-
-        public virtual void LookRotate(Vector3 position)
-        {
-            position.y = transform.position.y;
-            transform.LookAt(position);
-        }
-
-        public virtual void Rotate(Vector3 position)
-        {     
-            Vector3 vec = (position - transform.position).normalized;
-            vec.y = 0;
-            Vector3 fowerd = transform.forward;
-            fowerd.y = 0;
-            float angle = Vector3.Angle(vec, fowerd);
-
-            if (angle > 10)
-            {
-                float direction = Mathf.Atan2(fowerd.z, fowerd.x) * Mathf.Rad2Deg;
-                float targetDirection = Mathf.Atan2(vec.z, vec.x) * Mathf.Rad2Deg;
-                float deltaAngle = Mathf.DeltaAngle(direction, targetDirection);
-                if (deltaAngle > 0)
-                {
-                    m_character.Move(transform.right * -1, false, false);
-                }
-                else if (deltaAngle < 0)
-                {
-                    m_character.Move(transform.right, false, false);
-                }
-            }
-            else
-            {
-                m_character.Move(new Vector3(0, 0, 0), false, false);
-            }
-        }
-
-        CompositeDisposable disp = new CompositeDisposable();
-        public virtual void Stop()
-        {
-            m_agent.isStopped = true;
-
-            var t = Observable.Timer(TimeSpan.FromSeconds(1));
-            var s = m_agent.ObserveEveryValueChanged(x => x.isStopped).Where(x => !x);
-            this.UpdateAsObservable().TakeUntil(s).TakeUntil(t).Subscribe(_ => 
-            {
-                m_agent.SetDestination(transform.position);
-                m_agent.nextPosition = transform.position;
-
-                m_character.Move(new Vector3(0, 0, 0), false, false);
-            }).AddTo(disp);
-        }
-
-        private void OnDisable()
-        {
-            disp.Dispose();
         }
 
         public virtual bool IsArrival()
@@ -465,23 +395,6 @@ namespace Enemy
             }
 
             return list;
-        }
-
-        // 周りを見渡す動作をする
-        public virtual void SearchAction(Transform aTransform = null, Action aEndAction = null)
-        {
-            if(aTransform == null)
-            {
-                aTransform = transform;
-            }
-
-            // 目標角度
-            // Vector3 targetVec1, targetVec2;
-            // targetVec1 = transform.forward
-
-            // Sequence sequence = DOTween.Sequence();
-
-            //sequence.Append(aTransform.DORotate())
         }
     }
 }

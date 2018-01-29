@@ -14,18 +14,20 @@ public class weaponFire : MonoBehaviour {
 	public AudioClip soundFire;   
 	// Use this for initialization
  
-	public virtual void  fire() //shot
+	public virtual GameObject  fire() //shot
 	{
-		var gameOb = (Transform) Instantiate(Shell,  Gun_End.transform.position,Gun_End.transform.rotation); 
+		var gameOb = Instantiate(Shell,  Gun_End.transform.position,Gun_End.transform.rotation); 
 		Vector3 dir = new Vector3(Random.Range(-randomDir, randomDir), Random.Range(-randomDir, randomDir), Random.Range(-randomDir,randomDir)) ;
 		dir+=Gun_End.up*shellSpeed;
-		gameOb.GetComponent<Rigidbody>().AddForce( dir);
+		gameOb.GetComponent<Rigidbody>().AddForce(dir);
 
 		if(m_smokeBarrel) m_smokeBarrel.Play();
 		if (m_AudioSource) {
 			m_AudioSource.clip =  soundFire;
 			m_AudioSource.Play ();
 		}
+
+        return gameOb.gameObject;
 	}
 
 }
