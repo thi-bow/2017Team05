@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enemy;
 
 public class TutorialClearChecker : MonoBehaviour {
     private TutorialManager _tutorialManager = null;
     [SerializeField] private Player _player = null;
-    [SerializeField] private GameObject _TutorialEnemy = null;
-    [SerializeField] private GameObject _TutorialSecondEnemy = null;
+    [SerializeField] private Enemy_Standard _TutorialEnemy = null;
+    [SerializeField] private Enemy_Standard _TutorialSecondEnemy = null;
     [SerializeField] private GameObject _TutorialPargeEnemysParent = null;
     [SerializeField] private GameObject[] _TutorialPargeEnemys = null;
     [SerializeField] private InputManager _inputManager = null;
@@ -50,7 +51,7 @@ public class TutorialClearChecker : MonoBehaviour {
 
         if(count > partsCount)
         {
-            _TutorialSecondEnemy.SetActive(true);
+            _TutorialSecondEnemy.gameObject.SetActive(true);
             return true;
         }
         return false;

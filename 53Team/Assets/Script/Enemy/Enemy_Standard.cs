@@ -161,7 +161,12 @@ namespace Enemy
 
                 // ルート徘徊
                 if (_base.IsArrival())
-                    currentRootNum = (currentRootNum + 1) % _base.m_lootPosition.Length;
+                {
+                    if (_base.m_lootPosition.Length > 0)
+                        currentRootNum = (currentRootNum + 1) % _base.m_lootPosition.Length;
+                    else
+                        currentRootNum = 0;
+                }
                 _base.Move(_base.GetLootPos(currentRootNum).position, false);
                 //if (_base.m_agent.remainingDistance < _base.m_agent.stoppingDistance && _base.m_agent.hasPath)
                 //{
@@ -283,10 +288,10 @@ namespace Enemy
                 if (_base.m_isTutorial) return;
 
                 _base.m_turret.Aim(_base.m_target);
-                if (!_base.m_turret.IsOutRange)
-                {
-                    _base.m_turret.Fire();
-                }
+                _base.m_turret.Fire();
+                //if (!_base.m_turret.IsOutRange)
+                //{
+                //}
             }
 
             public override void OnExit()

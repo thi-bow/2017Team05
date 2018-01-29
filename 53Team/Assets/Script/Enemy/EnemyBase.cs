@@ -70,6 +70,7 @@ namespace Enemy
 
         private Vector3 m_velocity;
         private bool m_is_run;
+        private bool m_is_dead;
 
         private readonly Vector3 vector3zero = new Vector3(0, 0, 0);
 
@@ -155,7 +156,7 @@ namespace Enemy
 
             if (!m_target)
             {
-                var obj = GameObject.FindGameObjectWithTag("Player");
+                var obj = GameObject.Find("PlayerParent");
                 m_target = obj != null ? obj.transform : null;
 
             }
@@ -200,6 +201,10 @@ namespace Enemy
 
         public override void Dead()
         {
+            if (m_is_dead) return;
+
+
+            m_is_dead = true;
             var list = GetLotteryWeapon();
             DropWeapon(list);
 
@@ -211,6 +216,8 @@ namespace Enemy
 
         protected override void Update()
         {
+            if (m_is_dead) return;
+
             if (m_stateMachine != null)
             {
                 m_stateMachine.Update();
@@ -221,9 +228,12 @@ namespace Enemy
                 m_agent.nextPosition = transform.position;
             }
 
-            m_animator.Move(m_velocity, m_is_run);
-            m_velocity = vector3zero;
-            m_is_run = false;
+            if (m_animator)
+            {
+                m_animator.Move(m_velocity, m_is_run);
+                m_velocity = vector3zero;
+                m_is_run = false;
+            }
         }
 
         public virtual void Move(Vector3 position, bool run = false)
@@ -318,9 +328,11 @@ namespace Enemy
                         return true;
 
                     // Rayがtrueの場合対象方向にRayを飛ばす
-                    if(Physics.Raycast(my.position, vec.normalized, out m_raycastHit, distance) && !Penetration)
+                    LayerMask mask = 1 << 9;
+                    if(Physics.Raycast(my.position, vec.normalized, out m_raycastHit, distance, mask) && !Penetration)
                     {
-                        Debug.DrawLine(my.position, m_raycastHit.point, Color.blue);
+                        //Debug.DrawLine(my.position, m_raycastHit.point, Color.blue);
+                        //Debug.Log("hitObj = " + m_raycastHit.transform.gameObject.name + " : tag = " + m_raycastHit.transform.gameObject.tag);
                         // Rayが当たった対象がtargetならtrue
                         if (m_raycastHit.transform.gameObject.tag == target.gameObject.tag)
                         {

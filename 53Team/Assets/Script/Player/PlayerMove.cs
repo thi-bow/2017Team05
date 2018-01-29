@@ -59,14 +59,18 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private LayerMask mask;
 
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         _parent = _player.gameObject;
         _myRB = _parent.GetComponent<Rigidbody>();
         _playerSkyMove = this.gameObject.GetComponent<PlayerSkyMove>();
         _mainCamera = _player._mainCamera;
         mAnimator = GetComponent<Animator>();
+    }
+
+    // Use this for initialization
+    void Start()
+    {
     }
     
     public void Move()
@@ -162,8 +166,9 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            mAnimator.SetBool("jump", false);
+            mAnimator.SetBool("jump",false);
         }
+
         check = _myRB.velocity;
 
     }
@@ -247,7 +252,7 @@ public class PlayerMove : MonoBehaviour
     #region ジャンプ
     public void Jump(Vector3 moveSpeed, float jumpPower)
     {
-        /*//ブースターを所持したいなかったら、ジャンプ中は何もできない
+        /*//ブースターを所持していなかったら、ジャンプ中は何もできない
         if(_jumpFlg == true && _player.BoosterArmorList.Count <= 0)
         {
             return;
@@ -260,7 +265,6 @@ public class PlayerMove : MonoBehaviour
             _myRB.useGravity = false;
             _playerSkyMove.boostVelocity = _myRB.velocity;
             _myRB.velocity = Vector3.zero;
-            mAnimator.SetBool("jump", false);
             return;
         }
         if(_slidingFlg)
@@ -272,7 +276,8 @@ public class PlayerMove : MonoBehaviour
         {
             _myRB.velocity = new Vector3(moveSpeed.x * 60, jumpPower, moveSpeed.z * 60);
             _myRB.useGravity = true;
-
+            // ジャンプSE
+            SoundManger.Instance.PlaySE(0);
             _jumpFlg = true;
         }
         mAnimator.SetBool("jump",true);
@@ -317,6 +322,7 @@ public class PlayerMove : MonoBehaviour
         if (!endrun)
         {
             Squat(true);
+            
         }
         else
         {

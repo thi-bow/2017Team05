@@ -147,7 +147,7 @@ public class Enemy_Boss_battle {
         {
             if (IsWeaponType(m_weapons[i].type))
             {
-                if (m_nextFire[i] == 0 && !IsNull(m_weapons[i].weapon))
+                if (m_nextFire[i] <= 0 && !IsNull(m_weapons[i].weapon))
                 {
                     m_nextFire[i] = m_weapons[i].cool_time;
                     m_weapons[i].weapon.fire();
@@ -160,9 +160,9 @@ public class Enemy_Boss_battle {
     {
         for (int i = 0; i < m_weapons.Length; i++)
         {
-            if(m_nextFire[i] > 0)
+            if (m_nextFire[i] > 0)
             {
-                m_nextFire[i] = Mathf.Max(0, m_nextFire[i] - 0.01f);
+                m_nextFire[i] -= Time.deltaTime;
             }
         }
     }

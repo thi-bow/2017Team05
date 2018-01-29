@@ -16,7 +16,7 @@ public class Shell : MonoBehaviour {
 		if(m_ExplosionAudio)m_ExplosionAudio.Play();
 		GetComponent<Rigidbody> ().velocity =Vector3.zero;
 		GetComponent<Collider> ().enabled = false;
-		GetComponent<Renderer> ().enabled = false;
+		GetComponentInChildren<Renderer> ().enabled = false;
 	 	Destroy (gameObject, 2);	 
 
  

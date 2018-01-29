@@ -6,6 +6,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class GameController : MonoBehaviour
     public static bool _pause = false;
     [SerializeField] private GameObject _pauseUI = null;
     [SerializeField] private Button _reStartButton = null;
+    [SerializeField] private Button _guideButton = null;
+    [SerializeField] private Button _guideActiveFalseButton = null;
+    private bool guideActive = false;
+    [SerializeField] private GameObject _guideImage = null;
 
     public EnemyMgr m_enemyMgr;
 
@@ -50,6 +55,13 @@ public class GameController : MonoBehaviour
         {
             GamePause();
         }
+
+        //if(guideActive && Input.anyKeyDown)
+        //{
+        //    Debug.Log("ほふぇい");
+        //    guideActive = false;
+        //    _guideImage.SetActive(false);
+        //}
     }
 
     private IEnumerator Clear()
@@ -70,7 +82,24 @@ public class GameController : MonoBehaviour
         {
             _pauseUI.SetActive(false);
             SceneManagerScript.sceneManager.FadeWhite();
+            EventSystem.current.SetSelectedGameObject(null);
             _pause = false;
+        }
+    }
+
+    public void GudeActiveChenge()
+    {
+        guideActive = !guideActive;
+        _guideImage.SetActive(guideActive);
+
+        if (guideActive)
+        {
+            _guideActiveFalseButton.Select();
+            _guideActiveFalseButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            _guideButton.Select();
         }
     }
 }

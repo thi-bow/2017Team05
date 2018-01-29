@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour
     [System.NonSerialized] public  bool _longPush = false;
     [SerializeField] PlayerStatusCheck _playerUIManager;
 
+    private float _soundSpan = 0.55f;
 
     // Use this for initialization
     void Start()
@@ -26,17 +27,7 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetAxis("Vertical") == 0.0f && Input.GetAxis("Horizontal") == 0.0f)
-        {
-            mAnimator.SetBool("walk",false);
-        }
-        else
-        {
-            // 歩きアニメーション
-            mAnimator.SetBool("walk", true);
-        }
-        
-
+        _soundSpan -= Time.deltaTime;
         // 部分パージのInput    
         // 右パージ 
         if (Input.GetAxisRaw("crossX") > 0 && !TutorialManager._purgeOff)
@@ -106,7 +97,6 @@ public class InputManager : MonoBehaviour
         // 足パージ
         if (Input.GetAxisRaw("crossY") < 0 && !TutorialManager._purgeOff)
         {
-            _pushTime += Time.deltaTime;
             if (_longPush == true && _partsPurge._legParge == true)
             {
                 _partsPurge._legParge = false;
@@ -145,6 +135,38 @@ public class InputManager : MonoBehaviour
         {
             _pushTime = 0;
             _longPush = false;
+            mAnimator.SetBool("walk", false);
+        }
+
+        // 歩きアニメーションとSE
+        if (Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
+        {
+            mAnimator.SetBool("walk", false);
+        }
+        else
+        {
+            _pushTime += Time.deltaTime;
+            // 歩きアニメーション
+            mAnimator.SetBool("walk", true);
+        }
+
+        if (mAnimator.GetBool("walk") == true && mAnimator.GetBool("run") == false && mAnimator.GetBool("ground") == false)
+        {
+            if (_soundSpan <= 0)
+            {
+                // 歩きSE
+                SoundManger.Instance.PlaySE(25);
+                _soundSpan = 0.55f;
+            }
+        }
+        if (mAnimator.GetBool("run") == true && mAnimator.GetBool("ground") == false)
+        {
+            if (_soundSpan <= 0)
+            {
+                // 走りSE
+                SoundManger.Instance.PlaySE(25);
+                _soundSpan = 0.256f;
+            }
         }
         // 長押しフラグの切り替え
         if (_pushTime >= 0.3f)

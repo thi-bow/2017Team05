@@ -9,7 +9,7 @@ public class Enemy_Movement : MonoBehaviour {
     public float m_turnSpeed = 1f;
 
     private Animator m_animator;
-    private bool m_isDead;
+    private bool m_isDead = false;
 
     private readonly int DEAD_MAX = 4;
 

@@ -82,7 +82,7 @@ public class EnemyMgr : MonoBehaviour {
 
         var p = GameObject.FindGameObjectWithTag("Player");
 
-        StartCoroutine(ShowWarningArea(aPosition, aRadius));
+        // StartCoroutine(ShowWarningArea(aPosition, aRadius));
         var cols = Physics.OverlapSphere(aPosition, aRadius);
         for (int i = 0; i < cols.Length; i++)
         {
@@ -99,25 +99,25 @@ public class EnemyMgr : MonoBehaviour {
         return list;
     }
 
-    private Vector3 pos;
-    private float r;
-    IEnumerator ShowWarningArea(Vector3 aPos, float aRadius)
-    {
-        pos = aPos;
-        r = aRadius;
+    //private Vector3 pos;
+    //private float r;
+    //IEnumerator ShowWarningArea(Vector3 aPos, float aRadius)
+    //{
+    //    pos = aPos;
+    //    r = aRadius;
 
-        yield return new WaitForSeconds(3);
+    //    yield return new WaitForSeconds(3);
 
-        pos = new Vector3(0, 0, 0);
-        r = 0f;
-    }
+    //    pos = new Vector3(0, 0, 0);
+    //    r = 0f;
+    //}
 
-    private void OnDrawGizmos()
-    {
-        if(pos != Vector3.zero && r != 0)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(pos, r);
-        }
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    if(pos != Vector3.zero && r != 0)
+    //    {
+    //        Gizmos.color = Color.yellow;
+    //        Gizmos.DrawWireSphere(pos, r);
+    //    }
+    //}
 }
