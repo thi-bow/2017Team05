@@ -56,6 +56,7 @@ public class ResultManager : MonoBehaviour {
 
         if (Input.anyKeyDown)
         {
+            SoundManger.Instance.PlaySE(5);
             SceneManagerScript.sceneManager.FadeOut(SceneName.sceneName.Title.ToString());
         }
     }
