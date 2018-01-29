@@ -46,6 +46,8 @@ public class TutorialManager : MonoBehaviour
         _player.enabled = false;
         _playerMove.enabled = false;
         _playerSkyMove.enabled = false;
+        _tutorialTextManager = this.GetComponent<TutorialTextManager>();
+        _tutorialClearChecker = this.GetComponent<TutorialClearChecker>();
         StartCoroutine(MoveGuideON());
     }
 	
@@ -130,8 +132,6 @@ public class TutorialManager : MonoBehaviour
         SceneManagerScript.sceneManager.TimeStart();
         _tutorialStart = true;
         _guideObje.SetActive(false);
-        _tutorialTextManager = this.GetComponent<TutorialTextManager>();
-        _tutorialClearChecker = this.GetComponent<TutorialClearChecker>();
         StartCoroutine(_tutorialTextManager.TextWrite((int)_tutorialState));
         StartCoroutine(PlayerOn());
     }
