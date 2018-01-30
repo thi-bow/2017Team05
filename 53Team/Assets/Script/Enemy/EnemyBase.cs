@@ -208,8 +208,12 @@ namespace Enemy
             var list = GetLotteryWeapon();
             DropWeapon(list);
 
-            // Animetorに死亡アニメーションを流す処理
-
+            var cols = transform.GetComponentsInChildren<Collider>();
+            GetComponent<Rigidbody>().useGravity = false;
+            for (int i = 0; i < cols.Length; i++)
+            {
+                cols[i].isTrigger = true;
+            }
             Destroy(this);
             Destroy(gameObject, m_zonbiLifeTime);
         }
