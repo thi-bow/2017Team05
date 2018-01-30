@@ -6,7 +6,6 @@ using UnityEngine.AI;
 using UniRx;
 using UniRx.Triggers;
 using DG.Tweening;
-using UnityStandardAssets.Characters.ThirdPerson;
 
 namespace Enemy
 {

@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityStandardAssets.Characters.ThirdPerson;
-using UnityStandardAssets.CrossPlatformInput;
 
 public class CharaMoveCtrl : MonoBehaviour
 {
@@ -37,10 +35,6 @@ public class CharaMoveCtrl : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!m_Jump)
-        {
-            m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
-        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             m_wep.Fire();
@@ -62,8 +56,8 @@ public class CharaMoveCtrl : MonoBehaviour
     private void FixedUpdate()
     {
         // read inputs
-        float h = CrossPlatformInputManager.GetAxis("Horizontal");
-        float v = CrossPlatformInputManager.GetAxis("Vertical");
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
         bool crouch = Input.GetKey(KeyCode.C);
 
         // calculate move direction to pass to character
