@@ -33,10 +33,7 @@ public class MissileLauncher : weaponFire{
         for (int i = 0; i < m_magazine; i++)
         {
             var missile = base.fire().GetComponent<Homing_bullet>();
-            Observable.Timer(System.TimeSpan.FromSeconds(0.3f)).Subscribe(_ => 
-            {
-                missile.m_target = m_target;
-            }).AddTo(this);
+            missile.SetTarget(m_target);
             yield return new WaitForSeconds(m_rate);
         }
     }

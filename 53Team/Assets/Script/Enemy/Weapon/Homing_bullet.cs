@@ -17,6 +17,18 @@ public class Homing_bullet : Enemy_bullet {
         return base.Start();
     }
 
+    public void SetTarget(Transform target)
+    {
+        StartCoroutine(setTarget(target));
+    }
+
+    IEnumerator setTarget(Transform target)
+    {
+        yield return new WaitForSeconds(0.3f);
+
+        m_target = target;
+    }
+
     void LateUpdate () {
         if (m_target == null)
             return;
