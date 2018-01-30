@@ -66,6 +66,11 @@ public class Weapon : MonoBehaviour {
     // ビームエフェクト
     public GameObject _beamEffe = null;
     GameObject beamClone;
+    // ビームエフェクト
+    public GameObject _flashEffe = null;
+    GameObject flashClone;
+
+    public GameObject nozzle;
 
     // 射撃時間
     private float ShotTime;
@@ -86,6 +91,8 @@ public class Weapon : MonoBehaviour {
         bullets = maxBullets;
         // スクリーンの中心
         center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+
+        nozzle = GameObject.Find("nozzle");
     }
 	
 	// Update is called once per frame
@@ -102,11 +109,6 @@ public class Weapon : MonoBehaviour {
 
     public void Reload()
     {
-        if (bullets <= 0)
-        {
-            isReload = true;
-        }
-
         if (isReload == true)
         {
             reloadTime += Time.deltaTime;
@@ -117,6 +119,7 @@ public class Weapon : MonoBehaviour {
                 bullets = maxBullets;
                 reloadTime = 0;
                 isReload = false;
+                SoundManger.Instance.PlaySE(11);
             }
         }
     }
@@ -129,15 +132,25 @@ public class Weapon : MonoBehaviour {
         {
             this.tpsCamera = tpsCamera;
         }
-        if (bullets >= 0)
+        if (bullets > 0)
         {
             ShotTime += Time.deltaTime;
+            if (_flashEffe != null)
+            {
+                flashClone = GameObject.Instantiate(_flashEffe, nozzle.transform.position, this.transform.rotation);
+                Destroy(flashClone, 0.2f);
+            }
             if (ShotTime > 60.0f / minuteShot)
             {
-                SoundManger.Instance.PlaySE(0);
+                SoundManger.Instance.PlaySE(5);
+                
                 StartCoroutine(ShootingInterval());
                 
             }
+        }
+        else
+        {
+            isReload = true;
         }
     }
 
@@ -201,11 +214,8 @@ public class Weapon : MonoBehaviour {
 
             Vector3 shotPos = tpsCamera.ScreenToWorldPoint(center);
 
-
             for (int i = 0; i < vectores.Length; i++)
             {
-
-
                 Ray ray;
                 ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
 
@@ -236,6 +246,11 @@ public class Weapon : MonoBehaviour {
     {
         yield return new WaitForSeconds(shotspeed);
         Ray ray;
+
+        if (_beamEffe != null)
+        {
+            beamClone = GameObject.Instantiate(_beamEffe, this.transform.position, this.transform.rotation);
+        }
 
         ray = shotRay;
 
