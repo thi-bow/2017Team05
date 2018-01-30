@@ -39,18 +39,18 @@ public class InputManager : MonoBehaviour
 
                 if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
                 {
-
                     _partsPurge._specialWepon_Shot[0].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
                     {
-                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
+                        mAnimator.SetBool("rightparge", true);
+                        _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
                          PartsHPUIReset(CharaBase.Parts.RightArm);
-                     });
+                    });
                 }
                 else if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.approach)
                 {
-
                     _partsPurge._specialWepon_Approach[0].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
+                        mAnimator.SetBool("rightparge", true);
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
                         PartsHPUIReset(CharaBase.Parts.RightArm);
                     });
@@ -63,10 +63,13 @@ public class InputManager : MonoBehaviour
                 
             }
         }
+        else
+        {
+            mAnimator.SetBool("rightparge", false);
+        }
         // 左パージ
         if (Input.GetAxisRaw("crossX") < 0 && !TutorialManager._purgeOff)
         {
-
             _pushTime += Time.deltaTime;
             if (_longPush == true && _partsPurge._leftArmParge == true)
             {
@@ -75,6 +78,7 @@ public class InputManager : MonoBehaviour
                 {
                     _partsPurge._specialWepon_Shot[1].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
                     {
+                        mAnimator.SetBool("leftparge", true);
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
                         PartsHPUIReset(CharaBase.Parts.LeftArm);
                     });
@@ -83,6 +87,7 @@ public class InputManager : MonoBehaviour
                 {
                     _partsPurge._specialWepon_Approach[1].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
+                        mAnimator.SetBool("leftparge", true);
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
                         PartsHPUIReset(CharaBase.Parts.LeftArm);
                     });
@@ -94,11 +99,15 @@ public class InputManager : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            mAnimator.SetBool("leftparge", false);
+        }
         // 足パージ
         if (Input.GetAxisRaw("crossY") < 0 && !TutorialManager._purgeOff)
         {
             if (_longPush == true && _partsPurge._legParge == true)
-            {
+            { 
                 _partsPurge._legParge = false;
                 if (_partsPurge._charaPara._leg_AttackState == Weapon.Attack_State.shooting)
                 {
