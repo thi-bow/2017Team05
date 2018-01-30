@@ -198,6 +198,7 @@ public class Player : CharaBase
         {
             if (_longPushButton == true)
             {
+                mAnimator.SetBool("purge", true);
                 FullParge(() =>
                 {
                     PargeAttackCollide();
@@ -210,6 +211,10 @@ public class Player : CharaBase
                 });
                 _fullParge = false;
             }
+        }
+        else
+        {
+            mAnimator.SetBool("purge", false);
         }
 
         /*Playerアニメーション*/
