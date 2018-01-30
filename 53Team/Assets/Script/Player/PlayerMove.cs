@@ -80,6 +80,10 @@ public class PlayerMove : MonoBehaviour
         {
             RayCheck();
         }
+        if(!_jumpFlg)
+        {
+            _myRB.velocity = Vector3.zero;
+        }
 
         //ジャンプ中はゆっくり移動以外の移動に関する動作はできない
         if (_jumpFlg)

@@ -67,10 +67,10 @@ public class Weapon : MonoBehaviour {
     public GameObject _beamEffe = null;
     GameObject beamClone;
     // ビームエフェクト
-    public GameObject _flashEffe = null;
-    GameObject flashClone;
+    //public GameObject _flashEffe = null;
+    //GameObject flashClone;
 
-    public GameObject nozzle;
+    //public GameObject nozzle;
 
     // 射撃時間
     private float ShotTime;
@@ -92,7 +92,7 @@ public class Weapon : MonoBehaviour {
         // スクリーンの中心
         center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
 
-        nozzle = GameObject.Find("nozzle");
+        //nozzle = GameObject.Find("nozzle");
     }
 	
 	// Update is called once per frame
@@ -135,11 +135,11 @@ public class Weapon : MonoBehaviour {
         if (bullets > 0)
         {
             ShotTime += Time.deltaTime;
-            if (_flashEffe != null)
-            {
-                flashClone = GameObject.Instantiate(_flashEffe, nozzle.transform.position, this.transform.rotation);
-                Destroy(flashClone, 0.2f);
-            }
+            //if (_flashEffe != null)
+            //{
+            //    flashClone = GameObject.Instantiate(_flashEffe, nozzle.transform.position, this.transform.rotation);
+            //    Destroy(flashClone, 0.2f);
+            //}
             if (ShotTime > 60.0f / minuteShot)
             {
                 SoundManger.Instance.PlaySE(5);
