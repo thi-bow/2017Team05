@@ -208,8 +208,8 @@ namespace Enemy
             var list = GetLotteryWeapon();
             DropWeapon(list);
 
+            GetComponent<Rigidbody>().isKinematic = true;
             var cols = transform.GetComponentsInChildren<Collider>();
-            GetComponent<Rigidbody>().useGravity = false;
             for (int i = 0; i < cols.Length; i++)
             {
                 cols[i].isTrigger = true;

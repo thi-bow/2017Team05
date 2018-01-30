@@ -131,15 +131,18 @@ namespace Enemy
 
                 // 最初の徘徊ポジションの決定
                 // 現在のポジションから一番近いポジションをスタートにする
-                distance = Vector3.SqrMagnitude(_base.GetLootPos(0).position - _base.transform.position);
-                float adis;
-                for (int i = 1; i < _base.m_lootPosition.Length; i++)
+                if (_base.m_lootPosition.Length > 0)
                 {
-                    adis = Vector3.SqrMagnitude(_base.m_lootPosition[i].position - _base.transform.position);
-                    if (distance > adis)
+                    distance = Vector3.SqrMagnitude(_base.GetLootPos(0).position - _base.transform.position);
+                    float adis;
+                    for (int i = 1; i < _base.m_lootPosition.Length; i++)
                     {
-                        distance = adis;
-                        currentRootNum = i;
+                        adis = Vector3.SqrMagnitude(_base.m_lootPosition[i].position - _base.transform.position);
+                        if (distance > adis)
+                        {
+                            distance = adis;
+                            currentRootNum = i;
+                        }
                     }
                 }
             }
