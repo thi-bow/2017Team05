@@ -10,6 +10,7 @@ public class MissileLauncher : weaponFire{
     public int m_magazine;
     public float m_rate;
     public float m_waitTime;
+    public float m_dispersion;
 
     private void Start()
     {
@@ -33,7 +34,13 @@ public class MissileLauncher : weaponFire{
         for (int i = 0; i < m_magazine; i++)
         {
             var missile = base.fire().GetComponent<Homing_bullet>();
-            missile.SetTarget(m_target);
+
+            Vector3 p;
+            p.x = Random.Range(-m_dispersion, m_dispersion);
+            p.y = Random.Range(-m_dispersion, m_dispersion);
+            p.z = Random.Range(-m_dispersion, m_dispersion);
+
+            missile.SetTarget(m_target.position + p);
             yield return new WaitForSeconds(m_rate);
         }
     }

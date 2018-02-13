@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Enemy;
-
+using UnityEngine.AI;
 
 [Serializable]
 public class Enemy_Boss_battle {
@@ -16,12 +16,12 @@ public class Enemy_Boss_battle {
     private Enemy_Boss_State m_base;
     public float m_dis;
     public float m_radius;
-    private Vector3 m_currentPos;
-    private Vector3 m_pos;
+    private Vector3 m_targetPoint;
     private int m_currentPNum;
     private int m_moveNum;
-    private float m_moveTime;
+    private float m_time;
     private float m_waitTime;
+    private bool m_isEx;
 
     [Serializable]
     public struct Weapon
@@ -48,10 +48,8 @@ public class Enemy_Boss_battle {
     }
 
     private readonly int        NORMAL_POS_NUM      = 3;
-    private readonly float      NORMAL_MOVE_TIME    = 2.5f;
     private readonly float      NORMAL_WAIT_TIME    = 4.0f;
     private readonly int        EXTRA_POS_NUM       = 5;
-    private readonly float      EXTRA_MOVE_TIME     = 1.0f;
     private readonly float      EXTRA_WAIT_TIME     = 3.0f;
 
     public void Init(Enemy_Boss_State aBase)
@@ -61,9 +59,15 @@ public class Enemy_Boss_battle {
 
         m_currentWeponType = WeponType.normal_main;
         m_currentSubWepon = WeponType.normal_sub;
-        m_moveTime = NORMAL_MOVE_TIME;
         m_waitTime = NORMAL_WAIT_TIME;
         m_moveNum = NORMAL_POS_NUM;
+        m_isEx = false;
+
+        var turrets = m_base.GetComponentsInChildren<Enemy_Turret>();
+        for (int i = 0; i < turrets.Length; i++)
+        {
+            turrets[i].SetTarget(m_base.m_target);
+        }
 
         ChangeType(BattleType.move);
     }
@@ -76,10 +80,10 @@ public class Enemy_Boss_battle {
                 Move();
                 break;
             case BattleType.fire:
-                time += Time.deltaTime;
-                if (time >= m_waitTime)
+                m_time += Time.deltaTime;
+                if (m_time >= m_waitTime)
                 {
-                    time = 0;
+                    m_time = 0;
                     ChangeType(BattleType.move);
                 }
                 break;
@@ -90,11 +94,11 @@ public class Enemy_Boss_battle {
         }
 
 
-        m_base.transform.LookAt(m_base.m_target);
-        var angle = m_base.transform.rotation.eulerAngles;
-        angle.x = angle.x > 180 ? angle.x - 360 : angle.x;
-        angle.x = Mathf.Clamp(angle.x, -25, 25);
-        m_base.transform.rotation = Quaternion.Euler(angle);
+        //m_base.transform.LookAt(m_base.m_target);
+        //var angle = m_base.transform.rotation.eulerAngles;
+        //angle.x = angle.x > 180 ? angle.x - 360 : angle.x;
+        //angle.x = Mathf.Clamp(angle.x, -25, 25);
+        //m_base.transform.rotation = Quaternion.Euler(angle);
 
         CoolTime();
         Fire();
@@ -106,13 +110,13 @@ public class Enemy_Boss_battle {
         Debug.LogWarning("Boss状態変化");
         m_currentMainWepon = WeponType.ex_main;
         m_currentSubWepon = WeponType.ex_sub;
-        m_moveTime = EXTRA_MOVE_TIME;
         m_waitTime = EXTRA_WAIT_TIME;
         m_moveNum = EXTRA_POS_NUM;
 
         m_currentPNum = 0;
 
-        time = 0;
+        m_time = 0;
+        m_isEx = true;
 
         ChangeType(BattleType.move);
     }
@@ -123,7 +127,7 @@ public class Enemy_Boss_battle {
         switch (m_battleType)
         {
             case BattleType.move:
-                SetRoot();
+                m_targetPoint = GetRandomPoint();
                 m_currentWeponType = m_currentMainWepon;
                 break;
             case BattleType.fire:
@@ -168,61 +172,52 @@ public class Enemy_Boss_battle {
     }
 
     // 設定されたルートを移動
-    private float time;
     public void Move()
     {
-        time += Time.deltaTime / m_moveTime;
-        m_base.transform.position = Vector3.Lerp(m_currentPos, m_pos, time);
-        if(time >= 1)
+        // if(m_base.GetComponent<NavMeshAgent>())
+        if (m_base.IsArrival())
         {
             m_currentPNum++;
-            time = 0;
-            if(m_currentPNum == m_moveNum)
+            if (m_currentPNum == m_moveNum)
             {
                 m_currentPNum = 0;
                 ChangeType(BattleType.fire);
                 return;
             }
-            SetRoot();
+            else
+            {
+                m_targetPoint = GetRandomPoint();
+            }
         }
-    }
-
-
-    // 移動ルートの設定
-    public void SetRoot()
-    {
-
-        m_currentPos = m_base.transform.position;
-
-        SetTargetPostion();
-
-        m_pos = pos;
+        m_base.Move(m_targetPoint, m_isEx, m_base.m_target);
     }
 
     // 目標ポイントの設定
-    private Transform t;
-    private Vector3 pos;
-    public LayerMask mask;
-    public void SetTargetPostion()
+    private NavMeshHit m_navhit;
+    public Vector3 GetRandomPoint()
     {
-        t = m_base.m_target;
+        Vector3 p;
+        p.x = UnityEngine.Random.Range(-m_radius, m_radius);
+        p.z = UnityEngine.Random.Range(-m_radius, m_radius);
 
-        // 目標高度の設定
-        pos.y = t.position.y + UnityEngine.Random.Range(2f, 6f);
+        p.y = m_base.m_target.position.y;
 
-        // 目標位置の設定
-        float n1, n2;
-        n1 = UnityEngine.Random.Range(-m_dis, m_dis);
-        n2 = UnityEngine.Random.Range(-m_dis, m_dis);
-        pos.x = t.position.x + n1;
-        pos.z = t.position.z + n2;
-
-        var hit = new RaycastHit();
-        var ray = new Ray(m_currentPos, pos - m_currentPos);
-        var dis = Vector3.Magnitude(pos - m_currentPos);
-        if (Physics.SphereCast(ray.origin, m_radius, ray.direction, out hit, dis, mask))
+        NavMeshAgent agent = m_base.GetComponent<NavMeshAgent>();
+        if(NavMesh.SamplePosition(p, out m_navhit, agent.radius * 2, 1))
         {
-            SetTargetPostion();
+            float dis = Vector3.SqrMagnitude(m_navhit.position - m_base.transform.position);
+            if (dis > Mathf.Abs(agent.radius) * 2)
+            {
+                return m_navhit.position;
+            }
+            else
+            {
+                return GetRandomPoint();
+            }
+        }
+        else
+        {
+            return GetRandomPoint();
         }
     }
 

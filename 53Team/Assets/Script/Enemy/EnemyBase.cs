@@ -67,6 +67,7 @@ namespace Enemy
         [Header("死骸の残る時間")]
         public float m_zonbiLifeTime = 10f;
 
+        private Transform m_lookTarget;
         private Vector3 m_velocity;
         private bool m_is_run;
         private bool m_is_dead;
@@ -78,7 +79,7 @@ namespace Enemy
 
         // NavMeshAgent
         protected NavMeshAgent m_agent;
-        protected Enemy_Movement m_animator;
+        protected Enemy_Movement m_moveMent;
 
         // 状態を格納する配列
         protected List<State<T>> m_stateList = new List<State<T>>();
@@ -90,7 +91,7 @@ namespace Enemy
         {
             base.Start();
             m_agent = GetComponent<NavMeshAgent>();
-            m_animator = GetComponent<Enemy_Movement>();
+            m_moveMent = GetComponent<Enemy_Movement>();
 
             m_agent.updateRotation = false;
             m_agent.updatePosition = false;
@@ -231,17 +232,18 @@ namespace Enemy
                 m_agent.nextPosition = transform.position;
             }
 
-            if (m_animator)
+            if (m_moveMent)
             {
-                m_animator.Move(m_velocity, m_is_run);
+                m_moveMent.Move(m_velocity, m_is_run, m_lookTarget);
                 m_velocity = vector3zero;
                 m_is_run = false;
             }
         }
 
-        public virtual void Move(Vector3 position, bool run = false)
+        public virtual void Move(Vector3 position, bool run = false, Transform look = null)
         {
             m_agent.SetDestination(position);
+            m_lookTarget = look;
 
             if (m_agent.remainingDistance > m_agent.stoppingDistance)
             {

@@ -78,7 +78,7 @@ namespace Enemy
         public override void Dead()
         {
             // Debug.Log("死んだぁ！！");
-            m_animator.Dead();
+            m_moveMent.Dead();
             m_ExplosionParticles.Play();
             m_SmokeEffect.gameObject.SetActive(true);
             m_SmokeEffect.Play();

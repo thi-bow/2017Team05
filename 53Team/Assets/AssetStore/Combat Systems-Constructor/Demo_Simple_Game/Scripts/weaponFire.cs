@@ -18,7 +18,7 @@ public class weaponFire : MonoBehaviour {
 	{
 		var gameOb = Instantiate(Shell,  Gun_End.transform.position,Gun_End.transform.rotation); 
 		Vector3 dir = new Vector3(Random.Range(-randomDir, randomDir), Random.Range(-randomDir, randomDir), Random.Range(-randomDir,randomDir)) ;
-		dir+=Gun_End.up*shellSpeed;
+		dir+=Gun_End.forward*shellSpeed;
 		gameOb.GetComponent<Rigidbody>().AddForce(dir);
 
 		if(m_smokeBarrel) m_smokeBarrel.Play();
