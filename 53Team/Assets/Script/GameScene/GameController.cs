@@ -26,6 +26,8 @@ public class GameController : MonoBehaviour
 
     private IEnumerator Start()
     {
+        // ボス出現処理
+        //m_enemyMgr.PopBossEnemy();
         _pause = false;
         //Tutorialが終了するまで待機
         yield return new WaitWhile(() => m_isTutorial);
@@ -55,13 +57,7 @@ public class GameController : MonoBehaviour
         {
             GamePause();
         }
-
-        //if(guideActive && Input.anyKeyDown)
-        //{
-        //    Debug.Log("ほふぇい");
-        //    guideActive = false;
-        //    _guideImage.SetActive(false);
-        //}
+        
     }
 
     private IEnumerator Clear()

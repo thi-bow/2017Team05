@@ -204,6 +204,7 @@ public class CharaBase : MonoBehaviour
 
     #region エフェクト
     [SerializeField] private GameObject _pargeEffe = null;
+    [SerializeField] private GameObject _fullPurgeEffe = null;
     #endregion
 
     // Use this for initialization
@@ -858,6 +859,14 @@ public class CharaBase : MonoBehaviour
         for (int i = 0; i < _allPartsList.Count; i++)
         {
             BrowOffParge(_allPartsList[i]);
+        }
+        if(_fullPurgeEffe != null)
+        {
+            GameObject effe = Instantiate(_fullPurgeEffe);
+            effe.transform.SetParent(transform);
+            effe.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            effe.transform.localPosition = new Vector3(0.0f, 1.4f, 0.0f);
+            effe.SetActive(true);
         }
 
         //デバッグ中は、フルパージが終了したらいつでもフルパージできるようにする(パージ処理が全て慣性したらこの処理を消す)
