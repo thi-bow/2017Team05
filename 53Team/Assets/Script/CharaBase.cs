@@ -204,6 +204,7 @@ public class CharaBase : MonoBehaviour
 
     #region エフェクト
     [SerializeField] private GameObject _pargeEffe = null;
+    [SerializeField] private GameObject _partsAddEffe = null;
     [SerializeField] private GameObject _fullPurgeEffe = null;
     #endregion
 
@@ -342,6 +343,7 @@ public class CharaBase : MonoBehaviour
         {
             return;
         }
+        Vector3 pos = Vector3.zero;
         armor.GetComponent<Collider>().enabled = false;
         int _shootNumber = 0;
         switch (parts)
@@ -607,6 +609,16 @@ public class CharaBase : MonoBehaviour
         }
         _charaPara._totalWeight += armor.ArmorWeightPara;
         if (!_fullParge) _fullParge = true;
+
+        //追加エフェクト
+        if (_partsAddEffe != null)
+        {
+            pos = armor.transform.position;
+            GameObject effe = Instantiate(_partsAddEffe);
+            effe.transform.position = pos;
+            effe.gameObject.SetActive(true);
+            Destroy(effe, 0.20f);
+        }
 
         //装着音に変更
         SoundManger.Instance.PlaySE(1);
