@@ -234,6 +234,7 @@ namespace Enemy
 
             if (m_moveMent)
             {
+                transform.position = new Vector3(transform.position.x, m_agent.nextPosition.y, transform.position.z);
                 m_moveMent.Move(m_velocity, m_is_run, m_lookTarget);
                 m_velocity = vector3zero;
                 m_is_run = false;

@@ -199,14 +199,18 @@ public class Enemy_Boss_battle {
         Vector3 p;
         p.x = UnityEngine.Random.Range(-m_radius, m_radius);
         p.z = UnityEngine.Random.Range(-m_radius, m_radius);
+        p.y = 0;
 
-        p.y = m_base.m_target.position.y;
+        p += m_base.m_target.position;
 
         NavMeshAgent agent = m_base.GetComponent<NavMeshAgent>();
-        if(NavMesh.SamplePosition(p, out m_navhit, agent.radius * 2, 1))
+        if(NavMesh.SamplePosition(p, out m_navhit, agent.radius * 4, 1))
         {
-            float dis = Vector3.SqrMagnitude(m_navhit.position - m_base.transform.position);
-            if (dis > Mathf.Abs(agent.radius) * 2)
+            // return m_navhit.position;
+
+            float dis = Vector3.SqrMagnitude(m_navhit.position - m_base.m_target.position);
+            // Debug.Log("kyori = " + dis + ":" + m_dis * m_dis);
+            if (dis > m_dis * m_dis)
             {
                 return m_navhit.position;
             }
@@ -217,8 +221,11 @@ public class Enemy_Boss_battle {
         }
         else
         {
+            // Debug.DrawLine(m_base.transform.position, p, Color.red, 3f);
             return GetRandomPoint();
         }
+
+        // return Vector3.zero;
     }
 
     static bool IsNull<T>(T obj) where T : class

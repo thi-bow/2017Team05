@@ -49,6 +49,10 @@ namespace Enemy
         public override void Damage(int attackPower)
         {
             base.Damage(attackPower);
+            if(HP <= _charaPara._maxHP / 2)
+            {
+                m_battle.ExMode();
+            }
         }
 
         public override void Dead()
