@@ -14,13 +14,19 @@ public class Homing_bullet : Enemy_bullet {
     private Transform m_target;
     private Vector3 m_point;
     private Rigidbody m_rd;
+    private float m_defTurnSpeed;
 
     private readonly Vector3 vector3Zero = new Vector3(0, 0, 0);
 
-    protected override IEnumerator Start()
+    private void Start()
     {
         m_rd = GetComponent<Rigidbody>();
-        return base.Start();
+        m_defTurnSpeed = m_turnSpeed;
+    }
+
+    protected override IEnumerator Init()
+    {
+        return base.Init();
     }
 
     public void SetTarget(Transform target)
@@ -55,12 +61,20 @@ public class Homing_bullet : Enemy_bullet {
         float step = m_turnSpeed * Time.deltaTime;
         float angle = Vector3.Angle(transform.forward, dir);
         if (angle <= 15)
-            m_turnSpeed = 0.5f;
+            m_turnSpeed = 0.3f;
 
         Vector3 newDir = Vector3.RotateTowards(transform.forward, dir, step, 0.0F);
         transform.rotation = Quaternion.LookRotation(newDir);
 
         m_rd.velocity = transform.forward * m_speed;
+    }
+
+    public override void OnReturn()
+    {
+        base.OnReturn();
+        m_rd.velocity = new Vector3(0, 0, 0);
+        m_homing = false;
+        m_turnSpeed = m_defTurnSpeed;
     }
 
     protected override void OnTriggerEnter(Collider col)

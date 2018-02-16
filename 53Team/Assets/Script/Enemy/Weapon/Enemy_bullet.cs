@@ -17,8 +17,8 @@ public class Enemy_bullet : Shell {
             collide.Damage(shellDamage, m_type);
     }
 
-    protected override IEnumerator Start()
+    protected override IEnumerator Init()
     {
-        return base.Start();
+        return base.Init();
     }
 }

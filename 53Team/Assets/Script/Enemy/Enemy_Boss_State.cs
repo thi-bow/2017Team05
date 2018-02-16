@@ -20,6 +20,8 @@ namespace Enemy
         public GameObject m_armorUnits;
         public Enemy_Boss_battle m_battle;
 
+        public ExplostionParticle[] m_explostions;
+
         protected override void Start()
         {
             m_stateList.Add(new StateNone(this));

@@ -118,6 +118,12 @@ public class Enemy_Boss_battle {
         m_time = 0;
         m_isEx = true;
 
+        for (int i = 0; i < m_base.m_explostions.Length; i++)
+        {
+            m_base.m_explostions[i].Play();
+            m_base.m_explostions[i].GetComponent<Enemy_Turret>().SetTarget(null);
+        }
+
         ChangeType(BattleType.move);
     }
 
