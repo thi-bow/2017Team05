@@ -10,6 +10,9 @@ public class Armor : MonoBehaviour {
     public float _armorSpeed = 0.0f;
     public int _armorWeight = 0;
     [SerializeField] private CharaBase.Parts _parts = CharaBase.Parts.Body;
+
+    public Vector3 _armorChangeScale;
+
     public CharaBase.Parts GetParts
     {
         get { return _parts; }
@@ -17,8 +20,8 @@ public class Armor : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		
-	}
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -41,5 +44,10 @@ public class Armor : MonoBehaviour {
     public int ArmorWeightPara
     {
         get { return _armorWeight; }
+    }
+
+    public void ArmorChangeScale()
+    {
+        transform.localScale = _armorChangeScale;
     }
 }

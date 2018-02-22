@@ -46,10 +46,15 @@ public class PargeShot : MonoBehaviour {
 
     int mask = 1 << 8;
 
+    // パージエフェクト
+    public GameObject pargeEff = null;
+    GameObject pargeClone;
+
     Action pargeAction = null;
 
     // Use this for initialization
     void Start () {
+
         tpsCamera = Camera.main;
 
         maxBullets = bullets;
@@ -78,6 +83,14 @@ public class PargeShot : MonoBehaviour {
             this.tpsCamera = tpsCamera;
         }
         isParge = true;
+        if (pargeEff != null)
+        {
+            SoundManger.Instance.PlaySE(18);
+
+            transform.rotation = Quaternion.LookRotation(tpsCamera.transform.forward);
+            pargeClone = GameObject.Instantiate(pargeEff, transform.position, transform.rotation);
+            Destroy(pargeClone, 2.5f);
+        }
 
         if (action != null)
         {
