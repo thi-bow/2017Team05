@@ -11,7 +11,7 @@ public class Armor : MonoBehaviour {
     public int _armorWeight = 0;
     [SerializeField] private CharaBase.Parts _parts = CharaBase.Parts.Body;
 
-    public Vector3 _armorChangeScale;
+    public Vector3 _armorChangeScale = new Vector3(1.0f, 1.0f, 1.0f);
 
     public CharaBase.Parts GetParts
     {

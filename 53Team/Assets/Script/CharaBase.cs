@@ -358,8 +358,8 @@ public class CharaBase : MonoBehaviour
                 armor.gameObject.GetComponent<Collider>().enabled = false;
                 Destroy(armor.gameObject.GetComponent<Rigidbody>());
                 armor.gameObject.transform.SetParent(_partsLocation[0].transform);
-                armor.transform.localPosition = new Vector3(0.35f, 0.0f, 0.0f);
-                armor.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0.0f));
+                armor.transform.localPosition = new Vector3(0.0f, 0.2f, 0.0f);
+                armor.transform.localRotation = Quaternion.Euler(new Vector3(-85, 0, 0.0f));
                 PartsLevelChenge(_bodyList.Count, out _charaPara._bodyLevel);
                 _partsHP[0] = _charaPara._bodyHp;
                 _partsMaxHP[0] = _charaPara._bodyMaxHp;
@@ -622,6 +622,7 @@ public class CharaBase : MonoBehaviour
 
         //装着音に変更
         SoundManger.Instance.PlaySE(1);
+        armor.ArmorChangeScale();
     }
     #endregion
 
