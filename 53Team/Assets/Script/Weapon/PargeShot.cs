@@ -52,6 +52,8 @@ public class PargeShot : MonoBehaviour {
 
     Action pargeAction = null;
 
+    public Vector3 pargePos = new Vector3(0.0f, 1.0f, 0.0f);
+
     // Use this for initialization
     void Start () {
 
@@ -87,8 +89,8 @@ public class PargeShot : MonoBehaviour {
         {
             SoundManger.Instance.PlaySE(18);
 
-            transform.rotation = Quaternion.LookRotation(tpsCamera.transform.forward);
-            pargeClone = GameObject.Instantiate(pargeEff, transform.position, transform.rotation);
+            //transform.rotation = Quaternion.LookRotation(tpsCamera.transform.forward);
+            pargeClone = GameObject.Instantiate(pargeEff, transform.position + pargePos, Quaternion.identity);
             Destroy(pargeClone, 2.5f);
         }
 
