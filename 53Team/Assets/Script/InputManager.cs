@@ -7,6 +7,7 @@ public class InputManager : MonoBehaviour
 
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _playerChild;
+    [SerializeField] private GameObject _cameraLock;
     private Animator mAnimator;
 
     private Player _partsPurge;
@@ -39,34 +40,55 @@ public class InputManager : MonoBehaviour
 
                 if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.shooting)
                 {
+                    // PlayerMove無効化
+                    _player.GetComponent<Player>().enabled = false;
+                    // パージアニメーション再生
+                    mAnimator.SetBool("rightparge", true);
+                    // カメラ操作無効化
+                    _cameraLock.GetComponent<TPS_Camera>().enabled = false;
                     _partsPurge._specialWepon_Shot[0].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
                     {
-                        mAnimator.SetBool("rightparge", true);
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
                          PartsHPUIReset(CharaBase.Parts.RightArm);
+                        // PlayerMove有効化
+                        _player.GetComponent<Player>().enabled = true;
+                        // カメラ操作有効化
+                        _cameraLock.GetComponent<TPS_Camera>().enabled = true;
+                        // パージアニメーション停止
+                        mAnimator.SetBool("rightparge", false);
                     });
                 }
                 else if (_partsPurge._charaPara._rightArm_AttackState == Weapon.Attack_State.approach)
                 {
+                    // PlayerMove無効化
+                    _player.GetComponent<Player>().enabled = false;
+                    // パージアニメーション再生
+                    mAnimator.SetBool("rightparge", true);
+                    // カメラ操作無効化
+                    _cameraLock.GetComponent<TPS_Camera>().enabled = false;
                     _partsPurge._specialWepon_Approach[0].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
-                        mAnimator.SetBool("rightparge", true);
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
                         PartsHPUIReset(CharaBase.Parts.RightArm);
+                        // PlayerMove有効化
+                        _player.GetComponent<Player>().enabled = true;
+                        // カメラ操作有効化
+                        _cameraLock.GetComponent<TPS_Camera>().enabled = true;
+                        // パージアニメーション停止
+                        mAnimator.SetBool("rightparge", false);
                     });
                 }
                 else
                 {
                     _partsPurge.PargeAttackCollide(false, CharaBase.Parts.RightArm);
                     PartsHPUIReset(CharaBase.Parts.RightArm);
+                    // パージアニメーション停止
+                    mAnimator.SetBool("rightparge", false);
                 }
                 
             }
         }
-        else
-        {
-            mAnimator.SetBool("rightparge", false);
-        }
+
         // 左パージ
         if (Input.GetAxisRaw("crossX") < 0 && !TutorialManager._purgeOff)
         {
@@ -76,33 +98,54 @@ public class InputManager : MonoBehaviour
                 _partsPurge._leftArmParge = false;
                 if (_partsPurge._charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
                 {
+                    // PlayerMove有効化
+                    _player.GetComponent<Player>().enabled = false;
+                    // パージアニメーション再生
+                    mAnimator.SetBool("leftparge", true);
+                    // カメラ操作無効化
+                    _cameraLock.GetComponent<TPS_Camera>().enabled = false;
                     _partsPurge._specialWepon_Shot[1].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
                     {
-                        mAnimator.SetBool("leftparge", true);
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
                         PartsHPUIReset(CharaBase.Parts.LeftArm);
+                        // PlayerMove有効化
+                        _player.GetComponent<Player>().enabled = true;
+                        // カメラ操作有効化
+                        _cameraLock.GetComponent<TPS_Camera>().enabled = true;
+                        // パージアニメーション停止
+                        mAnimator.SetBool("leftparge", false);
                     });
                 }
                 else if (_partsPurge._charaPara._leftArm_AttackState == Weapon.Attack_State.approach)
                 {
+                    // PlayerMove無効化
+                    _player.GetComponent<Player>().enabled = false;
+                    // パージアニメーション再生
+                    mAnimator.SetBool("leftparge", true);
+                    // カメラ操作無効化
+                    _cameraLock.GetComponent<TPS_Camera>().enabled = false;
                     _partsPurge._specialWepon_Approach[1].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
-                        mAnimator.SetBool("leftparge", true);
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
                         PartsHPUIReset(CharaBase.Parts.LeftArm);
+                        // PlayerMove有効化
+                        _player.GetComponent<Player>().enabled = true;
+                        // カメラ操作有効化
+                        _cameraLock.GetComponent<TPS_Camera>().enabled = true;
+                        // パージアニメーション停止
+                        mAnimator.SetBool("leftparge", false);
                     });
                 }
                 else
                 {
                     _partsPurge.PargeAttackCollide(false, CharaBase.Parts.LeftArm);
                     PartsHPUIReset(CharaBase.Parts.LeftArm);
+                    // パージアニメーション停止
+                    mAnimator.SetBool("leftparge", false);
                 }
             }
         }
-        else
-        {
-            mAnimator.SetBool("leftparge", false);
-        }
+
         // 足パージ
         if (Input.GetAxisRaw("crossY") < 0 && !TutorialManager._purgeOff)
         {
@@ -111,18 +154,34 @@ public class InputManager : MonoBehaviour
                 _partsPurge._legParge = false;
                 if (_partsPurge._charaPara._leg_AttackState == Weapon.Attack_State.shooting)
                 {
+                    // PlayerMove無効化
+                    _player.GetComponent<Player>().enabled = false;
+                    // カメラ操作無効化
+                    _cameraLock.GetComponent<TPS_Camera>().enabled = false;
                     _partsPurge._specialWepon_Shot[2].GetComponent<PargeShot>().PargeAttack(_partsPurge.tpsCamera, () =>
                     {
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.Leg);
                         PartsHPUIReset(CharaBase.Parts.Leg);
+                        // PlayerMove有効化
+                        _player.GetComponent<Player>().enabled = true;
+                        // カメラ操作有効化
+                        _cameraLock.GetComponent<TPS_Camera>().enabled = true;
                     });
                 }
                 else if (_partsPurge._charaPara._leg_AttackState == Weapon.Attack_State.approach)
                 {
+                    // PlayerMove無効化
+                    _playerChild.GetComponent<PlayerMove>().enabled = false;
+                    // カメラ操作無効化
+                    _cameraLock.GetComponent<TPS_Camera>().enabled = false;
                     _partsPurge._specialWepon_Approach[2].GetComponent<PargeApproach>().PargeAttack(1500, () =>
                     {
                         _partsPurge.PargeAttackCollide(false, CharaBase.Parts.Leg);
                         PartsHPUIReset(CharaBase.Parts.Leg);
+                        // PlayerMove有効化
+                        _player.GetComponent<Player>().enabled = true;
+                        // カメラ操作有効化
+                        _cameraLock.GetComponent<TPS_Camera>().enabled = true;
                     });
                 }
                 else
@@ -165,7 +224,7 @@ public class InputManager : MonoBehaviour
             {
                 // 歩きSE
                 SoundManger.Instance.PlaySE(25);
-                _soundSpan = 0.55f;
+                _soundSpan = 0.686f;
             }
         }
         if (mAnimator.GetBool("run") == true && mAnimator.GetBool("ground") == false)
@@ -182,6 +241,13 @@ public class InputManager : MonoBehaviour
         {
             _longPush = true;
         }
+        if(Input.GetButton("Pause") == true && Input.GetButton("BackButton") == true)
+        {
+            // 強制終了処理
+
+        }
+        //カーソル非表示
+        Cursor.visible = false;
     }
 
     private void PartsHPUIReset(Player.Parts parts)

@@ -150,7 +150,7 @@ public class Player : CharaBase
         }
 
         //左腕の攻撃
-        if (Input.GetAxis("ArmShot") < -0.5f)
+        if (Input.GetAxis("ArmShot") < -0.5f && _charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
         {
             _isAttack = true;
             LeftArmShot();
@@ -414,6 +414,15 @@ public class Player : CharaBase
         // 死亡アニメーション
         mAnimator.SetBool("dead",true);
         ResultManager.IsClear = false;
-        SceneManagerScript.sceneManager.SceneOut(SceneName.sceneName.Result.ToString());
+        StartCoroutine(DeadAnimationTime(2.0f, () =>
+        {
+            SceneManagerScript.sceneManager.SceneOut(SceneName.sceneName.Result.ToString());
+        }));
+    }
+
+    private IEnumerator DeadAnimationTime(float waitTime, Action action)
+    {
+        yield return new WaitForSeconds(waitTime);
+        action();
     }
 }
