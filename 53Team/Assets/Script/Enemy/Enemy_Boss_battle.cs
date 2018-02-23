@@ -107,6 +107,8 @@ public class Enemy_Boss_battle {
     // 発狂モード
     public void ExMode()
     {
+        if (m_isEx) return;
+
         Debug.LogWarning("Boss状態変化");
         m_currentMainWepon = WeponType.ex_main;
         m_currentSubWepon = WeponType.ex_sub;

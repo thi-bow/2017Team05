@@ -12,6 +12,7 @@ public class EnemyPopPoint : MonoBehaviour {
 
     public Transform m_popParent;
     public Transform m_popPoint;
+    public GameObject m_popParticle;
 
     public RootPoints[] m_Roots;
     [System.Serializable]
@@ -53,6 +54,12 @@ public class EnemyPopPoint : MonoBehaviour {
         enemy.GetComponent<IEnemy>().LootPosition = m_Roots[Random.Range(0, m_Roots.Length)].points;
         enemy.GetComponent<Enemy_Standard>().m_group = m_group.group;
         m_group.squads.Add(enemy);
+
+        if (m_popParticle)
+        {
+            var p = Instantiate(m_popParticle, m_popPoint.position, Quaternion.identity);
+            Destroy(p, 1.5f);
+        }
     }
 
     // n体Enemy生成

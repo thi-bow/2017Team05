@@ -6,6 +6,12 @@ public class Enemy_bullet : Shell {
 
     public Weapon.Attack_State m_type;
 
+    public override void OnRent()
+    {
+        base.OnRent();
+        GetComponent<Renderer>().enabled = true;
+    }
+
     protected override void OnTriggerEnter(Collider col)
     {
         base.OnTriggerEnter(col);

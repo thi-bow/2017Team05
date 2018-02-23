@@ -20,7 +20,7 @@ public class weaponFire : MonoBehaviour {
         m_shellPool = new ShellPool(Shell);
     }
 
-    public virtual GameObject  fire() //shot
+    public virtual GameObject fire() //shot
 	{
 		// var gameOb = Instantiate(Shell,  Gun_End.transform.position,Gun_End.transform.rotation);
         var gameOb = m_shellPool.Rent();
@@ -40,5 +40,9 @@ public class weaponFire : MonoBehaviour {
         return gameOb.gameObject;
 	}
 
+    private void OnDestroy()
+    {
+        m_shellPool.Clear();
+    }
 }
  

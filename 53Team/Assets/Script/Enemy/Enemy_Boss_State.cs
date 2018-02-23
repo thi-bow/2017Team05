@@ -63,7 +63,8 @@ namespace Enemy
             // base.Dead();
             // ボス死亡アニメーションを流す
 
-            EnemyMgr.i.BossDead();
+            GetComponent<BossDeadAnimation>().Anima();
+            Destroy(m_moveMent);
             Destroy(this);
         }
 
