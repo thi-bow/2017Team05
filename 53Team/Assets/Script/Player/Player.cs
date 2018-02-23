@@ -150,7 +150,7 @@ public class Player : CharaBase
         }
 
         //左腕の攻撃
-        if (Input.GetAxis("ArmShot") < -0.5f && _charaPara._leftArm_AttackState == Weapon.Attack_State.shooting)
+        if (Input.GetAxis("ArmShot") < -0.5f)
         {
             _isAttack = true;
             LeftArmShot();

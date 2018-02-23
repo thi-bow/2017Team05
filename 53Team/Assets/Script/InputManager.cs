@@ -244,7 +244,7 @@ public class InputManager : MonoBehaviour
         if(Input.GetButton("Pause") == true && Input.GetButton("BackButton") == true)
         {
             // 強制終了処理
-
+            Application.Quit();
         }
         //カーソル非表示
         Cursor.visible = false;
