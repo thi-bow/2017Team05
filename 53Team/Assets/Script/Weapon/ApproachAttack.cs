@@ -22,6 +22,12 @@ public class ApproachAttack : MonoBehaviour {
 
     RaycastHit hit;
 
+    public GameObject _AppEff = null;
+    GameObject AppClone;
+
+    public GameObject tpsCamPos;
+    //public GameObject tpsCam;
+
     // Use this for initialization
     void Start()
     {
@@ -58,11 +64,17 @@ public class ApproachAttack : MonoBehaviour {
         {
             Debug.Log("近接" + comboCount + "発目");
 
-            
-            Vector3 crePos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+            Vector3 crePos = new Vector3(transform.position.x, transform.position.y + 1.5f, transform.position.z);
+            if (_AppEff != null)
+            {
+                //Vector3 effPos = new Vector3(transform.position.x, transform.position.y + 1.5f, z);
+                //Vector3 effPos = new Vector3(transform.position.x, transform.position.y + 1.5f, this.transform.position.z + this.transform.forward.z * 2.0f);
+                //AppClone = GameObject.Instantiate(_AppEff, effPos, this.transform.rotation);
+                //Destroy(AppClone, 1.0f);
+            }
 
             int mask = 1 << 8;
-            if (Physics.SphereCast(crePos, 0.5f, transform.forward, out hit, distance, mask))
+            if (Physics.SphereCast(crePos, 0.5f, tpsCamPos.transform.forward, out hit, distance, mask))
             {
                 if (hit.collider.gameObject.tag != this.gameObject.tag)
                 {
