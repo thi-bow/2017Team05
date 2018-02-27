@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ApproachAttack : MonoBehaviour {
+public class ApproachAttack : MonoBehaviour
+{
 
     // 近接攻撃中か
     [SerializeField] private bool isApproach = false;
@@ -25,8 +26,7 @@ public class ApproachAttack : MonoBehaviour {
     public GameObject _AppEff = null;
     GameObject AppClone;
 
-    public GameObject tpsCamPos;
-    //public GameObject tpsCam;
+    public Camera tpsCamPos;
 
     // Use this for initialization
     void Start()
@@ -46,6 +46,7 @@ public class ApproachAttack : MonoBehaviour {
         if ((!isApproach || isCombo == true))
         {
             isApproach = true;
+            //SoundManger.Instance.PlaySE(0);
             StartCoroutine(ApproachRun(atk));
         }
         if (comboCount > 1)
@@ -64,22 +65,31 @@ public class ApproachAttack : MonoBehaviour {
         {
             Debug.Log("近接" + comboCount + "発目");
 
-            Vector3 crePos = new Vector3(transform.position.x, transform.position.y + 1.5f, transform.position.z);
+            Vector3 crePos = new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z);
             if (_AppEff != null)
             {
-                //Vector3 effPos = new Vector3(transform.position.x, transform.position.y + 1.5f, z);
-                //Vector3 effPos = new Vector3(transform.position.x, transform.position.y + 1.5f, this.transform.position.z + this.transform.forward.z * 2.0f);
-                //AppClone = GameObject.Instantiate(_AppEff, effPos, this.transform.rotation);
-                //Destroy(AppClone, 1.0f);
-            }
-
-            int mask = 1 << 8;
-            if (Physics.SphereCast(crePos, 0.5f, tpsCamPos.transform.forward, out hit, distance, mask))
-            {
-                if (hit.collider.gameObject.tag != this.gameObject.tag)
+                int mask = 1 << 8;
+                if (Physics.SphereCast(crePos, 1.0f, tpsCamPos.transform.forward, out hit, distance, mask))
                 {
-                    Debug.Log(hit.collider.gameObject.name);
-                    hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Weapon.Attack_State.approach);
+                    if (hit.collider.gameObject.tag != this.gameObject.tag)
+                    {
+                        Debug.Log(hit.collider.gameObject.name);
+                        hit.collider.gameObject.GetComponent<BoneCollide>().Damage(atk, Weapon.Attack_State.approach);
+                        var app = Instantiate(_AppEff);
+                        app.transform.position = hit.point;
+
+                        Destroy(app, 1.0f);
+                    }
+                    else
+                    {
+                        AppClone = GameObject.Instantiate(_AppEff, crePos + tpsCamPos.transform.forward * 1.5f, this.transform.rotation);
+                        Destroy(AppClone, 1.0f);
+                    }
+                }
+                else
+                {
+                    AppClone = GameObject.Instantiate(_AppEff, crePos + tpsCamPos.transform.forward * 1.5f, this.transform.rotation);
+                    Destroy(AppClone, 1.0f);
                 }
             }
         }
@@ -98,7 +108,7 @@ public class ApproachAttack : MonoBehaviour {
     {
         get { return hitAtk; }
     }
-    
+
     public float GetDistance
     {
         get { return distance; }

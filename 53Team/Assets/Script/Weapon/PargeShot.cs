@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class PargeShot : MonoBehaviour {
+public class PargeShot : MonoBehaviour
+{
 
     public enum Attack_State_Parge
     {
@@ -52,10 +53,12 @@ public class PargeShot : MonoBehaviour {
 
     Action pargeAction = null;
 
-    public Vector3 pargePos = new Vector3(0.0f, 1.0f, 0.0f);
+    public GameObject player;
+    public Vector3 pargePos = new Vector3(0.0f, 1.5f, 0.0f);
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
 
         tpsCamera = Camera.main;
 
@@ -63,9 +66,10 @@ public class PargeShot : MonoBehaviour {
         // スクリーンの中心
         center = new Vector3(Screen.width / 2, Screen.height / 2, 0);
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         if (isParge)
         {
             StartCoroutine(ShootingInterval());
@@ -90,7 +94,7 @@ public class PargeShot : MonoBehaviour {
             SoundManger.Instance.PlaySE(18);
 
             //transform.rotation = Quaternion.LookRotation(tpsCamera.transform.forward);
-            pargeClone = GameObject.Instantiate(pargeEff, transform.position + pargePos, Quaternion.identity);
+            pargeClone = GameObject.Instantiate(pargeEff, player.transform.position + pargePos + tpsCamera.transform.forward, Quaternion.LookRotation(tpsCamera.transform.forward));
             Destroy(pargeClone, 2.5f);
         }
 
@@ -112,7 +116,6 @@ public class PargeShot : MonoBehaviour {
             Ray ray;
 
             ray = new Ray(shotPos, tpsCamera.transform.forward * distance);
-            Debug.Log("PargeShot!");
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, distance, mask))
             {
