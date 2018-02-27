@@ -9,6 +9,12 @@ public class GunPod : weaponFire {
     public float m_rate;
     public float m_waitTime;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        Preroad();
+    }
+
     public override GameObject fire()
     {
         StartCoroutine(Wait());

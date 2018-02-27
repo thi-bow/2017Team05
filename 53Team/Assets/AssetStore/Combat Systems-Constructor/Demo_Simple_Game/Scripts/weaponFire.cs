@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public class weaponFire : MonoBehaviour {
 	public Shell Shell;
@@ -13,11 +14,18 @@ public class weaponFire : MonoBehaviour {
 	public AudioSource m_AudioSource;  	//Sound effect shot 
 	public AudioClip soundFire;
 
+    public int m_preloadNum = 1;
+    public int m_preloadRate = 1;
     private ShellPool m_shellPool;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         m_shellPool = new ShellPool(Shell);
+    }
+
+    public void Preroad()
+    {
+        m_shellPool.PreloadAsync(m_preloadNum, m_preloadRate).Subscribe();
     }
 
     public virtual GameObject fire() //shot
