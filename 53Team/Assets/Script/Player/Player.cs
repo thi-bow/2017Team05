@@ -416,7 +416,7 @@ public class Player : CharaBase
         ResultManager.IsClear = false;
         StartCoroutine(DeadAnimationTime(2.0f, () =>
         {
-            SceneManagerScript.sceneManager.SceneOut(SceneName.sceneName.Result.ToString());
+            SceneManagerScript.sceneManager.SceneOut(SceneName.Result.ToString());
         }));
     }
 
