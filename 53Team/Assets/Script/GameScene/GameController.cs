@@ -48,7 +48,7 @@ public class GameController : MonoBehaviour
         yield return Clear();
 
         // 次のシーンへ
-        SceneManagerScript.sceneManager.SceneOut(SceneName.sceneName.Result.ToString());
+        SceneManagerScript.sceneManager.SceneOut(SceneName.Result.ToString());
     }
 
     public void Update()
