@@ -9,7 +9,8 @@ public class Enemy_bullet : Shell {
     public override void OnRent()
     {
         base.OnRent();
-        GetComponent<Renderer>().enabled = true;
+        if(GetComponentInChildren<Renderer>())
+            GetComponentInChildren<Renderer>().enabled = true;
     }
 
     protected override void OnTriggerEnter(Collider col)
