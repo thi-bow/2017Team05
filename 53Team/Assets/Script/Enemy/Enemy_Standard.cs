@@ -50,7 +50,7 @@ namespace Enemy
             m_stateMachine = new StateMachine<Enemy_Standard>();
 
             m_turret = GetComponent<Enemy_Turret>();
-            m_turret.SetOffset(m_enemyStatus.viewOffset);
+            // m_turret.SetOffset(m_enemyStatus.viewOffset);
             m_enemyStatus.attackDis = m_turret.m_range;
 
             base.Start();

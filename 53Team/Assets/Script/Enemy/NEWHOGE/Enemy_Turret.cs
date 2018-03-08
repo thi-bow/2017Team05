@@ -19,7 +19,7 @@ public class Enemy_Turret : MonoBehaviour {
     public Weapon[] m_weapons;
 
     private float[] m_nextFire;
-    private Vector3 m_offset;
+    public Vector3 m_offset;
     private Vector3 m_dirToTarget;
     private Vector3 m_forwardXZ, forwardYZ;
     private Vector3 m_dirXZ, dirYZ;
@@ -89,7 +89,7 @@ public class Enemy_Turret : MonoBehaviour {
             target += m_offset;
 
         m_dirToTarget = (target - m_horizontalAxis.transform.position);
-        // Debug.DrawRay(m_horizontalAxis.position, m_dirToTarget, Color.blue, 10);
+        Debug.DrawRay(m_horizontalAxis.position, m_dirToTarget, Color.blue);
 
         Vector3 originalForward = new Vector3(0, 0, 1);//Vector3.up;// original *
         Vector3 yAxis = Vector3.up; // world y axis

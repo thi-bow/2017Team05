@@ -11,6 +11,8 @@ public class TutorialClearChecker : MonoBehaviour {
     [SerializeField] private GameObject _TutorialPargeEnemysParent = null;
     [SerializeField] private GameObject[] _TutorialPargeEnemys = null;
     [SerializeField] private InputManager _inputManager = null;
+
+    public GameObject TutoObj1, TutoObj2;
     
     private int partsCount = 0;
     private int bodyPartsCount = 0;
@@ -26,12 +28,6 @@ public class TutorialClearChecker : MonoBehaviour {
         }
     }
 	
-	// Update is called once per frame
-	void Update () {
-        
-		
-	}
-
     public bool AttackCheck()
     {
         if (_TutorialEnemy == null)
@@ -52,6 +48,7 @@ public class TutorialClearChecker : MonoBehaviour {
         if(count > partsCount)
         {
             _TutorialSecondEnemy.gameObject.SetActive(true);
+            Destroy(TutoObj1);
             return true;
         }
         return false;
@@ -108,6 +105,7 @@ public class TutorialClearChecker : MonoBehaviour {
         yield return new WaitForSeconds(1.5f);
         fullParge = true;
         _TutorialPargeEnemysParent.SetActive(false);
+        Destroy(TutoObj2);
     }
 
     public bool PartsPargeCheck()
